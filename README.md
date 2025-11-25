@@ -16,11 +16,11 @@ Samma navbar.
 
 AI-genererad bild på medlem. About-section. Tre "cards" med aktiviteter, Reviews (optional)
 
-![alt text](image-1.png)
+![alt text](public/readmeimg/image-1.png)
 
 ## Eventuella nödvändiga komponenter
 
-![alt text](image.png)
+![alt text](public/readmeimg/image.png)
 
 ## Funktioner:
 

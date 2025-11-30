@@ -1,20 +1,3 @@
-<script setup lang="ts">
-import { useRoute } from 'vue-router'
-import { useExperiences } from '~/composables/useExperiences'
-import { computed } from 'vue'
-
-const route = useRoute()
-const id = route.params.id as string
-
-const { loading, getExperienceById, getAddon, totalAddonsPrice } = useExperiences()
-
-// Computed experience som är null tills data laddats
-const experience = computed(() => getExperienceById(id))
-
-// Owner display name
-const ownerProfile = computed(() => experience.value ? capitalize(experience.value.owner) : '')
-</script>
-
 <template>
   <div v-if="loading">
     <p>Laddar upplevelse...</p>
@@ -61,6 +44,23 @@ const ownerProfile = computed(() => experience.value ? capitalize(experience.val
     <p>Upplevelse hittades inte</p>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useRoute } from 'vue-router'
+import { useExperiences } from '~/composables/useExperiences'
+import { computed } from 'vue'
+
+const route = useRoute()
+const id = route.params.id as string
+
+const { loading, getExperienceById, getAddon, totalAddonsPrice } = useExperiences()
+
+// Computed experience som är null tills data laddats
+const experience = computed(() => getExperienceById(id))
+
+// Owner display name
+const ownerProfile = computed(() => experience.value ? capitalize(experience.value.owner) : '')
+</script>
 
 <style scoped>
 .hero {

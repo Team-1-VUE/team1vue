@@ -6,18 +6,21 @@
     "antonio": ["surfing", "matfotografi", "street-art"]
   },
   "experiences": [
-    { "id": 1, "slug": "yoga", "title": "Yoga", "description": "En lugn yoga-session", "duration": "1h", "price": 250, "image": "/images/experience-test01.webp", "addons": ["te-fika", "meditationsguide"] },
-    { "id": 2, "slug": "maleri", "title": "Måleri", "description": "Kreativt måleri", "duration": "2h", "price": 300, "image": "/images/experience-test02.webp", "addons": [] },
-    { "id": 3, "slug": "kajak", "title": "Kajak", "description": "Paddla i solnedgången", "duration": "3h", "price": 400, "image": "/images/experience-test03.webp", "addons": ["livsstilscoach"] },
-    { "id": 4, "slug": "matlagning", "title": "Matlagning", "description": "Italiensk middag", "duration": "2h", "price": 350, "image": "/images/experience-test01.webp", "addons": [] },
-    { "id": 5, "slug": "fotografi", "title": "Fotografi", "description": "Lär dig ta fantastiska bilder", "duration": "2h", "price": 300, "image": "/images/experience-test02.webp", "addons": [] },
-    { "id": 6, "slug": "lopning", "title": "Löpning", "description": "Intervallträning utomhus", "duration": "1h", "price": 200, "image": "/images/experience-test03.webp", "addons": [] },
-    { "id": 7, "slug": "kalligrafi", "title": "Kalligrafi", "description": "Skriv vackra bokstäver", "duration": "2h", "price": 220, "image": "/images/experience-test01.webp", "addons": [] },
-    { "id": 8, "slug": "tradgardsmagi", "title": "Trädgårdsmagi", "description": "Lär dig odla blommor", "duration": "3h", "price": 330, "image": "/images/experience-test02.webp", "addons": [] },
-    { "id": 9, "slug": "dans", "title": "Dans", "description": "Rytm och rörelse", "duration": "1.5h", "price": 270, "image": "/images/experience-test03.webp", "addons": ["te-fika"] },
-    { "id": 10, "slug": "surfing", "title": "Surfing", "description": "Lär dig surfa på vågorna", "duration": "2h", "price": 400, "image": "/images/experience-test01.webp", "addons": ["meditationsguide", "livsstilscoach"] },
-    { "id": 11, "slug": "matfotografi", "title": "Matfotografi", "description": "Ta läckra bilder på mat", "duration": "1.5h", "price": 280, "image": "/images/experience-test02.webp", "addons": [] },
-    { "id": 12, "slug": "street-art", "title": "Street Art", "description": "Skapa konst på gatan", "duration": "2h", "price": 320, "image": "/images/experience-test03.webp", "addons": [] }
+    { "id": "1", "slug": "yoga", "owner": "kristoffer", "title": "Yoga", "description": "En lugn yoga-session", "duration": "1h", "price": 250, "image": "/images/experience-test01.webp", "addons": ["te-fika", "meditationsguide"] },
+    { "id": "2", "slug": "maleri", "owner": "kristoffer", "title": "Måleri", "description": "Kreativt måleri", "duration": "2h", "price": 300, "image": "/images/experience-test02.webp", "addons": [] },
+    { "id": "3", "slug": "kajak", "owner": "kristoffer", "title": "Kajak", "description": "Paddla i solnedgången", "duration": "3h", "price": 400, "image": "/images/experience-test03.webp", "addons": ["livsstilscoach"] },
+
+    { "id": "4", "slug": "matlagning", "owner": "pencheff", "title": "Matlagning", "description": "Italiensk middag", "duration": "2h", "price": 350, "image": "/images/experience-test01.webp", "addons": [] },
+    { "id": "5", "slug": "fotografi", "owner": "pencheff", "title": "Fotografi", "description": "Lär dig ta fantastiska bilder", "duration": "2h", "price": 300, "image": "/images/experience-test02.webp", "addons": [] },
+    { "id": "6", "slug": "lopning", "owner": "pencheff", "title": "Löpning", "description": "Intervallträning utomhus", "duration": "1h", "price": 200, "image": "/images/experience-test03.webp", "addons": [] },
+
+    { "id": "7", "slug": "kalligrafi", "owner": "simon", "title": "Kalligrafi", "description": "Skriv vackra bokstäver", "duration": "2h", "price": 220, "image": "/images/experience-test01.webp", "addons": [] },
+    { "id": "8", "slug": "tradgardsmagi", "owner": "simon", "title": "Trädgårdsmagi", "description": "Lär dig odla blommor", "duration": "3h", "price": 330, "image": "/images/experience-test02.webp", "addons": [] },
+    { "id": "9", "slug": "dans", "owner": "simon", "title": "Dans", "description": "Rytm och rörelse", "duration": "1.5h", "price": 270, "image": "/images/experience-test03.webp", "addons": ["te-fika"] },
+
+    { "id": "10", "slug": "surfing", "owner": "antonio", "title": "Surfing", "description": "Lär dig surfa på vågorna", "duration": "2h", "price": 400, "image": "/images/experience-test01.webp", "addons": ["meditationsguide", "livsstilscoach"] },
+    { "id": "11", "slug": "matfotografi", "owner": "antonio", "title": "Matfotografi", "description": "Ta läckra bilder på mat", "duration": "1.5h", "price": 280, "image": "/images/experience-test02.webp", "addons": [] },
+    { "id": "12", "slug": "street-art", "owner": "antonio", "title": "Street Art", "description": "Skapa konst på gatan", "duration": "2h", "price": 320, "image": "/images/experience-test03.webp", "addons": [] }
   ],
   "addons": [
     { "slug": "te-fika", "title": "Te och fika", "price": 50 },

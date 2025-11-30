@@ -9,8 +9,8 @@
     <section v-else>
       <h2>Upplevelser</h2>
 
-      <div v-if="experiences.length" class="experience-list">
-        <div v-for="exp in experiences" :key="exp.slug" class="experience-card">
+      <div v-if="profileExperiences.length" class="experience-list">
+        <div v-for="exp in profileExperiences" :key="exp.slug" class="experience-card">
           <img :src="exp.image" :alt="exp.title" />
 
           <div class="experience-card--content">
@@ -23,10 +23,18 @@
               <h4>Tillval</h4>
               <ul>
                 <li v-for="addonSlug in exp.addons" :key="addonSlug">
-                  {{ getAddon(addonSlug)!.title }} (+{{ getAddon(addonSlug)!.price }} kr)
+                  {{ getAddon(addonSlug)?.title }} (+{{ getAddon(addonSlug)?.price }} kr)
                 </li>
               </ul>
               <p><strong>Totalpris med alla tillval:</strong> {{ exp.price + totalAddonsPrice(exp) }} kr</p>
+            </div>
+
+            <div>
+              <NuxtLink
+                :to="`/upplevelse/${exp.id}`"
+                class="btn-readmore">
+                Läs mer →
+              </NuxtLink>
             </div>
 
             <NuxtLink
@@ -46,60 +54,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-
-type Addon = { slug: string; title: string; price: number }
-type Experience = {
-  id: number;
-  slug: string;
-  title: string;
-  description: string;
-  duration: string;
-  price: number;
-  image: string;
-  addons: string[]
-}
-type Profiles = { [key: string]: string[] }
+import { useExperiences } from '~/composables/useExperiences'
 
 const route = useRoute()
 const name = route.params.name as string
-
 const displayName = capitalize(name)
 
-const data = ref<{
-  profiles: Profiles;
-  experiences: Experience[];
-  addons: Addon[]
-}>({ profiles: {}, experiences: [], addons: [] })
-const experiences = ref<Experience[]>([])
-const loading = ref(true)
-
-onMounted(async () => {
-  try {
-    const res = await fetch('/data.json')
-    const json = await res.json()
-    data.value = json
-
-    const profileExperienceSlugs = data.value.profiles[name] || []
-    experiences.value = data.value.experiences.filter(exp => profileExperienceSlugs.includes(exp.slug))
-  } catch (err) {
-    console.error('Failed to load data:', err)
-  } finally {
-    loading.value = false
-  }
-})
-
-function getAddon(slug: string): Addon | null {
-  return data.value.addons.find(a => a.slug === slug) || null
-}
-
-function totalAddonsPrice(exp: Experience) {
-  return exp.addons.reduce((sum, slug) => {
-    const addon = getAddon(slug)
-    return sum + (addon ? addon.price : 0)
-  }, 0)
-}
+const { loading, getProfileExperiences, getAddon, totalAddonsPrice } = useExperiences()
+const profileExperiences = computed(() => getProfileExperiences(name))
 </script>
 
 <style scoped>

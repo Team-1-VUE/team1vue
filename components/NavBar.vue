@@ -3,19 +3,13 @@
     <div class="navbar-container">
       <NuxtLink to="/" class="navbar-logo">Team uno</NuxtLink>
       <ul class="navbar-menu">
-        <li :class="{ active: route.path === '/' }">
-          <NuxtLink to="/" >Home</NuxtLink>
-        </li>
-
-        <li v-for="profile in profiles"
-          :key="profile.slug"
-          :class="{ active: route.path === `/profil/${profile.slug}` }"
-        >
-          <NuxtLink :to="`/profil/${profile.slug}`">{{ profile.name }}</NuxtLink>
-        </li>
-
-        <li :class="{ active: route.path === '/kundkorg' }">
-          <NuxtLink to="/kundkorg" >Kundkorg</NuxtLink>
+        <li v-for="link in navLinks" :key="link.path">
+          <NuxtLink
+            :to="link.path"
+            exact-active-class="active"
+          >
+            {{ link.name }}
+          </NuxtLink>
         </li>
       </ul>
     </div>
@@ -30,6 +24,12 @@ type Profile = { slug: string; name: string }
 
 const route = useRoute()
 const profiles = ref<Profile[]>([])
+
+const navLinks = computed(() => [
+  { name: 'Home', path: '/' },
+  ...profiles.value.map(p => ({ name: p.name, path: `/profil/${p.slug}` })),
+  { name: 'Kundkorg', path: '/kundkorg' }
+])
 
 onMounted(async () => {
   const res = await fetch('/data.json')
@@ -79,30 +79,22 @@ onMounted(async () => {
   padding: 0;
 }
 
-.navbar-menu li {
-  text-decoration: none;
-  color: var(--text-color);
-  transition: color 0.3s;
-
+.navbar-menu li a {
+  display: inline-block;
   padding: 5px;
   border-radius: 5px;
-  transition: all 0.3s;
-  font-style: italic;
-}
-
-.navbar-menu li a {
   text-decoration: none;
-  color: inherit;
+  color: var(--text-color);
   font-style: normal;
   font-weight: 600;
+  transition: all 0.3s;
 }
 
-.navbar-menu li:hover,
-.navbar-menu li.active {
+.navbar-menu li a:hover,
+.navbar-menu li a.active {
   background-color: var(--hover-color);
   cursor: pointer;
   color: white;
   background-color: var(--secondary-color);
-  font-weight: 500;
 }
 </style>

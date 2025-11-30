@@ -3,17 +3,41 @@
     <div class="navbar-container">
       <NuxtLink to="/" class="navbar-logo">Team uno</NuxtLink>
       <ul class="navbar-menu">
-        <li>
-          <NuxtLink to="/">Home</NuxtLink>
+        <li :class="{ active: route.path === '/' }">
+          <NuxtLink to="/" >Home</NuxtLink>
         </li>
-        <li>Kristoffer</li>
-        <li>Pencheff</li>
-        <li>Simon</li>
-        <li>Antonio</li>
+
+        <li v-for="profile in profiles"
+          :key="profile.slug"
+          :class="{ active: route.path === `/profil/${profile.slug}` }"
+        >
+          <NuxtLink :to="`/profil/${profile.slug}`">{{ profile.name }}</NuxtLink>
+        </li>
       </ul>
     </div>
   </nav>
 </template>
+
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+
+type Profile = { slug: string; name: string }
+
+const route = useRoute()
+const profiles = ref<Profile[]>([])
+
+onMounted(async () => {
+  const res = await fetch('/data.json')
+  const json = await res.json()
+
+  profiles.value = Object.keys(json.profiles).map(slug => ({
+    slug,
+    name: capitalize(slug)
+  }))
+})
+</script>
 
 <style scoped>
 .navbar {
@@ -51,6 +75,7 @@
   margin: 0;
   padding: 0;
 }
+
 .navbar-menu li {
   text-decoration: none;
   color: var(--text-color);
@@ -69,7 +94,8 @@
   font-weight: 600;
 }
 
-.navbar-menu li:hover {
+.navbar-menu li:hover,
+.navbar-menu li.active {
   background-color: var(--hover-color);
   cursor: pointer;
   color: white;

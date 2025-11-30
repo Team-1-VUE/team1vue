@@ -98,7 +98,7 @@ const ownerProfile = computed(() => experience.value ? capitalize(experience.val
   display: inline-block;
   margin-top: 1rem;
   padding: 0.5rem 1rem;
-  background-color: #ef4444;
+  background-color: var(--primary-color);
   color: white;
   text-decoration: none;
   border-radius: 5px;

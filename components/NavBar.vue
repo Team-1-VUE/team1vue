@@ -13,11 +13,14 @@
         >
           <NuxtLink :to="`/profil/${profile.slug}`">{{ profile.name }}</NuxtLink>
         </li>
+
+        <li :class="{ active: route.path === '/kundkorg' }">
+          <NuxtLink to="/kundkorg" >Kundkorg</NuxtLink>
+        </li>
       </ul>
     </div>
   </nav>
 </template>
-
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'

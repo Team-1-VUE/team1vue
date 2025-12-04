@@ -16,6 +16,9 @@
             <h3>{{ item.title }}</h3>
             <p class="owner">med {{ capitalize(item.owner) }}</p>
             <p class="duration">{{ item.duration }}</p>
+            <p v-if="item.bookingDate" class="booking-date">
+              📅 {{ formatDate(item.bookingDate) }}
+            </p>
             
             <div v-if="item.selectedAddons.length" class="addons">
               <p class="addons-label">Tillval:</p>
@@ -73,6 +76,15 @@ const itemTotal = (item: any) => {
   return (item.price + addonsPrice) * item.quantity
 }
 
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('sv-SE', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  })
+}
+
 const handleCheckout = () => {
   alert(`Tack! Du har blivit debiterad ${cartStore.totalPrice} SEK för din bokning.`)
   cartStore.clearCart()
@@ -123,10 +135,15 @@ const handleCheckout = () => {
   font-size: 1.25rem;
 }
 
-.owner, .duration {
+.owner, .duration, .booking-date {
   margin: 0.25rem 0;
   color: #6b7280;
   font-size: 0.875rem;
+}
+
+.booking-date {
+  font-weight: 600;
+  color: #1a1a1a;
 }
 
 .addons {

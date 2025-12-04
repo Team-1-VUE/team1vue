@@ -17,7 +17,8 @@
             <p class="owner">med {{ capitalize(item.owner) }}</p>
             <p class="duration">{{ item.duration }}</p>
             <p v-if="item.bookingDate" class="booking-date">
-              📅 {{ formatDate(item.bookingDate) }}
+              <Calendar :size="16" />
+              {{ formatDate(item.bookingDate) }}
             </p>
             
             <div v-if="item.selectedAddons.length" class="addons">
@@ -67,6 +68,7 @@
 </template>
 
 <script setup lang="ts">
+import { Calendar } from 'lucide-vue-next'
 import { useCartStore } from '~/stores/useCartStore'
 
 const cartStore = useCartStore()
@@ -142,8 +144,15 @@ const handleCheckout = () => {
 }
 
 .booking-date {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
   font-weight: 600;
   color: #1a1a1a;
+}
+
+.booking-date :deep(svg) {
+  flex-shrink: 0;
 }
 
 .addons {

@@ -57,12 +57,7 @@
           <div class="calendar-container">
             <div class="date-picker-wrapper" @click="dateInput?.showPicker()">
               <div class="date-label">
-                <svg class="calendar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                  <line x1="16" y1="2" x2="16" y2="6"></line>
-                  <line x1="8" y1="2" x2="8" y2="6"></line>
-                  <line x1="3" y1="10" x2="21" y2="10"></line>
-                </svg>
+                <Calendar :size="18" />
                 Välj datum för bokning
               </div>
               <div class="date-display">
@@ -96,6 +91,7 @@
 </template>
 
 <script setup lang="ts">
+import { Calendar } from 'lucide-vue-next'
 import { useExperiences } from '~/composables/useExperiences'
 import { useCartStore } from '~/stores/useCartStore'
 
@@ -409,6 +405,8 @@ const confirmBooking = () => {
 
 .calendar-container {
   margin-bottom: 2rem;
+}
+
 .date-picker-wrapper {
   display: block;
   width: 100%;
@@ -441,12 +439,10 @@ const confirmBooking = () => {
   margin-bottom: 0.5rem;
 }
 
-.calendar-icon {
-  width: 18px;
-  height: 18px;
+.date-label :deep(svg) {
   color: #6b7280;
   flex-shrink: 0;
-} color: #374151;
+  color: #374151;
   margin-bottom: 0.5rem;
 }
 

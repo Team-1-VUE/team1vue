@@ -36,11 +36,11 @@
             class="btn btn--secondary">
             Läs mer
           </NuxtLink>
-          <NuxtLink
-            :to="{ path: `/boka/${experience.id}`, query: { profile: profileName } }"
+          <button
+            @click="addToCart"
             class="btn btn--primary">
-            Boka nu
-          </NuxtLink>
+            Lägg till
+          </button>
         </div>
       </div>
     </div>
@@ -49,6 +49,7 @@
 
 <script setup lang="ts">
 import { useExperiences } from '~/composables/useExperiences'
+import { useCartStore } from '~/stores/useCartStore'
 
 interface Props {
   experience: {
@@ -67,6 +68,16 @@ interface Props {
 
 const props = defineProps<Props>()
 const { getAddon, totalAddonsPrice } = useExperiences()
+const cartStore = useCartStore()
+
+const addToCart = () => {
+  const selectedAddons = props.experience.addons.map(slug => {
+    const addon = getAddon(slug)
+    return addon ? { slug: addon.slug, title: addon.title, price: addon.price } : null
+  }).filter(Boolean) as Array<{ slug: string; title: string; price: number }>
+
+  cartStore.addToCart(props.experience, selectedAddons)
+}
 </script>
 
 <style scoped>
@@ -205,17 +216,19 @@ const { getAddon, totalAddonsPrice } = useExperiences()
   letter-spacing: -0.02em;
 }
 
-.price-total {
-  font-size: 0.8125rem;
-  color: #6b7280;
-  font-weight: 500;
+.btn {
+  flex: 1;
+  padding: 0.875rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.3s ease;
+  display: inline-block;
+  border: none;
+  cursor: pointer;
 }
-
-.action-buttons {
-  display: flex;
-  gap: 0.75rem;
-}
-
 .btn {
   flex: 1;
   padding: 0.875rem 1.25rem;

@@ -15,7 +15,11 @@
       <div v-if="experience.addons?.length" class="experience-card__addons">
         <p class="addons-label">Tillval inkluderar:</p>
         <div class="addon-tags">
-          <span v-for="addonSlug in experience.addons" :key="addonSlug" class="addon-tag">
+          <span
+            v-for="addonSlug in experience.addons"
+            :key="addonSlug"
+            class="addon-tag"
+          >
             {{ getAddon(addonSlug)?.title }}
           </span>
         </div>
@@ -25,7 +29,10 @@
         <div class="price-section">
           <span class="price-label">PRIS</span>
           <span class="price-value">{{ experience.price }} kr</span>
-          <span v-if="experience.addons?.length && totalAddonsPrice(experience) > 0" class="price-total">
+          <span
+            v-if="experience.addons?.length && totalAddonsPrice(experience) > 0"
+            class="price-total"
+          >
             {{ experience.price + totalAddonsPrice(experience) }} kr med tillval
           </span>
         </div>
@@ -33,12 +40,11 @@
         <div class="action-buttons">
           <NuxtLink
             :to="`/upplevelse/${experience.id}`"
-            class="btn btn--secondary">
+            class="btn btn--secondary"
+          >
             Läs mer
           </NuxtLink>
-          <button
-            @click="showModal = true"
-            class="btn btn--primary">
+          <button @click="showModal = true" class="btn btn--primary">
             Boka
           </button>
         </div>
@@ -104,7 +110,7 @@ const showModal = ref(false)
 .experience-card__image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
   transition: transform 0.4s ease;
 }

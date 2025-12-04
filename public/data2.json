@@ -1,0 +1,178 @@
+{
+  "profiles": {
+    "kristoffer": {
+      "profileImage": "/images/profiles/kristoffer.webp",
+      "experiences": [
+        "klattra-med-kristoffer",
+        "banka-med-benckert",
+        "konspirationer-med-kristoffer"
+      ]
+    },
+    "pencheff": {
+      "profileImage": "/images/profiles/pencheff.webp",
+      "experiences": [
+        "pasta-med-pencheff",
+        "poetry-slam-med-pencheff",
+        "pilates-med-pencheff"
+      ]
+    },
+    "simon": {
+      "profileImage": "/images/profiles/simon.webp",
+      "experiences": ["sportbil-med-simon", "sitt-med-simon", "smink-med-simon"]
+    },
+    "antonio": {
+      "profileImage": "/images/profiles/antonio.webp",
+      "experiences": [
+        "akrobatik-med-antonio",
+        "anarki-med-antonio",
+        "aerodynamik-med-antonio"
+      ]
+    }
+  },
+
+  "experiences": [
+    {
+      "id": "1",
+      "slug": "klattra-med-kristoffer",
+      "owner": "kristoffer",
+      "title": "Klättra med Kristoffer",
+      "description": "Följ med Kristoffer på ett klätteräventyr.",
+      "duration": "2h",
+      "price": 350,
+      "image": "/images/benckert3.png",
+      "addons": []
+    },
+    {
+      "id": "2",
+      "slug": "banka-med-benckert",
+      "owner": "kristoffer",
+      "title": "Bänka med Benckert",
+      "description": "Styrketräning och teknik med Benckert.",
+      "duration": "1.5h",
+      "price": 300,
+      "image": "/images/benckert2.png",
+      "addons": []
+    },
+    {
+      "id": "3",
+      "slug": "konspirationer-med-kristoffer",
+      "owner": "kristoffer",
+      "title": "Konspirationer med Kristoffer",
+      "description": "En underhållande genomgång av vilda teorier.",
+      "duration": "2h",
+      "price": 200,
+      "image": "/images/benckert1.png",
+      "addons": []
+    },
+
+    {
+      "id": "4",
+      "slug": "pasta-med-pencheff",
+      "owner": "pencheff",
+      "title": "Pasta med Pencheff",
+      "description": "Koka, knåda och njut av pasta från grunden.",
+      "duration": "2h",
+      "price": 350,
+      "image": "/images/pencheff1.png",
+      "addons": []
+    },
+    {
+      "id": "5",
+      "slug": "poetry-slam-med-pencheff",
+      "owner": "pencheff",
+      "title": "Poetry slam med Pencheff",
+      "description": "Kreativt uttryck och spoken word.",
+      "duration": "1.5h",
+      "price": 280,
+      "image": "/images/pencheff3.png",
+      "addons": []
+    },
+    {
+      "id": "6",
+      "slug": "pilates-med-pencheff",
+      "owner": "pencheff",
+      "title": "Pilates med Pencheff",
+      "description": "Smidig, lugn och effektiv träning.",
+      "duration": "1h",
+      "price": 250,
+      "image": "/images/pencheff2.png",
+      "addons": []
+    },
+
+    {
+      "id": "7",
+      "slug": "sportbil-med-simon",
+      "owner": "simon",
+      "title": "Sportbil med Simon",
+      "description": "Följ med Simon ut med sportbilen.",
+      "duration": "1h",
+      "price": 500,
+      "image": "/images/experiences/sportbil-med-simon.webp",
+      "addons": []
+    },
+    {
+      "id": "8",
+      "slug": "sitt-med-simon",
+      "owner": "simon",
+      "title": "Sitt med Simon",
+      "description": "En meditativ sittning med ro och fokus.",
+      "duration": "45min",
+      "price": 150,
+      "image": "/images/experiences/sitt-med-simon.webp",
+      "addons": []
+    },
+    {
+      "id": "9",
+      "slug": "smink-med-simon",
+      "owner": "simon",
+      "title": "Smink med Simon",
+      "description": "Lär dig sminktekniker och kreativa looks.",
+      "duration": "2h",
+      "price": 300,
+      "image": "/images/experiences/smink-med-simon.webp",
+      "addons": []
+    },
+
+    {
+      "id": "10",
+      "slug": "akrobatik-med-antonio",
+      "owner": "antonio",
+      "title": "Akrobatik med Antonio",
+      "description": "Lär dig balans, rörlighet och show.",
+      "duration": "2h",
+      "price": 400,
+      "image": "/images/experiences/akrobatik-med-antonio.webp",
+      "addons": []
+    },
+    {
+      "id": "11",
+      "slug": "anarki-med-antonio",
+      "owner": "antonio",
+      "title": "Anarki med Antonio",
+      "description": "Ett humoristiskt djuvdopp i kreativ kaosteori.",
+      "duration": "1.5h",
+      "price": 280,
+      "image": "/images/experiences/anarki-med-antonio.webp",
+      "addons": []
+    },
+    {
+      "id": "12",
+      "slug": "aerodynamik-med-antonio",
+      "owner": "antonio",
+      "title": "Aerodynamik med Antonio",
+      "description": "Lär dig om luftflöde och fart på ett lekfullt sätt.",
+      "duration": "1.5h",
+      "price": 320,
+      "image": "/images/experiences/aerodynamik-med-antonio.webp",
+      "addons": []
+    }
+  ],
+
+  "addons": [
+    { "slug": "te-fika", "title": "Te och fika", "price": 50 },
+    { "slug": "meditationsguide", "title": "Meditationsguide", "price": 75 },
+    { "slug": "livsstilscoach", "title": "Livsstilscoach", "price": 100 }
+  ],
+
+  "articles": []
+}

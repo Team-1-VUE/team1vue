@@ -3,8 +3,15 @@
     <h1>Kundkorg</h1>
     
     <div v-if="cartStore.cartItemCount === 0" class="empty-cart">
-      <p>Din kundkorg är tom</p>
-      <NuxtLink to="/" class="btn btn--primary">Utforska upplevelser</NuxtLink>
+      <div class="empty-cart__icon">
+        <ShoppingCart :size="64" :stroke-width="1.5" />
+      </div>
+      <h2 class="empty-cart__title">Din kundkorg är tom</h2>
+      <p class="empty-cart__text">Utforska våra upplevelser och hitta något spännande att boka!</p>
+      <NuxtLink to="/" class="btn btn--primary">
+        <Compass :size="18" />
+        Utforska upplevelser
+      </NuxtLink>
     </div>
 
     <div v-else>
@@ -68,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { Calendar } from 'lucide-vue-next'
+import { Calendar, ShoppingCart, Compass } from 'lucide-vue-next'
 import { useCartStore } from '~/stores/useCartStore'
 
 const cartStore = useCartStore()
@@ -101,8 +108,64 @@ const handleCheckout = () => {
 }
 
 .empty-cart {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding: 4rem 2rem;
+  min-height: 400px;
+  background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.empty-cart__icon {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  color: #9ca3af;
+  animation: floatIcon 3s ease-in-out infinite;
+}
+
+@keyframes floatIcon {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.empty-cart__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 0.75rem 0;
+  letter-spacing: -0.02em;
+}
+
+.empty-cart__text {
+  font-size: 1rem;
+  color: #6b7280;
+  margin: 0 0 2rem 0;
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+.empty-cart .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 400px;
 }
 
 .cart-items {

@@ -15,7 +15,11 @@
       <div v-if="experience.addons?.length" class="experience-card__addons">
         <p class="addons-label">Tillval inkluderar:</p>
         <div class="addon-tags">
-          <span v-for="addonSlug in experience.addons" :key="addonSlug" class="addon-tag">
+          <span
+            v-for="addonSlug in experience.addons"
+            :key="addonSlug"
+            class="addon-tag"
+          >
             {{ getAddon(addonSlug)?.title }}
           </span>
         </div>
@@ -25,7 +29,10 @@
         <div class="price-section">
           <span class="price-label">PRIS</span>
           <span class="price-value">{{ experience.price }} kr</span>
-          <span v-if="experience.addons?.length && totalAddonsPrice(experience) > 0" class="price-total">
+          <span
+            v-if="experience.addons?.length && totalAddonsPrice(experience) > 0"
+            class="price-total"
+          >
             {{ experience.price + totalAddonsPrice(experience) }} kr med tillval
           </span>
         </div>
@@ -33,12 +40,11 @@
         <div class="action-buttons">
           <NuxtLink
             :to="`/upplevelse/${experience.id}`"
-            class="btn btn--secondary">
+            class="btn btn--secondary"
+          >
             Läs mer
           </NuxtLink>
-          <button
-            @click="showModal = true"
-            class="btn btn--primary">
+          <button @click="showModal = true" class="btn btn--primary">
             Boka
           </button>
         </div>
@@ -50,10 +56,10 @@
       <div v-if="showModal" class="modal-overlay" @click="showModal = false">
         <div class="modal-content" @click.stop>
           <button class="modal-close" @click="showModal = false">×</button>
-          
+
           <h2>Välj datum</h2>
           <p class="modal-subtitle">{{ experience.title }}</p>
-          
+
           <div class="calendar-container">
             <div class="date-picker-wrapper" @click="dateInput?.showPicker()">
               <div class="date-label">
@@ -61,15 +67,20 @@
                 Välj datum för bokning
               </div>
               <div class="date-display">
-                <span v-if="!selectedDate" class="placeholder">Klicka för att välja datum</span>
-                <span v-else class="selected-date">{{ formatDate(selectedDate) }}</span>
+                <span v-if="!selectedDate" class="placeholder"
+                  >Klicka för att välja datum</span
+                >
+                <span v-else class="selected-date">{{
+                  formatDate(selectedDate)
+                }}</span>
               </div>
-              <input 
+              <input
                 ref="dateInput"
-                type="date" 
+                type="date"
                 v-model="selectedDate"
                 :min="minDate"
-                class="date-picker-hidden" />
+                class="date-picker-hidden"
+              />
             </div>
           </div>
 
@@ -77,10 +88,11 @@
             <button @click="showModal = false" class="btn btn--secondary">
               Avbryt
             </button>
-            <button 
-              @click="confirmBooking" 
+            <button
+              @click="confirmBooking"
               :disabled="!selectedDate"
-              class="btn btn--primary">
+              class="btn btn--primary"
+            >
               Bekräfta bokning
             </button>
           </div>
@@ -91,62 +103,66 @@
 </template>
 
 <script setup lang="ts">
-import { Calendar } from 'lucide-vue-next'
-import { useExperiences } from '~/composables/useExperiences'
-import { useCartStore } from '~/stores/useCartStore'
+import { Calendar } from "lucide-vue-next";
+import { useExperiences } from "~/composables/useExperiences";
+import { useCartStore } from "~/stores/useCartStore";
 
 interface Props {
   experience: {
-    id: string
-    slug: string
-    owner: string
-    title: string
-    description: string
-    duration: string
-    price: number
-    image: string
-    addons: string[]
-  }
-  profileName?: string
+    id: string;
+    slug: string;
+    owner: string;
+    title: string;
+    description: string;
+    duration: string;
+    price: number;
+    image: string;
+    addons: string[];
+  };
+  profileName?: string;
 }
 
-const props = defineProps<Props>()
-const { getAddon, totalAddonsPrice } = useExperiences()
-const cartStore = useCartStore()
+const props = defineProps<Props>();
+const { getAddon, totalAddonsPrice } = useExperiences();
+const cartStore = useCartStore();
 
-const showModal = ref(false)
-const selectedDate = ref('')
-const dateInput = ref<HTMLInputElement | null>(null)
+const showModal = ref(false);
+const selectedDate = ref("");
+const dateInput = ref<HTMLInputElement | null>(null);
 
 // Set minimum date to today
 const minDate = computed(() => {
-  const today = new Date()
-  return today.toISOString().split('T')[0]
-})
+  const today = new Date();
+  return today.toISOString().split("T")[0];
+});
 
 const formatDate = (dateString: string) => {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('sv-SE', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric',
-    weekday: 'long'
-  })
-}
+  const date = new Date(dateString);
+  return date.toLocaleDateString("sv-SE", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    weekday: "long",
+  });
+};
 
 const confirmBooking = () => {
-  if (!selectedDate.value) return
+  if (!selectedDate.value) return;
 
-  const selectedAddons = props.experience.addons.map(slug => {
-    const addon = getAddon(slug)
-    return addon ? { slug: addon.slug, title: addon.title, price: addon.price } : null
-  }).filter(Boolean) as Array<{ slug: string; title: string; price: number }>
+  const selectedAddons = props.experience.addons
+    .map((slug) => {
+      const addon = getAddon(slug);
+      return addon
+        ? { slug: addon.slug, title: addon.title, price: addon.price }
+        : null;
+    })
+    .filter(Boolean) as Array<{ slug: string; title: string; price: number }>;
 
-  cartStore.addToCart(props.experience, selectedAddons, selectedDate.value)
-  
-  showModal.value = false
-  selectedDate.value = ''
-}
+  cartStore.addToCart(props.experience, selectedAddons, selectedDate.value);
+
+  showModal.value = false;
+  selectedDate.value = "";
+};
 </script>
 
 <style scoped>
@@ -177,7 +193,7 @@ const confirmBooking = () => {
 .experience-card__image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
   transition: transform 0.4s ease;
 }

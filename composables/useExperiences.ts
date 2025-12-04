@@ -1,45 +1,71 @@
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from "vue";
 
-type Addon = { slug: string; title: string; price: number }
+type Addon = { slug: string; title: string; price: number };
 type Experience = {
-  id: string
-  slug: string
-  owner: string
-  title: string
-  description: string
-  duration: string
-  price: number
-  image: string
-  addons: string[]
-}
-type Profiles = { [key: string]: string[] }
+  id: string;
+  slug: string;
+  owner: string;
+  title: string;
+  description: string;
+  duration: string;
+  price: number;
+  image: string;
+  addons: string[];
+};
+type ProfileData = {
+  profileImage: string;
+  experiences: string[];
+};
+type Profiles = { [key: string]: ProfileData };
 
 export function useExperiences() {
-  const data = ref<{ profiles: Profiles; experiences: Experience[]; addons: Addon[] } | null>(null)
-  const loading = ref(true)
+  const data = ref<{
+    profiles: Profiles;
+    experiences: Experience[];
+    addons: Addon[];
+  } | null>(null);
+  const loading = ref(true);
 
   onMounted(async () => {
     try {
-      const res = await fetch('/data.json')
-      data.value = await res.json()
+      const res = await fetch("/data2.json");
+      data.value = await res.json();
     } catch (err) {
-      console.error(err)
+      console.error(err);
     } finally {
-      loading.value = false
+      loading.value = false;
     }
-  })
+  });
 
   const getProfileExperiences = (profileName: string) => {
-    const slugs = data.value?.profiles[profileName] || []
-    return data.value?.experiences.filter(exp => slugs.includes(exp.slug)) || []
-  }
+    const profile = data.value?.profiles[profileName];
+    if (!profile) return [];
 
-  const getExperienceById = (id: string) => data.value?.experiences.find(exp => exp.id === id) || null
+    const slugs = profile.experiences || [];
+    return (
+      data.value?.experiences.filter((exp) => slugs.includes(exp.slug)) || []
+    );
+  };
 
-  const getAddon = (slug: string) => data.value?.addons.find(a => a.slug === slug) || null
+  const getProfileImage = (profileName: string) => {
+    return data.value?.profiles[profileName]?.profileImage || "";
+  };
+
+  const getExperienceById = (id: string) =>
+    data.value?.experiences.find((exp) => exp.id === id) || null;
+
+  const getAddon = (slug: string) =>
+    data.value?.addons.find((a) => a.slug === slug) || null;
 
   const totalAddonsPrice = (exp: Experience) =>
-    exp.addons.reduce((sum, slug) => sum + (getAddon(slug)?.price || 0), 0)
+    exp.addons.reduce((sum, slug) => sum + (getAddon(slug)?.price || 0), 0);
 
-  return { loading, getProfileExperiences, getExperienceById, getAddon, totalAddonsPrice }
+  return {
+    loading,
+    getProfileExperiences,
+    getProfileImage,
+    getExperienceById,
+    getAddon,
+    totalAddonsPrice,
+  };
 }

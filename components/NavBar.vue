@@ -9,6 +9,9 @@
             exact-active-class="active"
           >
             {{ link.name }}
+            <span v-if="link.path === '/kundkorg' && cartStore.totalItems > 0" class="cart-badge">
+              {{ cartStore.totalItems }}
+            </span>
           </NuxtLink>
         </li>
       </ul>
@@ -19,11 +22,13 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useCartStore } from '~/stores/useCartStore'
 
 type Profile = { slug: string; name: string }
 
 const route = useRoute()
 const profiles = ref<Profile[]>([])
+const cartStore = useCartStore()
 
 const navLinks = computed(() => [
   { name: 'Home', path: '/' },
@@ -87,14 +92,26 @@ onMounted(async () => {
   color: var(--text-color);
   font-style: normal;
   font-weight: 600;
-  transition: all 0.3s;
 }
-
 .navbar-menu li a:hover,
 .navbar-menu li a.active {
   background-color: var(--hover-color);
   cursor: pointer;
   color: white;
   background-color: var(--secondary-color);
+}
+
+.cart-badge {
+  display: inline-block;
+  background: #ef4444;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 0.75rem;
+  text-align: center;
+  line-height: 20px;
+  margin-left: 0.5rem;
+  font-weight: 700;
 }
 </style>

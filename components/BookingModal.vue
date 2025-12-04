@@ -5,7 +5,7 @@
         <button class="modal-close" @click="$emit('close')">×</button>
         
         <h2>Välj datum</h2>
-        <p class="modal-subtitle">{{ experienceTitle }}</p>
+        <p class="modal-subtitle">{{ experience?.title }}</p>
         
         <div class="calendar-container">
           <div class="date-picker-wrapper" @click="dateInput?.showPicker()">
@@ -44,17 +44,21 @@
 
 <script setup lang="ts">
 import { Calendar } from 'lucide-vue-next'
+import { useCartStore } from '~/stores/useCartStore'
+import { useExperiences } from '~/composables/useExperiences'
 
 interface Props {
   show: boolean
-  experienceTitle: string
+  experience: any
 }
 
 const props = defineProps<Props>()
 const emit = defineEmits<{
   close: []
-  confirm: [date: string]
 }>()
+
+const cartStore = useCartStore()
+const { getAddon } = useExperiences()
 
 const selectedDate = ref('')
 const dateInput = ref<HTMLInputElement | null>(null)
@@ -76,9 +80,20 @@ const formatDate = (dateString: string) => {
 }
 
 const handleConfirm = () => {
-  if (!selectedDate.value) return
-  emit('confirm', selectedDate.value)
+  if (!selectedDate.value || !props.experience) return
+  
+  // Get all addons for this experience
+  const selectedAddons = props.experience.addons?.map((slug: string) => {
+    const addon = getAddon(slug)
+    return addon ? { slug: addon.slug, title: addon.title, price: addon.price } : null
+  }).filter(Boolean) as Array<{ slug: string; title: string; price: number }> || []
+
+  // Add to cart
+  cartStore.addToCart(props.experience, selectedAddons, selectedDate.value)
+  
+  // Reset and close
   selectedDate.value = ''
+  emit('close')
 }
 
 // Reset date when modal closes

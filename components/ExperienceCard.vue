@@ -47,15 +47,13 @@
 
     <BookingModal 
       :show="showModal"
-      :experience-title="experience.title"
-      @close="showModal = false"
-      @confirm="handleBookingConfirm" />
+      :experience="experience"
+      @close="showModal = false" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useExperiences } from '~/composables/useExperiences'
-import { useCartStore } from '~/stores/useCartStore'
 
 interface Props {
   experience: {
@@ -74,19 +72,8 @@ interface Props {
 
 const props = defineProps<Props>()
 const { getAddon, totalAddonsPrice } = useExperiences()
-const cartStore = useCartStore()
 
 const showModal = ref(false)
-
-const handleBookingConfirm = (selectedDate: string) => {
-  const selectedAddons = props.experience.addons.map(slug => {
-    const addon = getAddon(slug)
-    return addon ? { slug: addon.slug, title: addon.title, price: addon.price } : null
-  }).filter(Boolean) as Array<{ slug: string; title: string; price: number }>
-
-  cartStore.addToCart(props.experience, selectedAddons, selectedDate)
-  showModal.value = false
-}
 </script>
 
 <style scoped>

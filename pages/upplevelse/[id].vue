@@ -32,26 +32,27 @@
       </p>
     </div>
 
-    <NuxtLink
-      :to="{
-        path: `/boka/${experience.id}`,
-        query: { profile: experience.owner },
-      }"
-      class="btn-book"
-    >
-      Boka nu
-    </NuxtLink>
+    <button
+      @click="showModal = true"
+      class="btn btn--primary">
+      Boka
+    </button>
   </div>
 
   <div v-else>
     <p>Upplevelse hittades inte</p>
   </div>
+
+  <BookingModal 
+    :show="showModal"
+    :experience="experience"
+    @close="showModal = false" />
 </template>
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 import { useExperiences } from "~/composables/useExperiences";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 const route = useRoute();
 const id = route.params.id as string;
@@ -64,6 +65,8 @@ const experience = computed(() => getExperienceById(id));
 const ownerProfile = computed(() =>
   experience.value ? capitalize(experience.value.owner) : ""
 );
+
+const showModal = ref(false);
 </script>
 
 <style scoped>
@@ -98,13 +101,24 @@ const ownerProfile = computed(() =>
   z-index: 2;
 }
 
-.btn-book {
-  display: inline-block;
+.btn {
   margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: var(--primary-color);
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn--primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  text-decoration: none;
-  border-radius: 5px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
 }
 </style>

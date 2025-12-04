@@ -4,10 +4,7 @@
   </div>
 
   <div v-else-if="experience">
-    <div
-      class="hero"
-      :style="{ backgroundImage: `url(${experience.image})` }"
-    >
+    <div class="hero" :style="{ backgroundImage: `url(${experience.image})` }">
       <h1>{{ experience.title }}</h1>
     </div>
 
@@ -29,11 +26,17 @@
           {{ getAddon(slug)?.title }} (+{{ getAddon(slug)?.price }} kr)
         </li>
       </ul>
-      <p><strong>Totalpris:</strong> {{ experience.price + totalAddonsPrice(experience) }} kr</p>
+      <p>
+        <strong>Totalpris:</strong>
+        {{ experience.price + totalAddonsPrice(experience) }} kr
+      </p>
     </div>
 
     <NuxtLink
-      :to="{ path: `/boka/${experience.id}`, query: { profile: experience.owner } }"
+      :to="{
+        path: `/boka/${experience.id}`,
+        query: { profile: experience.owner },
+      }"
       class="btn-book"
     >
       Boka nu
@@ -46,20 +49,21 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-import { useExperiences } from '~/composables/useExperiences'
-import { computed } from 'vue'
+import { useRoute } from "vue-router";
+import { useExperiences } from "~/composables/useExperiences";
+import { computed } from "vue";
 
-const route = useRoute()
-const id = route.params.id as string
+const route = useRoute();
+const id = route.params.id as string;
 
-const { loading, getExperienceById, getAddon, totalAddonsPrice } = useExperiences()
+const { loading, getExperienceById, getAddon, totalAddonsPrice } =
+  useExperiences();
 
-// Computed experience som är null tills data laddats
-const experience = computed(() => getExperienceById(id))
+const experience = computed(() => getExperienceById(id));
 
-// Owner display name
-const ownerProfile = computed(() => experience.value ? capitalize(experience.value.owner) : '')
+const ownerProfile = computed(() =>
+  experience.value ? capitalize(experience.value.owner) : ""
+);
 </script>
 
 <style scoped>
@@ -79,7 +83,7 @@ const ownerProfile = computed(() => experience.value ? capitalize(experience.val
 }
 
 .hero::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;

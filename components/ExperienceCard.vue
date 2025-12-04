@@ -327,6 +327,11 @@ const confirmBooking = () => {
   cursor: not-allowed;
 }
 
+.action-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
 /* Modal Styles */
 .modal-overlay {
   position: fixed;

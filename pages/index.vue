@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import { ArrowRight, Heart, Sparkles, Users, Calendar } from "lucide-vue-next";
-</script>
-
 <template>
   <div class="home-page">
     <section class="hero">
@@ -67,6 +63,8 @@ import { ArrowRight, Heart, Sparkles, Users, Calendar } from "lucide-vue-next";
             Each team member offers unique experiences tailored to different
             interests. Choose who you'd like to spend time with.
           </p>
+
+          <ProfileList />
         </div>
 
         <div class="team-grid"></div>
@@ -84,6 +82,10 @@ import { ArrowRight, Heart, Sparkles, Users, Calendar } from "lucide-vue-next";
     </section>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ArrowRight, Heart, Sparkles, Users, Calendar } from "lucide-vue-next";
+</script>
 
 <style scoped>
 .home-page {

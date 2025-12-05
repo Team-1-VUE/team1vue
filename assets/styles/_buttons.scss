@@ -1,0 +1,45 @@
+@use "@/assets/styles/variables" as *;
+
+.btn {
+  padding: 0.875rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn--secondary {
+  background: #f9fafb;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.btn--secondary:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.btn--primary {
+  background: #1a1a1a;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(26, 26, 26, 0.15);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(26, 26, 26, 0.25);
+}
+
+.btn--primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.75rem;
+}

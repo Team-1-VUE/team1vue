@@ -1,32 +1,44 @@
 {
   "profiles": {
     "kristoffer": {
-      "profileImage": "/images/profiles/kristoffer.webp",
+      "profileImage": "/profileimages/kristoffer.png",
       "experiences": [
         "klattra-med-kristoffer",
         "banka-med-benckert",
         "konspirationer-med-kristoffer"
-      ]
+      ],
+      "shortText": "Klättra, Bänka & Konspirationer",
+      "summaryText": "Kristoffer erbjuder klättring, styrketräning och underhållande teorigenomgångar."
     },
     "pencheff": {
-      "profileImage": "/images/profiles/pencheff.webp",
+      "profileImage": "/profileimages/pencheff.png",
       "experiences": [
         "pasta-med-pencheff",
         "poetry-slam-med-pencheff",
         "pilates-med-pencheff"
-      ]
+      ],
+      "shortText": "Pasta, Poetry & Pilates",
+      "summaryText": "Pencheff guidar dig genom matlagning, kreativa uttryck och lugn träning."
     },
     "simon": {
-      "profileImage": "/images/profiles/simon.webp",
-      "experiences": ["sportbil-med-simon", "sitt-med-simon", "smink-med-simon"]
+      "profileImage": "/profileimages/simon.png",
+      "experiences": [
+        "sportbil-med-simon",
+        "sitt-med-simon",
+        "smink-med-simon"
+      ],
+      "shortText": "Sportbil, Sitt & Smink",
+      "summaryText": "Simon erbjuder fartfyllda upplevelser, meditativa stunder och kreativa sminklektioner."
     },
     "antonio": {
-      "profileImage": "/images/profiles/antonio.webp",
+      "profileImage": "/profileimages/antonio.png",
       "experiences": [
         "akrobatik-med-antonio",
         "anarki-med-antonio",
         "aerodynamik-med-antonio"
-      ]
+      ],
+      "shortText": "Akrobatik, Anarki & Aerodynamik",
+      "summaryText": "Antonio lär ut balans, humoristisk kaosteori och luftflöde på ett lekfullt sätt."
     }
   },
 
@@ -40,7 +52,7 @@
       "duration": "2h",
       "price": 350,
       "image": "/images/benckert3.png",
-      "addons": []
+      "addons": ["te-fika", "meditationsguide"]
     },
     {
       "id": "2",
@@ -62,7 +74,7 @@
       "duration": "2h",
       "price": 200,
       "image": "/images/benckert1.png",
-      "addons": []
+      "addons": ["livsstilscoach"]
     },
 
     {
@@ -130,7 +142,7 @@
       "duration": "2h",
       "price": 300,
       "image": "/images/experiences/smink-med-simon.webp",
-      "addons": []
+      "addons": ["te-fika"]
     },
 
     {
@@ -142,7 +154,7 @@
       "duration": "2h",
       "price": 400,
       "image": "/images/experiences/akrobatik-med-antonio.webp",
-      "addons": []
+      "addons": ["meditationsguide", "livsstilscoach"]
     },
     {
       "id": "11",

@@ -21,15 +21,14 @@
       "experiences": ["sportbil-med-simon", "sitt-med-simon", "smink-med-simon"]
     },
     "antonio": {
-      "profileImage": "/images/profiles/antonio.webp",
+      "profileImage": "/images/profileimages/Antonio.png",
       "experiences": [
-        "akrobatik-med-antonio",
-        "anarki-med-antonio",
-        "aerodynamik-med-antonio"
+        "workout-med-antonio",
+        "dansa-med-antonio",
+        "cocktails-med-antonio"
       ]
     }
   },
-
   "experiences": [
     {
       "id": "1",
@@ -64,7 +63,6 @@
       "image": "/images/benckert1.png",
       "addons": []
     },
-
     {
       "id": "4",
       "slug": "pasta-med-pencheff",
@@ -98,7 +96,6 @@
       "image": "/images/pencheff2.png",
       "addons": []
     },
-
     {
       "id": "7",
       "slug": "sportbil-med-simon",
@@ -132,47 +129,44 @@
       "image": "/images/experiences/smink-med-simon.webp",
       "addons": []
     },
-
     {
       "id": "10",
-      "slug": "akrobatik-med-antonio",
+      "slug": "workout-med-antonio",
       "owner": "antonio",
-      "title": "Akrobatik med Antonio",
-      "description": "Lär dig balans, rörlighet och show.",
-      "duration": "2h",
-      "price": 400,
-      "image": "/images/experiences/akrobatik-med-antonio.webp",
+      "title": "Workout med Antonio",
+      "description": "Svettig men rolig träningssession med fokus på styrka, rörlighet och pepp.",
+      "duration": "1.5h",
+      "price": 350,
+      "image": "/images/antonio_img/antonio_cooking.png",
       "addons": []
     },
     {
       "id": "11",
-      "slug": "anarki-med-antonio",
+      "slug": "dansa-med-antonio",
       "owner": "antonio",
-      "title": "Anarki med Antonio",
-      "description": "Ett humoristiskt djuvdopp i kreativ kaosteori.",
+      "title": "Dansa med Antonio",
+      "description": "Lär dig enkla men snygga dansmoves – fokus på glädje, rytm och självkänsla.",
       "duration": "1.5h",
-      "price": 280,
-      "image": "/images/experiences/anarki-med-antonio.webp",
+      "price": 320,
+      "image": "/images/antonio_img/antonio_jogging.png",
       "addons": []
     },
     {
       "id": "12",
-      "slug": "aerodynamik-med-antonio",
+      "slug": "cocktails-med-antonio",
       "owner": "antonio",
-      "title": "Aerodynamik med Antonio",
-      "description": "Lär dig om luftflöde och fart på ett lekfullt sätt.",
-      "duration": "1.5h",
-      "price": 320,
-      "image": "/images/experiences/aerodynamik-med-antonio.webp",
+      "title": "Cocktails med Antonio",
+      "description": "Mixa färgglada mocktails eller cocktails och lär dig bartricks på vägen.",
+      "duration": "2h",
+      "price": 380,
+      "image": "/images/antonio_img/antonio_coctails.png",
       "addons": []
     }
   ],
-
   "addons": [
     { "slug": "te-fika", "title": "Te och fika", "price": 50 },
     { "slug": "meditationsguide", "title": "Meditationsguide", "price": 75 },
     { "slug": "livsstilscoach", "title": "Livsstilscoach", "price": 100 }
   ],
-
   "articles": []
 }

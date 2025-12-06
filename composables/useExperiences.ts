@@ -1,7 +1,7 @@
 import { ref, onMounted, computed } from "vue";
 
 type Addon = { slug: string; title: string; price: number };
-type Experience = {
+export type Experience = {
   id: string;
   slug: string;
   owner: string;

@@ -1,4 +1,4 @@
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 
 type Addon = { slug: string; title: string; price: number };
 type Experience = {
@@ -25,6 +25,10 @@ export function useExperiences() {
     addons: Addon[];
   } | null>(null);
   const loading = ref(true);
+
+  const experiences = computed<Experience[]>(() => {
+    return data.value?.experiences ?? [];
+  });
 
   onMounted(async () => {
     try {
@@ -62,6 +66,7 @@ export function useExperiences() {
 
   return {
     loading,
+    experiences,
     getProfileExperiences,
     getProfileImage,
     getExperienceById,

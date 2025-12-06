@@ -1,5 +1,31 @@
 <script setup lang="ts">
 import { ArrowRight, Heart, Sparkles, Users, Calendar } from "lucide-vue-next";
+
+import SearchBar, { type SearchFilters } from "~/components/SearchBar.vue";
+import { ref } from "vue";
+import { useRouter } from "#imports";
+
+const router = useRouter();
+
+const searchFilters = ref<SearchFilters>({
+  date: "",
+  adults: 1,
+  children: 0,
+  seniors: 0,
+});
+
+const handleSearch = (filters: SearchFilters) => {
+  // När någon söker från startsidan → skicka till /upplevelse med query params
+  router.push({
+    path: "/upplevelse",
+    query: {
+      date: filters.date,
+      adults: String(filters.adults),
+      children: String(filters.children),
+      seniors: String(filters.seniors),
+    },
+  });
+};
 </script>
 
 <template>
@@ -25,11 +51,12 @@ import { ArrowRight, Heart, Sparkles, Users, Calendar } from "lucide-vue-next";
           to happen.
         </p>
 
+        <SearchBar
+          v-model="searchFilters"
+          @search="handleSearch"
+          class="hero-search" />
+
         <div class="hero-actions">
-          <!-- <button class="btn btn-primary">
-            <span>Explore Experiences</span>
-            <ArrowRight :size="20" />
-          </button> -->
           <NuxtLink to="/upplevelse" class="btn btn-primary">
             <span>Explore Experiences</span>
             <ArrowRight :size="20" />
@@ -83,7 +110,6 @@ import { ArrowRight, Heart, Sparkles, Users, Calendar } from "lucide-vue-next";
           Don't wait for the perfect moment. Every experience is designed to be
           unforgettable. Book your time with us today!
         </p>
-        <!-- <button class="btn btn-primary">Browse All Experiences</button> -->
         <NuxtLink to="/upplevelse" class="btn btn-primary">
           Browse All Experiences
         </NuxtLink>
@@ -175,10 +201,15 @@ import { ArrowRight, Heart, Sparkles, Users, Calendar } from "lucide-vue-next";
 }
 
 .hero-subtitle {
-  margin: 0 auto 2.5rem;
+  margin: 0 auto 1.75rem; /* var 2.5rem – lite tajtare mot toppen */
   max-width: 48rem;
   font-size: 1.125rem;
   color: #4b5563;
+}
+
+.hero-search {
+  margin: 1.25rem auto 0; /* var 2rem – mindre “häng” neråt */
+  max-width: 800px;
 }
 
 .hero-actions {
@@ -187,6 +218,7 @@ import { ArrowRight, Heart, Sparkles, Users, Calendar } from "lucide-vue-next";
   gap: 1rem;
   align-items: center;
   justify-content: center;
+  margin-top: 1.5rem; /* NY: lite extra luft under search-baren */
 }
 
 .btn {
@@ -386,6 +418,13 @@ import { ArrowRight, Heart, Sparkles, Users, Calendar } from "lucide-vue-next";
   color: #4b5563;
 }
 
+@media (max-width: 480px) {
+  .btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.95rem;
+  }
+}
+
 @media (min-width: 640px) {
   .hero-title {
     font-size: 3.75rem;
@@ -393,6 +432,24 @@ import { ArrowRight, Heart, Sparkles, Users, Calendar } from "lucide-vue-next";
 
   .hero-actions {
     flex-direction: row;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero {
+    padding: 6rem 1rem 3.5rem;
+  }
+
+  .hero-title {
+    font-size: 2.4rem;
+  }
+
+  .hero-actions {
+    gap: 0.75rem;
+  }
+  .hero-search {
+    margin-top: 1.5rem;
+    padding: 0 0.5rem;
   }
 }
 

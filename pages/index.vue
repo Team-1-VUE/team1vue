@@ -26,10 +26,14 @@ import { ArrowRight, Heart, Sparkles, Users, Calendar } from "lucide-vue-next";
         </p>
 
         <div class="hero-actions">
-          <button class="btn btn-primary">
+          <!-- <button class="btn btn-primary">
             <span>Explore Experiences</span>
             <ArrowRight :size="20" />
-          </button>
+          </button> -->
+          <NuxtLink to="/upplevelse" class="btn btn-primary">
+            <span>Explore Experiences</span>
+            <ArrowRight :size="20" />
+          </NuxtLink>
           <button class="btn btn-secondary">Learn More</button>
         </div>
       </div>
@@ -79,7 +83,10 @@ import { ArrowRight, Heart, Sparkles, Users, Calendar } from "lucide-vue-next";
           Don't wait for the perfect moment. Every experience is designed to be
           unforgettable. Book your time with us today!
         </p>
-        <button class="btn btn-primary">Browse All Experiences</button>
+        <!-- <button class="btn btn-primary">Browse All Experiences</button> -->
+        <NuxtLink to="/upplevelse" class="btn btn-primary">
+          Browse All Experiences
+        </NuxtLink>
       </div>
     </section>
   </div>

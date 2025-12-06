@@ -137,7 +137,7 @@
       "description": "Svettig men rolig träningssession med fokus på styrka, rörlighet och pepp.",
       "duration": "1.5h",
       "price": 350,
-      "image": "/images/antonio_img/antonio_cooking.png",
+      "image": "/images/antonio_img/antonio_workout_1.png",
       "addons": []
     },
     {
@@ -148,7 +148,7 @@
       "description": "Lär dig enkla men snygga dansmoves – fokus på glädje, rytm och självkänsla.",
       "duration": "1.5h",
       "price": 320,
-      "image": "/images/antonio_img/antonio_jogging.png",
+      "image": "/images/antonio_img/antonio_dancing.png",
       "addons": []
     },
     {

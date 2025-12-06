@@ -11,7 +11,16 @@ type Experience = {
   price: number;
   image: string;
   addons: string[];
+  minGuests: number;
+  maxGuests: number;
+  allowedCategories: {
+    children: boolean;
+    adults: boolean;
+    seniors: boolean;
+  };
+  availableDates: string[];
 };
+
 type ProfileData = {
   profileImage: string;
   experiences: string[];

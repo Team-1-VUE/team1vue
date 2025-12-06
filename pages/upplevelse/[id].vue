@@ -8,10 +8,14 @@
     <!-- Experience found -->
     <template v-else-if="experience">
       <!-- Hero -->
-      <section
-        class="experience-hero"
-        :style="{ backgroundImage: `url(${experience.image})` }">
+      <section class="experience-hero">
+        <img
+          class="experience-hero__image"
+          :src="experience.image"
+          :alt="experience.title" />
+
         <div class="experience-hero__overlay"></div>
+
         <div class="experience-hero__content">
           <p class="experience-hero__label">Upplevelse</p>
           <h1 class="experience-hero__title">{{ experience.title }}</h1>
@@ -133,28 +137,39 @@ const showModal = ref(false);
 /* Hero */
 .experience-hero {
   position: relative;
-  height: 300px;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-color: #000;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  color: #ffffff;
+  width: 100%;
+}
+
+.experience-hero__image {
+  width: 100%;
+  max-width: 440px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
 }
 
 .experience-hero__overlay {
-  background: rgba(0, 0, 0, 0.4); /* keep or lighten as you prefer */
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(15, 23, 42, 0.2),
+    rgba(15, 23, 42, 0.65)
+  );
+  pointer-events: none;
 }
 
 .experience-hero__content {
-  position: relative;
-  z-index: 1;
-  padding: 2rem 1.5rem 2.5rem;
-  text-align: center;
-  max-width: 960px;
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
+  max-width: 800px;
+  padding: 0 1rem;
+  color: #ffffff;
+  text-align: center;
+  pointer-events: none;
 }
 
 .experience-hero__label {
@@ -162,13 +177,15 @@ const showModal = ref(false);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   opacity: 0.9;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .experience-hero__title {
+  margin: 0;
+  padding: 0;
   font-size: 1.75rem;
   font-weight: 800;
-  margin-bottom: 0.5rem;
+  /* margin-bottom: 0.3rem; */
 }
 
 .experience-hero__subtitle {
@@ -306,37 +323,15 @@ const showModal = ref(false);
   color: #6b7280;
 }
 
-/* Tablet and up */
+/* Optional: tweak for larger screens */
 @media (min-width: 768px) {
-  .experience-hero {
-    height: 320px;
-  }
-
   .experience-hero__title {
-    font-size: 2.25rem;
-  }
-
-  .experience-layout {
-    flex-direction: row;
-    align-items: flex-start;
-  }
-
-  .experience-main {
-    flex: 2;
-  }
-
-  .experience-sidebar {
-    flex: 1;
-    max-width: 320px;
+    font-size: 2.2rem;
   }
 }
 
 /* Desktop */
 @media (min-width: 1024px) {
-  .experience-hero {
-    height: 380px;
-  }
-
   .experience-hero__title {
     font-size: 2.6rem;
   }

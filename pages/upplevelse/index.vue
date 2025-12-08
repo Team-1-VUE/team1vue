@@ -9,9 +9,11 @@ const { loading, experiences } = useExperiences();
 const route = useRoute();
 const router = useRouter();
 
+const today = getTodayString();
+
 // Initiera filters från query params
 const filters = ref<SearchFilters>({
-  date: (route.query.date as string) ?? "",
+  date: (route.query.date as string) ?? today,
   adults: Number(route.query.adults ?? 1),
   children: Number(route.query.children ?? 0),
   seniors: Number(route.query.seniors ?? 0),

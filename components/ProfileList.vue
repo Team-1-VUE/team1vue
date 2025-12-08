@@ -44,6 +44,7 @@ const { profiles, loading } = useProfiles();
 }
 
 .card__list {
+  margin-top: $spacing-lg;
   grid-template-columns: repeat(2, minmax(250px, 1fr));
 
   @media (min-width: 1090px) {

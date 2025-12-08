@@ -12,9 +12,12 @@ export interface SearchFilters {
 const minDate = getTodayString();
 
 // Vi använder v-model på komponenten (modelValue in, update:modelValue ut)
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   modelValue?: SearchFilters;
-}>();
+  showSearchButton?: boolean;
+}>(), {
+  showSearchButton: true
+});
 
 const emit = defineEmits<{
   "update:modelValue": [SearchFilters];
@@ -80,7 +83,7 @@ const onSubmit = (event: Event) => {
       </div>
     </div>
 
-    <button class="search-button" type="submit">Sök upplevelser</button>
+    <button v-if="showSearchButton" class="search-button" type="submit">Sök upplevelser</button>
   </form>
 </template>
 

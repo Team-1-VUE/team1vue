@@ -8,13 +8,7 @@ export interface SearchFilters {
   seniors: number;
 }
 
-// Get today's date as a string
-const getTodayString = () => {
-  const today = new Date();
-  return today.toISOString().split('T')[0] as string;
-}
-
-// Set minimum date to today
+// Set minimum date to today, autoimports from utils/date.ts
 const minDate = getTodayString();
 
 // Vi använder v-model på komponenten (modelValue in, update:modelValue ut)

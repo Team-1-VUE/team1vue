@@ -85,11 +85,8 @@ const dateInput = ref<HTMLInputElement | null>(null)
 // Computed total guests
 const totalGuests = computed(() => props.adults + props.children + props.seniors)
 
-// Set minimum date to today
-const minDate = computed(() => {
-  const today = new Date()
-  return today.toISOString().split('T')[0]
-})
+// Set minimum date to today, autoimports from utils/date.ts
+const minDate = getTodayString();
 
 // Initialize selectedDate with initialDate prop when modal opens
 watch(() => props.show, (isOpen) => {

@@ -21,15 +21,14 @@
       "experiences": ["sportbil-med-simon", "sitt-med-simon", "smink-med-simon"]
     },
     "antonio": {
-      "profileImage": "/images/profiles/antonio.webp",
+      "profileImage": "/images/profileimages/Antonio.png",
       "experiences": [
-        "akrobatik-med-antonio",
-        "anarki-med-antonio",
-        "aerodynamik-med-antonio"
+        "workout-med-antonio",
+        "dansa-med-antonio",
+        "cocktails-med-antonio"
       ]
     }
   },
-
   "experiences": [
     {
       "id": "1",
@@ -40,7 +39,15 @@
       "duration": "2h",
       "price": 350,
       "image": "/images/benckert3.png",
-      "addons": []
+      "addons": [],
+      "minGuests": 1,
+      "maxGuests": 4,
+      "allowedCategories": {
+        "children": true,
+        "adults": true,
+        "seniors": false
+      },
+      "availableDates": ["2025-12-20", "2025-12-21", "2025-12-28"]
     },
     {
       "id": "2",
@@ -51,7 +58,15 @@
       "duration": "1.5h",
       "price": 300,
       "image": "/images/benckert2.png",
-      "addons": []
+      "addons": [],
+      "minGuests": 1,
+      "maxGuests": 3,
+      "allowedCategories": {
+        "children": false,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": ["2025-12-19", "2025-12-21", "2025-12-27"]
     },
     {
       "id": "3",
@@ -62,9 +77,16 @@
       "duration": "2h",
       "price": 200,
       "image": "/images/benckert1.png",
-      "addons": []
+      "addons": [],
+      "minGuests": 1,
+      "maxGuests": 10,
+      "allowedCategories": {
+        "children": false,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": ["2025-12-18", "2025-12-20", "2025-12-22"]
     },
-
     {
       "id": "4",
       "slug": "pasta-med-pencheff",
@@ -74,7 +96,15 @@
       "duration": "2h",
       "price": 350,
       "image": "/images/pencheff1.png",
-      "addons": []
+      "addons": [],
+      "minGuests": 2,
+      "maxGuests": 6,
+      "allowedCategories": {
+        "children": true,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": ["2025-12-19", "2025-12-23", "2025-12-27"]
     },
     {
       "id": "5",
@@ -85,7 +115,15 @@
       "duration": "1.5h",
       "price": 280,
       "image": "/images/pencheff3.png",
-      "addons": []
+      "addons": [],
+      "minGuests": 1,
+      "maxGuests": 15,
+      "allowedCategories": {
+        "children": false,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": ["2025-12-18", "2025-12-20", "2025-12-28"]
     },
     {
       "id": "6",
@@ -96,9 +134,16 @@
       "duration": "1h",
       "price": 250,
       "image": "/images/pencheff2.png",
-      "addons": []
+      "addons": [],
+      "minGuests": 1,
+      "maxGuests": 8,
+      "allowedCategories": {
+        "children": false,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": ["2025-12-19", "2025-12-21", "2025-12-29"]
     },
-
     {
       "id": "7",
       "slug": "sportbil-med-simon",
@@ -108,7 +153,15 @@
       "duration": "1h",
       "price": 500,
       "image": "/images/experiences/sportbil-med-simon.webp",
-      "addons": []
+      "addons": [],
+      "minGuests": 1,
+      "maxGuests": 2,
+      "allowedCategories": {
+        "children": false,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": ["2025-12-20", "2025-12-22", "2025-12-30"]
     },
     {
       "id": "8",
@@ -119,7 +172,15 @@
       "duration": "45min",
       "price": 150,
       "image": "/images/experiences/sitt-med-simon.webp",
-      "addons": []
+      "addons": [],
+      "minGuests": 1,
+      "maxGuests": 12,
+      "allowedCategories": {
+        "children": true,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": ["2025-12-18", "2025-12-19", "2025-12-21"]
     },
     {
       "id": "9",
@@ -130,49 +191,78 @@
       "duration": "2h",
       "price": 300,
       "image": "/images/experiences/smink-med-simon.webp",
-      "addons": []
+      "addons": [],
+      "minGuests": 1,
+      "maxGuests": 6,
+      "allowedCategories": {
+        "children": true,
+        "adults": true,
+        "seniors": false
+      },
+      "availableDates": ["2025-12-19", "2025-12-22", "2025-12-28"]
     },
-
     {
       "id": "10",
-      "slug": "akrobatik-med-antonio",
+      "slug": "workout-med-antonio",
       "owner": "antonio",
-      "title": "Akrobatik med Antonio",
-      "description": "Lär dig balans, rörlighet och show.",
-      "duration": "2h",
-      "price": 400,
-      "image": "/images/experiences/akrobatik-med-antonio.webp",
-      "addons": []
+      "title": "Workout med Antonio",
+      "description": "Svettig men rolig träningssession med fokus på styrka, rörlighet och pepp.",
+      "duration": "1.5h",
+      "price": 350,
+      "image": "/images/antonio_img/antonio_workout_1.png",
+      "addons": [],
+      "minGuests": 1,
+      "maxGuests": 6,
+      "allowedCategories": {
+        "children": false,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": ["2025-12-20", "2025-12-23", "2025-12-27"]
     },
     {
       "id": "11",
-      "slug": "anarki-med-antonio",
+      "slug": "dansa-med-antonio",
       "owner": "antonio",
-      "title": "Anarki med Antonio",
-      "description": "Ett humoristiskt djuvdopp i kreativ kaosteori.",
+      "title": "Dansa med Antonio",
+      "description": "Lär dig enkla men snygga dansmoves – fokus på glädje, rytm och självkänsla.",
       "duration": "1.5h",
-      "price": 280,
-      "image": "/images/experiences/anarki-med-antonio.webp",
-      "addons": []
+      "price": 320,
+      "image": "/images/antonio_img/antonio_dancing.png",
+      "addons": [],
+      "minGuests": 1,
+      "maxGuests": 10,
+      "allowedCategories": {
+        "children": true,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": ["2025-12-18", "2025-12-21", "2025-12-29"]
     },
     {
       "id": "12",
-      "slug": "aerodynamik-med-antonio",
+      "slug": "cocktails-med-antonio",
       "owner": "antonio",
-      "title": "Aerodynamik med Antonio",
-      "description": "Lär dig om luftflöde och fart på ett lekfullt sätt.",
-      "duration": "1.5h",
-      "price": 320,
-      "image": "/images/experiences/aerodynamik-med-antonio.webp",
-      "addons": []
+      "title": "Cocktails med Antonio",
+      "description": "Mixa färgglada mocktails eller cocktails och lär dig bartricks på vägen.",
+      "duration": "2h",
+      "price": 380,
+      "image": "/images/antonio_img/antonio_coctails.png",
+      "addons": [],
+      "minGuests": 2,
+      "maxGuests": 8,
+      "allowedCategories": {
+        "children": false,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": ["2025-12-19", "2025-12-20", "2025-12-27"]
     }
   ],
-
   "addons": [
     { "slug": "te-fika", "title": "Te och fika", "price": 50 },
     { "slug": "meditationsguide", "title": "Meditationsguide", "price": 75 },
     { "slug": "livsstilscoach", "title": "Livsstilscoach", "price": 100 }
   ],
-
   "articles": []
 }

@@ -18,8 +18,7 @@
           <span
             v-for="addonSlug in experience.addons"
             :key="addonSlug"
-            class="addon-tag"
-          >
+            class="addon-tag">
             {{ getAddon(addonSlug)?.title }}
           </span>
         </div>
@@ -31,8 +30,7 @@
           <span class="price-value">{{ experience.price }} kr</span>
           <span
             v-if="experience.addons?.length && totalAddonsPrice(experience) > 0"
-            class="price-total"
-          >
+            class="price-total">
             {{ experience.price + totalAddonsPrice(experience) }} kr med tillval
           </span>
         </div>
@@ -40,8 +38,7 @@
         <div class="action-buttons">
           <NuxtLink
             :to="`/upplevelse/${experience.id}`"
-            class="btn btn--secondary"
-          >
+            class="btn btn--secondary">
             Läs mer
           </NuxtLink>
           <button @click="showModal = true" class="btn btn--primary">
@@ -51,7 +48,7 @@
       </div>
     </div>
 
-    <BookingModal 
+    <BookingModal
       :show="showModal"
       :experience="experience"
       @close="showModal = false" />
@@ -59,27 +56,19 @@
 </template>
 
 <script setup lang="ts">
-import { useExperiences } from '~/composables/useExperiences'
+import { ref } from "vue";
+import BookingModal from "~/components/BookingModal.vue";
+import { useExperiences, type Experience } from "~/composables/useExperiences";
 
 interface Props {
-  experience: {
-    id: string
-    slug: string
-    owner: string
-    title: string
-    description: string
-    duration: string
-    price: number
-    image: string
-    addons: string[]
-  }
-  profileName?: string
+  experience: Experience;
+  profileName?: string;
 }
 
-const props = defineProps<Props>()
-const { getAddon, totalAddonsPrice } = useExperiences()
+const props = defineProps<Props>();
+const { getAddon, totalAddonsPrice } = useExperiences();
 
-const showModal = ref(false)
+const showModal = ref(false);
 </script>
 
 <style scoped>

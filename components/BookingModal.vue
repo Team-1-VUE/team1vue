@@ -7,6 +7,16 @@
         <h2>Välj datum</h2>
         <p class="modal-subtitle">{{ experience?.title }}</p>
         
+        <div v-if="totalGuests > 0" class="guest-summary">
+          <p class="guest-summary__title">Antal gäster:</p>
+          <div class="guest-summary__details">
+            <span v-if="adults > 0" class="guest-badge">{{ adults }} Vuxen{{ adults > 1 ? 'a' : '' }}</span>
+            <span v-if="children > 0" class="guest-badge">{{ children }} Barn</span>
+            <span v-if="seniors > 0" class="guest-badge">{{ seniors }} Senior{{ seniors > 1 ? 'er' : '' }}</span>
+          </div>
+          <p class="guest-summary__total">Totalt: {{ totalGuests }} gäst{{ totalGuests > 1 ? 'er' : '' }}</p>
+        </div>
+        
         <div class="calendar-container">
           <div class="date-picker-wrapper" @click="dateInput?.showPicker()">
             <div class="date-label">
@@ -50,9 +60,18 @@ import { useExperiences } from '~/composables/useExperiences'
 interface Props {
   show: boolean
   experience: any
+  initialDate?: string
+  adults?: number
+  children?: number
+  seniors?: number
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  initialDate: '',
+  adults: 1,
+  children: 0,
+  seniors: 0
+})
 const emit = defineEmits<{
   close: []
 }>()
@@ -63,10 +82,22 @@ const { getAddon } = useExperiences()
 const selectedDate = ref('')
 const dateInput = ref<HTMLInputElement | null>(null)
 
+// Computed total guests
+const totalGuests = computed(() => props.adults + props.children + props.seniors)
+
 // Set minimum date to today
 const minDate = computed(() => {
   const today = new Date()
   return today.toISOString().split('T')[0]
+})
+
+// Initialize selectedDate with initialDate prop when modal opens
+watch(() => props.show, (isOpen) => {
+  if (isOpen && props.initialDate && !selectedDate.value) {
+    selectedDate.value = props.initialDate
+  } else if (!isOpen) {
+    selectedDate.value = ''
+  }
 })
 
 const formatDate = (dateString: string) => {
@@ -88,8 +119,15 @@ const handleConfirm = () => {
     return addon ? { slug: addon.slug, title: addon.title, price: addon.price } : null
   }).filter(Boolean) as Array<{ slug: string; title: string; price: number }> || []
 
-  // Add to cart
-  cartStore.addToCart(props.experience, selectedAddons, selectedDate.value)
+  // Add to cart with quantities for each category
+  cartStore.addToCart(
+    props.experience, 
+    selectedAddons, 
+    selectedDate.value,
+    props.adults,
+    props.children,
+    props.seniors
+  )
   
   // Reset and close
   selectedDate.value = ''
@@ -179,6 +217,45 @@ watch(() => props.show, (isOpen) => {
   color: #6b7280;
   margin: 0 0 2rem 0;
   font-size: 1rem;
+}
+
+.guest-summary {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.guest-summary__title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 0.75rem 0;
+}
+
+.guest-summary__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.guest-badge {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  color: #1a1a1a;
+  font-weight: 500;
+}
+
+.guest-summary__total {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+  font-weight: 600;
 }
 
 .calendar-container {

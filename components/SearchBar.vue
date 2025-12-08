@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, watch } from "vue";
+import { reactive, watch, computed } from "vue";
 
 export interface SearchFilters {
   date: string;
@@ -7,6 +7,12 @@ export interface SearchFilters {
   children: number;
   seniors: number;
 }
+
+// Set minimum date to today
+const minDate = computed(() => {
+  const today = new Date()
+  return today.toISOString().split('T')[0]
+})
 
 // Vi använder v-model på komponenten (modelValue in, update:modelValue ut)
 const props = defineProps<{
@@ -46,7 +52,7 @@ const onSubmit = (event: Event) => {
     <div class="search-row">
       <div class="field">
         <label for="date">Datum</label>
-        <input id="date" v-model="filters.date" type="date" />
+        <input id="date" v-model="filters.date" type="date" :min="minDate" />
       </div>
 
       <div class="field">

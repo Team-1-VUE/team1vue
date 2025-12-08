@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, watch, computed } from "vue";
+import { reactive, watch } from "vue";
 
 export interface SearchFilters {
   date: string;
@@ -8,11 +8,14 @@ export interface SearchFilters {
   seniors: number;
 }
 
+// Get today's date as a string
+const getTodayString = () => {
+  const today = new Date();
+  return today.toISOString().split('T')[0] as string;
+}
+
 // Set minimum date to today
-const minDate = computed(() => {
-  const today = new Date()
-  return today.toISOString().split('T')[0]
-})
+const minDate = getTodayString();
 
 // Vi använder v-model på komponenten (modelValue in, update:modelValue ut)
 const props = defineProps<{
@@ -26,7 +29,7 @@ const emit = defineEmits<{
 
 // Lokalt state i komponenten
 const filters = reactive<SearchFilters>({
-  date: props.modelValue?.date ?? "",
+  date: props.modelValue?.date || minDate,
   adults: props.modelValue?.adults ?? 1,
   children: props.modelValue?.children ?? 0,
   seniors: props.modelValue?.seniors ?? 0,

@@ -74,9 +74,14 @@
               {{ itemTotal(item) }} kr
             </p>
             
-            <button @click="cartStore.removeFromCart(index)" class="btn-remove" title="Ta bort">
-              <Trash2 :size="20" />
-            </button>
+            <div class="action-buttons">
+              <button @click="handleEditItem(index)" class="btn-edit" title="Redigera">
+                <Edit :size="20" />
+              </button>
+              <button @click="cartStore.removeFromCart(index)" class="btn-remove" title="Ta bort">
+                <Trash2 :size="20" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -96,14 +101,65 @@
         </button>
       </div>
     </div>
+    
+    <!-- Edit Booking Modal -->
+    <BookingModal
+      v-if="editingExperience && editingItemIndex !== null"
+      :show="showEditModal"
+      :experience="editingExperience"
+      :initialDate="cartStore.items[editingItemIndex]?.bookingDate || ''"
+      :adults="cartStore.items[editingItemIndex]?.guestCounts?.adults || 1"
+      :children="cartStore.items[editingItemIndex]?.guestCounts?.children || 0"
+      :seniors="cartStore.items[editingItemIndex]?.guestCounts?.seniors || 0"
+      :editMode="true"
+      :cartItemIndex="editingItemIndex"
+      @update="handleUpdateBooking"
+      @close="handleCloseEditModal" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { Calendar, ShoppingCart, Compass, Trash2 } from 'lucide-vue-next'
+import { Calendar, ShoppingCart, Compass, Trash2, Edit } from 'lucide-vue-next'
 import { useCartStore } from '~/stores/useCartStore'
+import { useExperiences } from '~/composables/useExperiences'
+import BookingModal from '~/components/BookingModal.vue'
 
 const cartStore = useCartStore()
+const { getExperienceById } = useExperiences()
+
+// Edit state
+const editingItemIndex = ref<number | null>(null)
+const editingExperience = ref<any>(null)
+const showEditModal = ref(false)
+
+const handleEditItem = (index: number) => {
+  const item = cartStore.items[index]
+  if (!item) return
+  
+  const experience = getExperienceById(item.id)
+  if (!experience) return
+  
+  editingItemIndex.value = index
+  editingExperience.value = experience
+  showEditModal.value = true
+}
+
+const handleUpdateBooking = (payload: { index: number; date: string; adults: number; children: number; seniors: number }) => {
+  cartStore.updateCartItem(
+    payload.index,
+    payload.date,
+    payload.adults,
+    payload.children,
+    payload.seniors
+  )
+  handleCloseEditModal()
+}
+
+const handleCloseEditModal = () => {
+  showEditModal.value = false
+  editingItemIndex.value = null
+  editingExperience.value = null
+}
 
 const itemTotal = (item: any) => {
   const addonsPrice = item.selectedAddons.reduce((sum: number, addon: any) => sum + addon.price, 0)
@@ -356,10 +412,34 @@ const handleCheckout = () => {
   min-width: 80px;
 }
 
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .item-price {
   font-size: 1.25rem;
   font-weight: 700;
   margin: 0;
+}
+
+.btn-edit {
+  padding: 0.5rem;
+  border: 1px solid #3b82f6;
+  background: transparent;
+  color: #3b82f6;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-edit:hover {
+  background: #3b82f6;
+  color: white;
 }
 
 .btn-remove {

@@ -127,6 +127,21 @@ export const useCartStore = defineStore("cart", () => {
     }
   }
 
+  function updateCartItem(
+    index: number,
+    bookingDate: string,
+    adults: number,
+    children: number,
+    seniors: number,
+  ) {
+    const item = items.value[index];
+    if (!item) return;
+
+    item.bookingDate = bookingDate;
+    item.guestCounts = { adults, children, seniors };
+    item.quantity = adults + children + seniors;
+  }
+
   function clearCart() {
     items.value = [];
   }
@@ -139,6 +154,7 @@ export const useCartStore = defineStore("cart", () => {
     addToCart,
     removeFromCart,
     updateQuantity,
+    updateCartItem,
     clearCart,
   };
 });

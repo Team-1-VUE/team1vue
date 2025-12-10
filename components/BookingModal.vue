@@ -84,6 +84,10 @@
             <p class="guest-total">Totalt: {{ totalGuests }} gäst{{ totalGuests !== 1 ? 'er' : '' }}</p>
             <p class="price-total">{{ totalPrice }} kr</p>
           </div>
+          
+          <div v-if="validationError" class="validation-error">
+            {{ validationError }}
+          </div>
         </div>
         
         <div class="calendar-container">
@@ -111,9 +115,9 @@
           </button>
           <button 
             @click="handleConfirm" 
-            :disabled="!selectedDate || totalGuests === 0"
+            :disabled="!selectedDate || totalGuests === 0 || !!validationError"
             class="btn btn--primary">
-            Bekräfta bokning
+            {{ editMode ? 'Uppdatera bokning' : 'Bekräfta bokning' }}
           </button>
         </div>
       </div>
@@ -133,16 +137,21 @@ interface Props {
   adults?: number
   children?: number
   seniors?: number
+  editMode?: boolean
+  cartItemIndex?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
   initialDate: '',
   adults: 1,
   children: 0,
-  seniors: 0
+  seniors: 0,
+  editMode: false,
+  cartItemIndex: undefined
 })
 const emit = defineEmits<{
   close: []
+  update: [payload: { index: number; date: string; adults: number; children: number; seniors: number }]
 }>()
 
 const cartStore = useCartStore()
@@ -158,6 +167,34 @@ const localSeniors = ref(props.seniors)
 
 // Computed total guests
 const totalGuests = computed(() => localAdults.value + localChildren.value + localSeniors.value)
+
+// Validation based on experience constraints
+const validationError = computed(() => {
+  if (!props.experience) return null
+  
+  const total = totalGuests.value
+  
+  // Check total guest count
+  if (total < props.experience.minGuests) {
+    return `Minst ${props.experience.minGuests} gäst${props.experience.minGuests > 1 ? 'er' : ''} krävs`
+  }
+  if (total > props.experience.maxGuests) {
+    return `Maximalt ${props.experience.maxGuests} gäster tillåtna`
+  }
+  
+  // Check category restrictions
+  if (localChildren.value > 0 && !props.experience.allowedCategories?.children) {
+    return 'Barn inte tillåtna för denna upplevelse'
+  }
+  if (localAdults.value > 0 && !props.experience.allowedCategories?.adults) {
+    return 'Vuxna inte tillåtna för denna upplevelse'
+  }
+  if (localSeniors.value > 0 && !props.experience.allowedCategories?.seniors) {
+    return 'Seniorer inte tillåtna för denna upplevelse'
+  }
+  
+  return null
+})
 
 // Computed total price
 const totalPrice = computed(() => {
@@ -222,24 +259,33 @@ const formatDate = (dateString: string) => {
 const handleConfirm = () => {
   if (!selectedDate.value || !props.experience || totalGuests.value === 0) return
   
-  // Get all addons for this experience
-  const selectedAddons = props.experience.addons?.map((slug: string) => {
-    const addon = getAddon(slug)
-    return addon ? { slug: addon.slug, title: addon.title, price: addon.price } : null
-  }).filter(Boolean) as Array<{ slug: string; title: string; price: number }> || []
+  if (props.editMode && props.cartItemIndex !== undefined) {
+    // Edit mode: emit update event
+    emit('update', {
+      index: props.cartItemIndex,
+      date: selectedDate.value,
+      adults: localAdults.value,
+      children: localChildren.value,
+      seniors: localSeniors.value
+    })
+  } else {
+    // Add mode: add to cart
+    const selectedAddons = props.experience.addons?.map((slug: string) => {
+      const addon = getAddon(slug)
+      return addon ? { slug: addon.slug, title: addon.title, price: addon.price } : null
+    }).filter(Boolean) as Array<{ slug: string; title: string; price: number }> || []
 
-  // Add to cart with quantities for each category
-  cartStore.addToCart(
-    props.experience, 
-    selectedAddons, 
-    selectedDate.value,
-    localAdults.value,
-    localChildren.value,
-    localSeniors.value
-  )
+    cartStore.addToCart(
+      props.experience, 
+      selectedAddons, 
+      selectedDate.value,
+      localAdults.value,
+      localChildren.value,
+      localSeniors.value
+    )
+  }
   
-  // Reset and close
-  selectedDate.value = ''
+  // Close modal
   emit('close')
 }
 </script>
@@ -428,6 +474,18 @@ const handleConfirm = () => {
   font-size: 1.125rem;
   font-weight: 700;
   color: #1a1a1a;
+}
+
+.validation-error {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #dc2626;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
 }
 
 .calendar-container {

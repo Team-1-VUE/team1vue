@@ -18,7 +18,7 @@
       <div class="cart-items">
         <div v-for="(item, index) in cartStore.items" :key="`${item.id}-${index}`" class="cart-item">
           <!-- container for all -->
-          <div class="cart-item__container">
+          <div @click="handleEditItem(index)" class="cart-item__container">
             <!-- container for img -->
             <div class="cart-item__image-container">
               <img :src="item.image" :alt="item.title" class="cart-item__image" />
@@ -275,6 +275,7 @@ const handleCheckout = () => {
   gap: 1.5rem;
   flex: 1;
   align-items: stretch;
+  cursor: pointer;
 }
 
 .cart-item__image-container {

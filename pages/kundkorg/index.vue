@@ -28,8 +28,7 @@
             <!-- container for event details -->
             <div class="cart-item__details">
               <h3>{{ item.title }}</h3>
-              <!-- TODO: replace with description -->
-              <p class="owner">med {{ capitalize(item.owner) }}</p>
+              <p class="description">{{ item.description || 'Ingen beskrivning tillgänglig' }}</p>
               <p class="duration">{{ item.duration }}</p>
               
               <!-- addons included here -->
@@ -226,16 +225,19 @@ const handleCheckout = () => {
   flex-shrink: 0;
   display: flex;
   align-items: center;
+  justify-content: center;
   background: #f9fafb;
   border-radius: 8px;
-  /* padding: 1rem; */
+  width: 166px;
+  height: 166px;
 }
 
 .cart-item__image {
-  width: 150px;
-  height: 150px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   border-radius: 8px;
+  aspect-ratio: 1 / 1;
 }
 
 .cart-item__details {
@@ -249,12 +251,12 @@ const handleCheckout = () => {
 }
 
 .cart-item__details h3 {
-  margin: 0 0 0.5rem 0;
+  margin: 0;
   font-size: 1.25rem;
 }
 
-.owner, .duration, .booking-date {
-  margin: 0.25rem 0;
+.duration, .booking-date, .description {
+  margin: 0.25rem 0 0;
   color: #6b7280;
   font-size: 0.875rem;
 }

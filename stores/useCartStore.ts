@@ -7,6 +7,7 @@ export type CartItem = {
   image: string;
   duration: string;
   owner: string;
+  description?: string;
   selectedAddons: Array<{ slug: string; title: string; price: number }>;
   quantity: number;
   bookingDate?: string;
@@ -102,6 +103,7 @@ export const useCartStore = defineStore("cart", () => {
         image: experience.image,
         duration: experience.duration,
         owner: experience.owner,
+        description: experience.description,
         selectedAddons,
         quantity: totalGuests,
         bookingDate,

@@ -74,8 +74,8 @@
               {{ itemTotal(item) }} kr
             </p>
             
-            <button @click="cartStore.removeFromCart(index)" class="btn-remove">
-              Ta bort
+            <button @click="cartStore.removeFromCart(index)" class="btn-remove" title="Ta bort">
+              <Trash2 :size="20" />
             </button>
           </div>
         </div>
@@ -100,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import { Calendar, ShoppingCart, Compass } from 'lucide-vue-next'
+import { Calendar, ShoppingCart, Compass, Trash2 } from 'lucide-vue-next'
 import { useCartStore } from '~/stores/useCartStore'
 
 const cartStore = useCartStore()
@@ -353,6 +353,7 @@ const handleCheckout = () => {
   gap: 1rem;
   justify-content: space-between;
   padding-top: 1rem;
+  min-width: 80px;
 }
 
 .item-price {
@@ -362,7 +363,7 @@ const handleCheckout = () => {
 }
 
 .btn-remove {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
   border: 1px solid #ef4444;
   background: transparent;
   color: #ef4444;
@@ -370,6 +371,9 @@ const handleCheckout = () => {
   cursor: pointer;
   font-weight: 600;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-remove:hover {

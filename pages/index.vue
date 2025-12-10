@@ -2,9 +2,12 @@
 import { ArrowRight, Heart, Sparkles, Users, Calendar } from "lucide-vue-next";
 
 import SearchBar, { type SearchFilters } from "~/components/SearchBar.vue";
+import ProfileCard from "~/components/ProfileCard.vue";
 import { ref } from "vue";
 import { useRouter } from "#imports";
+import { useProfiles } from "~/composables/useProfiles";
 
+const { loading, profiles } = useProfiles();
 const router = useRouter();
 
 const searchFilters = ref<SearchFilters>({
@@ -100,7 +103,16 @@ const handleSearch = (filters: SearchFilters) => {
           </p>
         </div>
 
-        <div class="team-grid"></div>
+        <div v-if="loading" class="team-loading">
+          <p>Laddar profiler...</p>
+        </div>
+
+        <div v-else class="team-grid">
+          <ProfileCard
+            v-for="profile in profiles"
+            :key="profile.name"
+            :profile="profile" />
+        </div>
       </div>
     </section>
     <section class="cta">
@@ -323,8 +335,26 @@ const handleSearch = (filters: SearchFilters) => {
 
 .team-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
+  grid-template-columns: repeat(2, minmax(250px, 1fr));
+  gap: 2rem;
+
+  @media (min-width: 1090px) {
+    grid-template-columns: repeat(4, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, minmax(250px, 1fr));
+  }
+
+  @media (max-width: 720px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.team-loading {
+  text-align: center;
+  color: #4b5563;
 }
 
 .team-card {

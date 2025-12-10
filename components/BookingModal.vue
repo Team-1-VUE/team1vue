@@ -157,7 +157,7 @@ const emit = defineEmits<{
 const cartStore = useCartStore()
 const { getAddon } = useExperiences()
 
-const selectedDate = ref('')
+const selectedDate = ref(props.initialDate || '')
 const dateInput = ref<HTMLInputElement | null>(null)
 
 // Local guest counts that can be edited
@@ -232,14 +232,13 @@ watch(() => props.show, (isOpen) => {
     localAdults.value = props.adults
     localChildren.value = props.children
     localSeniors.value = props.seniors
-  } else {
-    selectedDate.value = ''
   }
 })
 
-// Sync with props when they change
-watch(() => [props.adults, props.children, props.seniors], () => {
+// Sync with props when they change (including initialDate)
+watch(() => [props.initialDate, props.adults, props.children, props.seniors], () => {
   if (props.show) {
+    selectedDate.value = props.initialDate || ''
     localAdults.value = props.adults
     localChildren.value = props.children
     localSeniors.value = props.seniors

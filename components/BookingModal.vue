@@ -4,8 +4,87 @@
       <div class="modal-content" @click.stop>
         <button class="modal-close" @click="$emit('close')">×</button>
         
-        <h2>Välj datum</h2>
+        <h2>Välj datum och gäster</h2>
         <p class="modal-subtitle">{{ experience?.title }}</p>
+        
+        <!-- Guest Editor -->
+        <div class="guest-editor">
+          <h3 class="guest-editor__title">Antal gäster</h3>
+          
+          <div class="guest-row">
+            <div class="guest-row__info">
+              <span class="guest-row__label">Vuxna</span>
+              <span class="guest-row__desc">13+ år</span>
+            </div>
+            <div class="guest-row__controls">
+              <button 
+                @click="updateGuests('adults', -1)" 
+                :disabled="localAdults <= 0"
+                type="button"
+                class="guest-btn">
+                −
+              </button>
+              <span class="guest-count">{{ localAdults }}</span>
+              <button 
+                @click="updateGuests('adults', 1)"
+                type="button" 
+                class="guest-btn">
+                +
+              </button>
+            </div>
+          </div>
+
+          <div class="guest-row">
+            <div class="guest-row__info">
+              <span class="guest-row__label">Barn</span>
+              <span class="guest-row__desc">0-12 år</span>
+            </div>
+            <div class="guest-row__controls">
+              <button 
+                @click="updateGuests('children', -1)" 
+                :disabled="localChildren <= 0"
+                type="button"
+                class="guest-btn">
+                −
+              </button>
+              <span class="guest-count">{{ localChildren }}</span>
+              <button 
+                @click="updateGuests('children', 1)"
+                type="button"
+                class="guest-btn">
+                +
+              </button>
+            </div>
+          </div>
+
+          <div class="guest-row">
+            <div class="guest-row__info">
+              <span class="guest-row__label">Seniorer</span>
+              <span class="guest-row__desc">65+ år</span>
+            </div>
+            <div class="guest-row__controls">
+              <button 
+                @click="updateGuests('seniors', -1)" 
+                :disabled="localSeniors <= 0"
+                type="button"
+                class="guest-btn">
+                −
+              </button>
+              <span class="guest-count">{{ localSeniors }}</span>
+              <button 
+                @click="updateGuests('seniors', 1)"
+                type="button"
+                class="guest-btn">
+                +
+              </button>
+            </div>
+          </div>
+
+          <div class="guest-total-section">
+            <p class="guest-total">Totalt: {{ totalGuests }} gäst{{ totalGuests !== 1 ? 'er' : '' }}</p>
+            <p class="price-total">{{ totalPrice }} kr</p>
+          </div>
+        </div>
         
         <div class="calendar-container">
           <div class="date-picker-wrapper" @click="dateInput?.showPicker()">
@@ -32,7 +111,7 @@
           </button>
           <button 
             @click="handleConfirm" 
-            :disabled="!selectedDate"
+            :disabled="!selectedDate || totalGuests === 0"
             class="btn btn--primary">
             Bekräfta bokning
           </button>
@@ -50,9 +129,18 @@ import { useExperiences } from '~/composables/useExperiences'
 interface Props {
   show: boolean
   experience: any
+  initialDate?: string
+  adults?: number
+  children?: number
+  seniors?: number
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  initialDate: '',
+  adults: 1,
+  children: 0,
+  seniors: 0
+})
 const emit = defineEmits<{
   close: []
 }>()
@@ -63,10 +151,62 @@ const { getAddon } = useExperiences()
 const selectedDate = ref('')
 const dateInput = ref<HTMLInputElement | null>(null)
 
-// Set minimum date to today
-const minDate = computed(() => {
-  const today = new Date()
-  return today.toISOString().split('T')[0]
+// Local guest counts that can be edited
+const localAdults = ref(props.adults)
+const localChildren = ref(props.children)
+const localSeniors = ref(props.seniors)
+
+// Computed total guests
+const totalGuests = computed(() => localAdults.value + localChildren.value + localSeniors.value)
+
+// Computed total price
+const totalPrice = computed(() => {
+  if (!props.experience) return 0
+  
+  const basePrice = props.experience.price * totalGuests.value
+  
+  // Add addons price
+  const addonsPrice = props.experience.addons?.reduce((sum: number, slug: string) => {
+    const addon = getAddon(slug)
+    return sum + (addon?.price || 0)
+  }, 0) || 0
+  
+  return basePrice + (addonsPrice * totalGuests.value)
+})
+
+// Update guest counts
+const updateGuests = (type: 'adults' | 'children' | 'seniors', delta: number) => {
+  if (type === 'adults') {
+    localAdults.value = Math.max(0, localAdults.value + delta)
+  } else if (type === 'children') {
+    localChildren.value = Math.max(0, localChildren.value + delta)
+  } else if (type === 'seniors') {
+    localSeniors.value = Math.max(0, localSeniors.value + delta)
+  }
+}
+
+// Set minimum date to today, autoimports from utils/date.ts
+const minDate = getTodayString();
+
+// Initialize selectedDate and guest counts when modal opens
+watch(() => props.show, (isOpen) => {
+  if (isOpen) {
+    selectedDate.value = props.initialDate || ''
+    localAdults.value = props.adults
+    localChildren.value = props.children
+    localSeniors.value = props.seniors
+  } else {
+    selectedDate.value = ''
+  }
+})
+
+// Sync with props when they change
+watch(() => [props.adults, props.children, props.seniors], () => {
+  if (props.show) {
+    localAdults.value = props.adults
+    localChildren.value = props.children
+    localSeniors.value = props.seniors
+  }
 })
 
 const formatDate = (dateString: string) => {
@@ -80,7 +220,7 @@ const formatDate = (dateString: string) => {
 }
 
 const handleConfirm = () => {
-  if (!selectedDate.value || !props.experience) return
+  if (!selectedDate.value || !props.experience || totalGuests.value === 0) return
   
   // Get all addons for this experience
   const selectedAddons = props.experience.addons?.map((slug: string) => {
@@ -88,20 +228,20 @@ const handleConfirm = () => {
     return addon ? { slug: addon.slug, title: addon.title, price: addon.price } : null
   }).filter(Boolean) as Array<{ slug: string; title: string; price: number }> || []
 
-  // Add to cart
-  cartStore.addToCart(props.experience, selectedAddons, selectedDate.value)
+  // Add to cart with quantities for each category
+  cartStore.addToCart(
+    props.experience, 
+    selectedAddons, 
+    selectedDate.value,
+    localAdults.value,
+    localChildren.value,
+    localSeniors.value
+  )
   
   // Reset and close
   selectedDate.value = ''
   emit('close')
 }
-
-// Reset date when modal closes
-watch(() => props.show, (isOpen) => {
-  if (!isOpen) {
-    selectedDate.value = ''
-  }
-})
 </script>
 
 <style scoped>
@@ -177,8 +317,117 @@ watch(() => props.show, (isOpen) => {
 
 .modal-subtitle {
   color: #6b7280;
-  margin: 0 0 2rem 0;
+  margin: 0 0 1.5rem 0;
   font-size: 1rem;
+}
+
+/* Guest Editor Styles */
+.guest-editor {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.guest-editor__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 1rem 0;
+}
+
+.guest-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.guest-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.guest-row__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.guest-row__label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.guest-row__desc {
+  font-size: 0.8125rem;
+  color: #6b7280;
+}
+
+.guest-row__controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.guest-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #374151;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.guest-btn:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.guest-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.guest-count {
+  min-width: 2rem;
+  text-align: center;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.guest-total-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.guest-total {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.price-total {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1a1a1a;
 }
 
 .calendar-container {

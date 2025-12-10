@@ -51,12 +51,17 @@
     <BookingModal
       :show="showModal"
       :experience="experience"
+      :initialDate="(route.query.date as string) ?? ''"
+      :adults="Number(route.query.adults ?? 1)"
+      :children="Number(route.query.children ?? 0)"
+      :seniors="Number(route.query.seniors ?? 0)"
       @close="showModal = false" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useRoute } from "#imports";
 import BookingModal from "~/components/BookingModal.vue";
 import { useExperiences, type Experience } from "~/composables/useExperiences";
 
@@ -67,6 +72,7 @@ interface Props {
 
 const props = defineProps<Props>();
 const { getAddon, totalAddonsPrice } = useExperiences();
+const route = useRoute();
 
 const showModal = ref(false);
 </script>

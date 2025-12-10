@@ -85,6 +85,10 @@
       <BookingModal
         :show="showModal"
         :experience="experience"
+        :initialDate="(route.query.date as string) ?? ''"
+        :adults="Number(route.query.adults ?? 1)"
+        :children="Number(route.query.children ?? 0)"
+        :seniors="Number(route.query.seniors ?? 0)"
         @close="showModal = false" />
     </template>
 

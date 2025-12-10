@@ -9,17 +9,18 @@ const { loading, experiences } = useExperiences();
 const route = useRoute();
 const router = useRouter();
 
+const today = getTodayString();
+
 // Initiera filters från query params
 const filters = ref<SearchFilters>({
-  date: (route.query.date as string) ?? "",
+  date: (route.query.date as string) ?? today,
   adults: Number(route.query.adults ?? 1),
   children: Number(route.query.children ?? 0),
   seniors: Number(route.query.seniors ?? 0),
 });
 
-const handleSearch = (value: SearchFilters) => {
-  filters.value = value;
-  // Uppdatera URL:en när man söker härifrån
+// Watch filters and update URL automatically
+watch(filters, (value) => {
   router.push({
     path: "/upplevelse",
     query: {
@@ -29,7 +30,7 @@ const handleSearch = (value: SearchFilters) => {
       seniors: String(value.seniors),
     },
   });
-};
+}, { deep: true });
 
 const filteredExperiences = computed(() => {
   if (!experiences.value) return [];
@@ -69,7 +70,7 @@ const filteredExperiences = computed(() => {
       <p>Browse all the adventures you can book with our team.</p>
     </header>
 
-    <SearchBar v-model="filters" @search="handleSearch" class="page-search" />
+    <SearchBar v-model="filters" :show-search-button="false" class="page-search" />
 
     <section v-if="loading">
       <p>Laddar upplevelser...</p>

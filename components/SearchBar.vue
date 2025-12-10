@@ -8,10 +8,16 @@ export interface SearchFilters {
   seniors: number;
 }
 
+// Set minimum date to today, autoimports from utils/date.ts
+const minDate = getTodayString();
+
 // Vi använder v-model på komponenten (modelValue in, update:modelValue ut)
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   modelValue?: SearchFilters;
-}>();
+  showSearchButton?: boolean;
+}>(), {
+  showSearchButton: true
+});
 
 const emit = defineEmits<{
   "update:modelValue": [SearchFilters];
@@ -20,7 +26,7 @@ const emit = defineEmits<{
 
 // Lokalt state i komponenten
 const filters = reactive<SearchFilters>({
-  date: props.modelValue?.date ?? "",
+  date: props.modelValue?.date || minDate,
   adults: props.modelValue?.adults ?? 1,
   children: props.modelValue?.children ?? 0,
   seniors: props.modelValue?.seniors ?? 0,
@@ -46,7 +52,7 @@ const onSubmit = (event: Event) => {
     <div class="search-row">
       <div class="field">
         <label for="date">Datum</label>
-        <input id="date" v-model="filters.date" type="date" />
+        <input id="date" v-model="filters.date" type="date" :min="minDate" />
       </div>
 
       <div class="field">
@@ -77,7 +83,7 @@ const onSubmit = (event: Event) => {
       </div>
     </div>
 
-    <button class="search-button" type="submit">Sök upplevelser</button>
+    <button v-if="showSearchButton" class="search-button" type="submit">Sök upplevelser</button>
   </form>
 </template>
 

@@ -7,6 +7,7 @@ export type CartItem = {
   image: string;
   duration: string;
   owner: string;
+  description?: string;
   selectedAddons: Array<{ slug: string; title: string; price: number }>;
   quantity: number;
   bookingDate?: string;
@@ -102,6 +103,7 @@ export const useCartStore = defineStore("cart", () => {
         image: experience.image,
         duration: experience.duration,
         owner: experience.owner,
+        description: experience.description,
         selectedAddons,
         quantity: totalGuests,
         bookingDate,
@@ -125,6 +127,21 @@ export const useCartStore = defineStore("cart", () => {
     }
   }
 
+  function updateCartItem(
+    index: number,
+    bookingDate: string,
+    adults: number,
+    children: number,
+    seniors: number,
+  ) {
+    const item = items.value[index];
+    if (!item) return;
+
+    item.bookingDate = bookingDate;
+    item.guestCounts = { adults, children, seniors };
+    item.quantity = adults + children + seniors;
+  }
+
   function clearCart() {
     items.value = [];
   }
@@ -137,6 +154,7 @@ export const useCartStore = defineStore("cart", () => {
     addToCart,
     removeFromCart,
     updateQuantity,
+    updateCartItem,
     clearCart,
   };
 });

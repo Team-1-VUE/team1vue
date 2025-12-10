@@ -9,8 +9,8 @@
             exact-active-class="active"
           >
             {{ link.name }}
-            <span v-if="link.path === '/kundkorg' && cartStore.totalItems > 0" class="cart-badge">
-              {{ cartStore.totalItems }}
+            <span v-if="link.path === '/kundkorg' && cartStore.cartItemCount > 0" class="cart-badge">
+              {{ cartStore.cartItemCount }}
             </span>
           </NuxtLink>
         </li>

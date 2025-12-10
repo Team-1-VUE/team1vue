@@ -97,7 +97,7 @@ const showModal = ref(false);
 .experience-card__image {
   position: relative;
   width: 100%;
-  height: 280px;
+  aspect-ratio: 4 / 3;
   overflow: hidden;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
@@ -105,7 +105,7 @@ const showModal = ref(false);
 .experience-card__image img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   display: block;
   transition: transform 0.4s ease;
 }

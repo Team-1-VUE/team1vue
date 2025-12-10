@@ -1,32 +1,44 @@
 {
   "profiles": {
     "kristoffer": {
-      "profileImage": "/images/profiles/kristoffer.webp",
+      "profileImage": "/profileimages/kristoffer.png",
       "experiences": [
         "klattra-med-kristoffer",
         "banka-med-benckert",
         "konspirationer-med-kristoffer"
-      ]
+      ],
+      "shortText": "Klättra, Bänka & Konspirationer",
+      "summaryText": "Kristoffer erbjuder klättring, styrketräning och underhållande teorigenomgångar."
     },
     "pencheff": {
-      "profileImage": "/images/profiles/pencheff.webp",
+      "profileImage": "/profileimages/pencheff.png",
       "experiences": [
         "pasta-med-pencheff",
         "poetry-slam-med-pencheff",
         "pilates-med-pencheff"
-      ]
+      ],
+      "shortText": "Pasta, Poetry & Pilates",
+      "summaryText": "Pencheff guidar dig genom matlagning, kreativa uttryck och lugn träning."
     },
     "simon": {
-      "profileImage": "/images/profiles/simon.webp",
-      "experiences": ["sportbil-med-simon", "sitt-med-simon", "smink-med-simon"]
+      "profileImage": "/profileimages/simon.png",
+      "experiences": [
+        "sportbil-med-simon",
+        "sitt-med-simon",
+        "smink-med-simon"
+      ],
+      "shortText": "Sportbil, Sitt & Smink",
+      "summaryText": "Simon erbjuder fartfyllda upplevelser, meditativa stunder och kreativa sminklektioner."
     },
     "antonio": {
-      "profileImage": "/images/profileimages/Antonio.png",
+      "profileImage": "/profileimages/antonio.png",
       "experiences": [
         "workout-med-antonio",
         "dansa-med-antonio",
         "cocktails-med-antonio"
-      ]
+      ],
+      "shortText": "Workout, Dans & Cocktails",
+      "summaryText": "Antonio lär ut styrka, rytm och drinkmixning på ett lekfullt och peppigt sätt."
     }
   },
   "experiences": [

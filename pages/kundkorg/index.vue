@@ -28,6 +28,7 @@
             <!-- container for event details -->
             <div class="cart-item__details">
               <h3>{{ item.title }}</h3>
+              <!-- TODO: replace with description -->
               <p class="owner">med {{ capitalize(item.owner) }}</p>
               <p class="duration">{{ item.duration }}</p>
               
@@ -218,21 +219,33 @@ const handleCheckout = () => {
   display: flex;
   gap: 1.5rem;
   flex: 1;
+  align-items: stretch;
 }
 
 .cart-item__image-container {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  background: #f9fafb;
+  border-radius: 8px;
+  /* padding: 1rem; */
 }
 
 .cart-item__image {
-  width: 120px;
-  height: 120px;
+  width: 150px;
+  height: 150px;
   object-fit: cover;
   border-radius: 8px;
 }
 
 .cart-item__details {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 1rem;
 }
 
 .cart-item__details h3 {
@@ -337,6 +350,7 @@ const handleCheckout = () => {
   align-items: flex-end;
   gap: 1rem;
   justify-content: space-between;
+  padding-top: 1rem;
 }
 
 .item-price {

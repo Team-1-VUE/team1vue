@@ -17,34 +17,59 @@
     <div v-else>
       <div class="cart-items">
         <div v-for="(item, index) in cartStore.items" :key="`${item.id}-${index}`" class="cart-item">
-          <img :src="item.image" :alt="item.title" class="cart-item__image" />
-          
-          <div class="cart-item__details">
-            <h3>{{ item.title }}</h3>
-            <p class="owner">med {{ capitalize(item.owner) }}</p>
-            <p class="duration">{{ item.duration }}</p>
-            <p v-if="item.bookingDate" class="booking-date">
-              <Calendar :size="16" />
-              {{ formatDate(item.bookingDate) }}
-            </p>
+          <!-- container for all -->
+          <div class="cart-item__container">
+            <!-- container for img -->
+            <div class="cart-item__image-container">
+              <img :src="item.image" :alt="item.title" class="cart-item__image" />
+            </div>
+            <!-- /container for img -->
             
-            <div v-if="item.selectedAddons.length" class="addons">
-              <p class="addons-label">Tillval:</p>
-              <ul>
-                <li v-for="addon in item.selectedAddons" :key="addon.slug">
-                  {{ addon.title }} (+{{ addon.price }} kr)
+            <!-- container for event details -->
+            <div class="cart-item__details">
+              <h3>{{ item.title }}</h3>
+              <p class="owner">med {{ capitalize(item.owner) }}</p>
+              <p class="duration">{{ item.duration }}</p>
+              
+              <!-- addons included here -->
+              <div class="addons">
+                <span class="addons-label">Tillval:</span>
+                <span v-if="item.selectedAddons.length" class="addons-list">
+                  <span v-for="addon in item.selectedAddons" :key="addon.slug" class="addon-item">
+                    {{ addon.title }} (+{{ addon.price }} kr)
+                  </span>
+                </span>
+                <span v-else class="no-addons">Inga tillval</span>
+              </div>
+              
+              <p v-if="item.bookingDate" class="booking-date">
+                <Calendar :size="16" />
+                {{ formatDate(item.bookingDate) }}
+              </p>
+            </div>
+            <!-- /container for event details -->
+            
+            <!-- container for guest details -->
+            <div v-if="item.guestCounts" class="guest-details">
+              <p class="guest-counts-label">Antal gäster:</p>
+              <ul class="guest-list">
+                <li>
+                  Vuxna: {{ item.guestCounts.adults || 0 }}
+                </li>
+                <li>
+                  Barn: {{ item.guestCounts.children || 0 }}
+                </li>
+                <li>
+                  Pensionärer: {{ item.guestCounts.seniors || 0 }}
                 </li>
               </ul>
+              <p class="total-guests">Totalt: {{ getTotalGuests(item) }} gäster</p>
             </div>
+            <!-- /container for guest details -->
           </div>
+          <!-- /container for all -->
 
           <div class="cart-item__actions">
-            <div class="quantity-control">
-              <button @click="cartStore.updateQuantity(index, item.quantity - 1)">-</button>
-              <span>{{ item.quantity }}</span>
-              <button @click="cartStore.updateQuantity(index, item.quantity + 1)">+</button>
-            </div>
-            
             <p class="item-price">
               {{ itemTotal(item) }} kr
             </p>
@@ -58,8 +83,8 @@
 
       <div class="cart-summary">
         <div class="summary-row">
-          <span>Antal artiklar:</span>
-          <span>{{ cartStore.totalItems }}</span>
+          <span>Antal bokningar:</span>
+          <span>{{ cartStore.cartItemCount }}</span>
         </div>
         <div class="summary-row total">
           <span>Totalt:</span>
@@ -83,6 +108,11 @@ const cartStore = useCartStore()
 const itemTotal = (item: any) => {
   const addonsPrice = item.selectedAddons.reduce((sum: number, addon: any) => sum + addon.price, 0)
   return (item.price + addonsPrice) * item.quantity
+}
+
+const getTotalGuests = (item: any) => {
+  if (!item.guestCounts) return 0
+  return item.guestCounts.adults + item.guestCounts.children + item.guestCounts.seniors
 }
 
 const formatDate = (dateString: string) => {
@@ -184,6 +214,16 @@ const handleCheckout = () => {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
+.cart-item__container {
+  display: flex;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+.cart-item__image-container {
+  flex-shrink: 0;
+}
+
 .cart-item__image {
   width: 120px;
   height: 120px;
@@ -219,20 +259,76 @@ const handleCheckout = () => {
 }
 
 .addons {
-  margin-top: 1rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .addons-label {
   font-weight: 600;
   font-size: 0.875rem;
-  margin: 0 0 0.5rem 0;
+  margin: 0;
 }
 
-.addons ul {
-  margin: 0;
-  padding-left: 1.5rem;
+.addons-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.addon-item {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #f3f4f6;
+  border-radius: 6px;
   font-size: 0.875rem;
   color: #6b7280;
+}
+
+.no-addons {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.guest-details {
+  flex-shrink: 0;
+  min-width: 200px;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  align-self: flex-start;
+}
+
+.guest-counts-label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin: 0 0 0.5rem 0;
+  color: #1a1a1a;
+}
+
+.guest-list {
+  margin: 0;
+  padding-left: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+  list-style: none;
+}
+
+.guest-list li {
+  padding: 0.25rem 0;
+}
+
+.total-guests {
+  margin: 0.5rem 0 0 0;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #1a1a1a;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e5e7eb;
 }
 
 .cart-item__actions {
@@ -240,30 +336,7 @@ const handleCheckout = () => {
   flex-direction: column;
   align-items: flex-end;
   gap: 1rem;
-}
-
-.quantity-control {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  background: #f3f4f6;
-  padding: 0.5rem;
-  border-radius: 8px;
-}
-
-.quantity-control button {
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: #fff;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.2s;
-}
-
-.quantity-control button:hover {
-  background: #e5e7eb;
+  justify-content: space-between;
 }
 
 .item-price {

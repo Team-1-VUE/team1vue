@@ -10,6 +10,11 @@ export type CartItem = {
   selectedAddons: Array<{ slug: string; title: string; price: number }>;
   quantity: number;
   bookingDate?: string;
+  guestCounts?: {
+    adults: number;
+    children: number;
+    seniors: number;
+  };
 };
 
 export const useCartStore = defineStore("cart", () => {
@@ -58,7 +63,15 @@ export const useCartStore = defineStore("cart", () => {
     experience: any,
     selectedAddons: Array<{ slug: string; title: string; price: number }> = [],
     bookingDate?: string,
+    adults: number = 1,
+    children: number = 0,
+    seniors: number = 0,
   ) {
+    const totalGuests = adults + children + seniors;
+
+    if (totalGuests === 0) return;
+
+    // Find existing item with same experience, addons, and booking date
     const existingItem = items.value.find(
       (item) =>
         item.id === experience.id &&
@@ -68,8 +81,20 @@ export const useCartStore = defineStore("cart", () => {
     );
 
     if (existingItem) {
-      existingItem.quantity++;
+      // Update existing item's guest counts
+      if (existingItem.guestCounts) {
+        existingItem.guestCounts.adults += adults;
+        existingItem.guestCounts.children += children;
+        existingItem.guestCounts.seniors += seniors;
+      } else {
+        existingItem.guestCounts = { adults, children, seniors };
+      }
+      existingItem.quantity =
+        existingItem.guestCounts.adults +
+        existingItem.guestCounts.children +
+        existingItem.guestCounts.seniors;
     } else {
+      // Create new cart item with guest counts
       items.value.push({
         id: experience.id,
         title: experience.title,
@@ -78,8 +103,9 @@ export const useCartStore = defineStore("cart", () => {
         duration: experience.duration,
         owner: experience.owner,
         selectedAddons,
-        quantity: 1,
+        quantity: totalGuests,
         bookingDate,
+        guestCounts: { adults, children, seniors },
       });
     }
   }

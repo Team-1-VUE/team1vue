@@ -26,28 +26,34 @@ export type CartItem = {
 export const useCartStore = defineStore("cart", () => {
   const items = ref<CartItem[]>([]);
 
-  // Load from localStorage on initialization
-  if (import.meta.client) {
-    const stored = localStorage.getItem("cart-items");
-    if (stored) {
-      try {
-        items.value = JSON.parse(stored);
-      } catch (e) {
-        console.error("Failed to parse cart items:", e);
+  // Track if we've initialized from localStorage
+  const initialized = ref(false);
+
+  // Initialize from localStorage - this runs on mount
+  onMounted(() => {
+    if (!initialized.value) {
+      const stored = localStorage.getItem("cart-items");
+      if (stored) {
+        try {
+          items.value = JSON.parse(stored);
+        } catch (e) {
+          console.error("Failed to parse cart items:", e);
+        }
       }
+      initialized.value = true;
     }
-  }
+  });
 
   // Watch for changes and save to localStorage
-  if (import.meta.client) {
-    watch(
-      items,
-      (newItems) => {
+  watch(
+    items,
+    (newItems) => {
+      if (import.meta.client && initialized.value) {
         localStorage.setItem("cart-items", JSON.stringify(newItems));
-      },
-      { deep: true },
-    );
-  }
+      }
+    },
+    { deep: true },
+  );
 
   const totalItems = computed(() =>
     items.value.reduce((sum, item) => sum + item.quantity, 0),

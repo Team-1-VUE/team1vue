@@ -1,6 +1,15 @@
 import { ref, onMounted, computed } from "vue";
 
 type Addon = { slug: string; title: string; price: number };
+
+export type TimeSlot = {
+  time: string;
+  capacity: number;
+  booked: number;
+};
+
+export type ExperienceSchedule = Record<string, TimeSlot[]>;
+
 export type Experience = {
   id: string;
   slug: string;
@@ -9,6 +18,11 @@ export type Experience = {
   description: string;
   duration: string;
   price: number;
+  categoryPrices?: {
+    adults: number;
+    children: number;
+    seniors: number;
+  };
   image: string;
   addons: Array<{ title: string; price: number }>;
   minGuests: number;
@@ -19,6 +33,7 @@ export type Experience = {
     seniors: boolean;
   };
   availableDates: string[];
+  schedule?: ExperienceSchedule;
 };
 
 type ProfileData = {

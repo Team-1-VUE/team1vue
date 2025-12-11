@@ -180,7 +180,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emit = defineEmits<{
   close: []
-  update: [payload: { index: number; date: string; adults: number; children: number; seniors: number }]
+  update: [payload: { index: number; date: string; adults: number; children: number; seniors: number; addons: Array<{ slug: string; title: string; price: number; quantity: number }> }]
 }>()
 
 const cartStore = useCartStore()

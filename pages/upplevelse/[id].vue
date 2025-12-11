@@ -62,6 +62,20 @@
             <p class="booking-card__price">{{ experience.price }} kr</p>
 
             <p
+              v-if="experience.categoryPrices"
+              class="booking-card__per-category">
+              Pris per person:
+              <br />
+              <span>Vuxen: {{ experience.categoryPrices.adults }} kr</span>
+              <span v-if="experience.allowedCategories.children">
+                • Barn: {{ experience.categoryPrices.children }} kr
+              </span>
+              <span v-if="experience.allowedCategories.seniors">
+                • Senior: {{ experience.categoryPrices.seniors }} kr
+              </span>
+            </p>
+
+            <p
               v-if="
                 experience.addons?.length && totalAddonsPrice(experience) > 0
               "
@@ -295,6 +309,13 @@ const showModal = ref(false);
   font-size: 1.8rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
+}
+
+.booking-card__per-category {
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
 }
 
 .booking-card__total {

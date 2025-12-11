@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import { ArrowRight, Heart, Sparkles, Users, Calendar } from "lucide-vue-next";
-
-import SearchBar, { type SearchFilters } from "~/components/SearchBar.vue";
-import ProfileCard from "~/components/ProfileCard.vue";
-import { ref } from "vue";
 import { useRouter } from "#imports";
-import { useProfiles } from "~/composables/useProfiles";
+import { ArrowRight, Heart, Sparkles, Users, Calendar } from "lucide-vue-next";
+import SearchBar, { type SearchFilters } from "~/components/SearchBar.vue";
 
-const { loading, profiles } = useProfiles();
 const router = useRouter();
+const { loading: loadingProfiles }  = useProfiles();
 
 const searchFilters = ref<SearchFilters>({
   date: "",
@@ -103,16 +99,10 @@ const handleSearch = (filters: SearchFilters) => {
           </p>
         </div>
 
-        <div v-if="loading" class="team-loading">
-          <p>Laddar profiler...</p>
-        </div>
+        <p v-if="loadingProfiles">Laddar profiler...</p>
 
-        <div v-else class="team-grid">
-          <ProfileCard
-            v-for="profile in profiles"
-            :key="profile.name"
-            :profile="profile" />
-        </div>
+        <ProfileCardList v-else class="team-grid" />
+
       </div>
     </section>
     <section class="cta">

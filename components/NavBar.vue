@@ -4,12 +4,11 @@
       <NuxtLink to="/" class="navbar-logo">Team uno</NuxtLink>
       <ul class="navbar-menu">
         <li v-for="link in navLinks" :key="link.path">
-          <NuxtLink
-            :to="link.path"
-            exact-active-class="active"
-          >
+          <NuxtLink :to="link.path" exact-active-class="active">
             {{ link.name }}
-            <span v-if="link.path === '/kundkorg' && cartStore.cartItemCount > 0" class="cart-badge">
+            <span
+              v-if="link.path === '/kundkorg' && cartStore.cartItemCount > 0"
+              class="cart-badge">
               {{ cartStore.cartItemCount }}
             </span>
           </NuxtLink>
@@ -20,31 +19,31 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { useCartStore } from '~/stores/useCartStore'
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { useCartStore } from "~/stores/useCartStore";
 
-type Profile = { slug: string; name: string }
+type Profile = { slug: string; name: string };
 
-const route = useRoute()
-const profiles = ref<Profile[]>([])
-const cartStore = useCartStore()
+const route = useRoute();
+const profiles = ref<Profile[]>([]);
+const cartStore = useCartStore();
 
 const navLinks = computed(() => [
-  { name: 'Home', path: '/' },
-  ...profiles.value.map(p => ({ name: p.name, path: `/profil/${p.slug}` })),
-  { name: 'Kundkorg', path: '/kundkorg' }
-])
+  { name: "Home", path: "/" },
+  ...profiles.value.map((p) => ({ name: p.name, path: `/profil/${p.slug}` })),
+  { name: "Kundkorg", path: "/kundkorg" },
+]);
 
 onMounted(async () => {
-  const res = await fetch('/data.json')
-  const json = await res.json()
+  const res = await fetch("/data.json");
+  const json = await res.json();
 
-  profiles.value = Object.keys(json.profiles).map(slug => ({
+  profiles.value = Object.keys(json.profiles).map((slug) => ({
     slug,
-    name: capitalize(slug)
-  }))
-})
+    name: capitalize(slug),
+  }));
+});
 </script>
 
 <style scoped>

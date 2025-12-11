@@ -43,12 +43,12 @@
           <div v-if="experience.addons?.length" class="experience-main__addons">
             <h3>Tillval</h3>
             <ul>
-              <li v-for="slug in experience.addons" :key="slug">
+              <li v-for="(addon, index) in experience.addons" :key="index">
                 <span class="addon-title">
-                  {{ getAddon(slug)?.title }}
+                  {{ capitalize(addon.title) }}
                 </span>
                 <span class="addon-price">
-                  +{{ getAddon(slug)?.price }} kr
+                  +{{ addon.price }} kr/gäst
                 </span>
               </li>
             </ul>
@@ -58,17 +58,8 @@
         <!-- Right column (booking card) -->
         <aside class="experience-sidebar">
           <div class="booking-card">
-            <p class="booking-card__label">Från</p>
+            <p class="booking-card__label">{{ experience.addons?.length ? 'Från' : 'Pris' }}</p>
             <p class="booking-card__price">{{ experience.price }} kr</p>
-
-            <p
-              v-if="
-                experience.addons?.length && totalAddonsPrice(experience) > 0
-              "
-              class="booking-card__total">
-              {{ experience.price + totalAddonsPrice(experience) }} kr med
-              tillval
-            </p>
 
             <button @click="showModal = true" class="booking-card__button">
               Boka upplevelse
@@ -109,7 +100,7 @@ import BookingModal from "~/components/BookingModal.vue";
 const route = useRoute();
 const id = route.params.id as string;
 
-const { loading, getExperienceById, getAddon, totalAddonsPrice } =
+const { loading, getExperienceById, totalAddonsPrice } =
   useExperiences();
 
 const experience = computed(() => getExperienceById(id));

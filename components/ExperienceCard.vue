@@ -16,23 +16,18 @@
         <p class="addons-label">Tillval inkluderar:</p>
         <div class="addon-tags">
           <span
-            v-for="addonSlug in experience.addons"
-            :key="addonSlug"
+            v-for="(addon, index) in experience.addons"
+            :key="index"
             class="addon-tag">
-            {{ getAddon(addonSlug)?.title }}
+            {{ capitalize(addon.title) }}
           </span>
         </div>
       </div>
 
       <div class="experience-card__footer">
         <div class="price-section">
-          <span class="price-label">PRIS</span>
+          <span class="price-label">{{ experience.addons?.length ? 'PRIS FRÅN' : 'PRIS' }}</span>
           <span class="price-value">{{ experience.price }} kr</span>
-          <span
-            v-if="experience.addons?.length && totalAddonsPrice(experience) > 0"
-            class="price-total">
-            {{ experience.price + totalAddonsPrice(experience) }} kr med tillval
-          </span>
         </div>
 
         <div class="action-buttons">
@@ -64,6 +59,7 @@ import { ref } from "vue";
 import { useRoute } from "#imports";
 import BookingModal from "~/components/BookingModal.vue";
 import { useExperiences, type Experience } from "~/composables/useExperiences";
+import { capitalize } from "~/utils/string";
 
 interface Props {
   experience: Experience;
@@ -71,7 +67,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const { getAddon, totalAddonsPrice } = useExperiences();
+const { totalAddonsPrice } = useExperiences();
 const route = useRoute();
 
 const showModal = ref(false);

@@ -55,7 +55,10 @@
       "duration": "2h",
       "price": 350,
       "image": "/images/benckert3.png",
-      "addons": [],
+      "addons": [
+        { "title": "hjälm", "price": 75 },
+        { "title": "klätterutrustning", "price": 120 }
+      ],
       "minGuests": 1,
       "maxGuests": 4,
       "allowedCategories": {
@@ -112,7 +115,7 @@
       "duration": "2h",
       "price": 350,
       "image": "/images/pencheff1.png",
-      "addons": [],
+      "addons": [{ "title": "ingrediensbox", "price": 80 }],
       "minGuests": 2,
       "maxGuests": 6,
       "allowedCategories": {
@@ -207,7 +210,8 @@
       "duration": "2h",
       "price": 300,
       "image": "/images/simon3.png",
-      "addons": [],
+      "addons": [{ "title": "sminkmaterial", "price": 60 }],
+
       "minGuests": 1,
       "maxGuests": 6,
       "allowedCategories": {
@@ -226,7 +230,7 @@
       "duration": "1.5h",
       "price": 350,
       "image": "/images/antonio_img/antonio_workout_1.png",
-      "addons": [],
+      "addons": [{ "title": "handduk", "price": 30 }],
       "minGuests": 1,
       "maxGuests": 6,
       "allowedCategories": {
@@ -245,7 +249,7 @@
       "duration": "1.5h",
       "price": 320,
       "image": "/images/antonio_horizontal/antonio_dancing_salsa.png",
-      "addons": [],
+      "addons": [{ "title": "danssko", "price": 50 }],
       "minGuests": 1,
       "maxGuests": 10,
       "allowedCategories": {
@@ -274,11 +278,6 @@
       },
       "availableDates": ["2025-12-19", "2025-12-20", "2025-12-27"]
     }
-  ],
-  "addons": [
-    { "slug": "te-fika", "title": "Te och fika", "price": 50 },
-    { "slug": "meditationsguide", "title": "Meditationsguide", "price": 75 },
-    { "slug": "livsstilscoach", "title": "Livsstilscoach", "price": 100 }
   ],
   "articles": []
 }

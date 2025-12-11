@@ -8,7 +8,12 @@ export type CartItem = {
   duration: string;
   owner: string;
   description?: string;
-  selectedAddons: Array<{ slug: string; title: string; price: number }>;
+  selectedAddons: Array<{
+    slug: string;
+    title: string;
+    price: number;
+    quantity: number;
+  }>;
   quantity: number;
   bookingDate?: string;
   guestCounts?: {
@@ -51,10 +56,10 @@ export const useCartStore = defineStore("cart", () => {
   const totalPrice = computed(() =>
     items.value.reduce((sum, item) => {
       const addonsPrice = item.selectedAddons.reduce(
-        (acc, addon) => acc + addon.price,
+        (acc, addon) => acc + addon.price * addon.quantity,
         0,
       );
-      return sum + (item.price + addonsPrice) * item.quantity;
+      return sum + item.price * item.quantity + addonsPrice;
     }, 0),
   );
 
@@ -62,7 +67,12 @@ export const useCartStore = defineStore("cart", () => {
 
   function addToCart(
     experience: any,
-    selectedAddons: Array<{ slug: string; title: string; price: number }> = [],
+    selectedAddons: Array<{
+      slug: string;
+      title: string;
+      price: number;
+      quantity: number;
+    }> = [],
     bookingDate?: string,
     adults: number = 1,
     children: number = 0,
@@ -72,44 +82,20 @@ export const useCartStore = defineStore("cart", () => {
 
     if (totalGuests === 0) return;
 
-    // Find existing item with same experience, addons, and booking date
-    const existingItem = items.value.find(
-      (item) =>
-        item.id === experience.id &&
-        JSON.stringify(item.selectedAddons) ===
-          JSON.stringify(selectedAddons) &&
-        item.bookingDate === bookingDate,
-    );
-
-    if (existingItem) {
-      // Update existing item's guest counts
-      if (existingItem.guestCounts) {
-        existingItem.guestCounts.adults += adults;
-        existingItem.guestCounts.children += children;
-        existingItem.guestCounts.seniors += seniors;
-      } else {
-        existingItem.guestCounts = { adults, children, seniors };
-      }
-      existingItem.quantity =
-        existingItem.guestCounts.adults +
-        existingItem.guestCounts.children +
-        existingItem.guestCounts.seniors;
-    } else {
-      // Create new cart item with guest counts
-      items.value.push({
-        id: experience.id,
-        title: experience.title,
-        price: experience.price,
-        image: experience.image,
-        duration: experience.duration,
-        owner: experience.owner,
-        description: experience.description,
-        selectedAddons,
-        quantity: totalGuests,
-        bookingDate,
-        guestCounts: { adults, children, seniors },
-      });
-    }
+    // Always create a new cart item - no merging
+    items.value.push({
+      id: experience.id,
+      title: experience.title,
+      price: experience.price,
+      image: experience.image,
+      duration: experience.duration,
+      owner: experience.owner,
+      description: experience.description,
+      selectedAddons,
+      quantity: totalGuests,
+      bookingDate,
+      guestCounts: { adults, children, seniors },
+    });
   }
 
   function removeFromCart(index: number) {
@@ -133,13 +119,21 @@ export const useCartStore = defineStore("cart", () => {
     adults: number,
     children: number,
     seniors: number,
+    selectedAddons: Array<{
+      slug: string;
+      title: string;
+      price: number;
+      quantity: number;
+    }> = [],
   ) {
     const item = items.value[index];
     if (!item) return;
 
+    // Update item properties - no merging
     item.bookingDate = bookingDate;
     item.guestCounts = { adults, children, seniors };
     item.quantity = adults + children + seniors;
+    item.selectedAddons = selectedAddons;
   }
 
   function clearCart() {

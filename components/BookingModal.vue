@@ -88,12 +88,6 @@
               Totalt: {{ totalGuests }} gäst{{ totalGuests !== 1 ? "er" : "" }}
             </p>
 
-            <!-- visa hur många platser som återstår -->
-            <!-- <p v-if="currentSlot" class="slot-capacity-hint">
-              Platser kvar på denna tid:
-              {{ Math.max(maxGuestsForSelection - totalGuests, 0) }}
-            </p> -->
-
             <p v-if="selectedSlot" class="slot-capacity-hint">
               Platser kvar:
               {{
@@ -146,13 +140,6 @@
               class="date-picker-hidden" />
           </div>
         </div>
-
-        <!-- <p
-          v-if="selectedDate && !hasAnyUsableSlotsForSelectedDate"
-          class="date-full-hint">
-          Alla tider denna dag är redan fullbokade eller har för få platser.
-          Välj ett annat datum.
-        </p> -->
 
         <!-- Time slots -->
         <div v-if="selectedDate" class="timeslot-section">
@@ -220,90 +207,15 @@ const selectedDate = ref("");
 const dateInput = ref<HTMLInputElement | null>(null);
 const selectedTime = ref<string | null>(null);
 
-// NY: vi sparar hela slot-objektet här
+// vi sparar hela slot-objektet här
 const selectedSlot = ref<DecoratedTimeSlot | null>(null);
-
-// // hitta aktuell slot baserat på datum + tid
-// const currentSlot = computed<DecoratedTimeSlot | null>(() => {
-//   if (
-//     !props.experience ||
-//     !props.experience.schedule ||
-//     !selectedDate.value ||
-//     !selectedTime.value
-//   ) {
-//     return null;
-//   }
-
-//   const daySlots = props.experience.schedule[selectedDate.value] || [];
-//   return (
-//     (daySlots as DecoratedTimeSlot[]).find(
-//       (slot) => slot.time === selectedTime.value
-//     ) || null
-//   );
-// });
-
-// kolla om det finns NÅGON tid denna dag som faktiskt kan ta emot gruppen
-// const hasAnyUsableSlotsForSelectedDate = computed(() => {
-//   if (!props.experience || !selectedDate.value) return true;
-
-//   const guests = totalGuests.value || 1;
-
-//   // bas-slots (utan hänsyn till kundkorg)
-//   const baseSlots = getSlotsForDate(
-//     props.experience,
-//     selectedDate.value,
-//     guests
-//   );
-
-//   // dra av bokningar i kundkorg per tid
-//   const slotsWithRemaining = baseSlots.map((slot) => {
-//     const bookedForSlot = cartStore.items.reduce((sum, item) => {
-//       if (
-//         item.id !== props.experience.id ||
-//         item.bookingDate !== selectedDate.value ||
-//         item.bookingTime !== slot.time
-//       ) {
-//         return sum;
-//       }
-
-//       if (item.guestCounts) {
-//         const g = item.guestCounts;
-//         return sum + g.adults + g.children + g.seniors;
-//       }
-
-//       return sum + item.quantity;
-//     }, 0);
-
-//     const remaining = Math.max(slot.remaining - bookedForSlot, 0);
-//     const cannotFitGroup = remaining < guests;
-//     const isFull = remaining === 0;
-
-//     return { remaining, cannotFitGroup, isFull };
-//   });
-
-//   return slotsWithRemaining.some((s) => !s.isFull && !s.cannotFitGroup);
-// });
-
-// // max antal gäster som får plats för vald tid
-// const maxGuestsForSelection = computed(() => {
-//   if (!props.experience) return Infinity;
-
-//   const slotCapacity = currentSlot.value?.capacity;
-//   const baseMax = props.experience.maxGuests ?? Infinity;
-
-//   if (typeof slotCapacity === "number") {
-//     return Math.min(slotCapacity, baseMax);
-//   }
-
-//   return baseMax;
-// });
 
 const maxGuestsForSelection = computed(() => {
   if (!props.experience) return Infinity;
 
-  // 1) Försök använda remaining från DEN slotten du klickade på
-  // 2) annars capacity
-  // 3) annars fall back till experience.maxGuests
+  // Försök använda remaining från DEN slotten du klickade på
+  // annars capacity
+  // annars fall back till experience.maxGuests
   const slotLimit =
     selectedSlot.value?.remaining ??
     selectedSlot.value?.capacity ??
@@ -383,20 +295,6 @@ const allowsSeniors = computed(() => {
   return props.experience?.allowedCategories?.seniors ?? true;
 });
 
-// Update guest counts
-// const updateGuests = (
-//   type: "adults" | "children" | "seniors",
-//   delta: number
-// ) => {
-//   if (type === "adults") {
-//     localAdults.value = Math.max(0, localAdults.value + delta);
-//   } else if (type === "children") {
-//     localChildren.value = Math.max(0, localChildren.value + delta);
-//   } else if (type === "seniors") {
-//     localSeniors.value = Math.max(0, localSeniors.value + delta);
-//   }
-// };
-
 const updateGuests = (
   type: "adults" | "children" | "seniors",
   delta: number
@@ -459,10 +357,6 @@ watch(selectedDate, () => {
   selectedTime.value = null;
   selectedSlot.value = null;
 });
-
-// const onTimeSelect = (slot: DecoratedTimeSlot) => {
-//   selectedTime.value = slot.time;
-// };
 
 const onTimeSelect = (slot: DecoratedTimeSlot) => {
   selectedSlot.value = slot; // spara hela slotten
@@ -817,12 +711,6 @@ const handleConfirm = () => {
   width: 0;
   height: 0;
 }
-
-/* .date-full-hint {
-  margin: 0.5rem 0 0.75rem;
-  font-size: 0.85rem;
-  color: #b91c1c;
-} */
 
 /* Time Slot Styles */
 .timeslot-section {

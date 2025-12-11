@@ -53,16 +53,6 @@ export const useCartStore = defineStore("cart", () => {
     items.value.reduce((sum, item) => sum + item.quantity, 0)
   );
 
-  // const totalPrice = computed(() =>
-  //   items.value.reduce((sum, item) => {
-  //     const addonsPrice = item.selectedAddons.reduce(
-  //       (acc, addon) => acc + addon.price,
-  //       0
-  //     );
-  //     return sum + (item.price + addonsPrice) * item.quantity;
-  //   }, 0)
-  // );
-
   const totalPrice = computed(() =>
     items.value.reduce((sum, item) => {
       const guestCounts = item.guestCounts || {

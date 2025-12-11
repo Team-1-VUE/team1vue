@@ -103,14 +103,6 @@ import { useCartStore } from "~/stores/useCartStore";
 
 const cartStore = useCartStore();
 
-// const itemTotal = (item: any) => {
-//   const addonsPrice = item.selectedAddons.reduce(
-//     (sum: number, addon: any) => sum + addon.price,
-//     0
-//   );
-//   return (item.price + addonsPrice) * item.quantity;
-// };
-
 const itemTotal = (item: any) => {
   const guestCounts = item.guestCounts || {
     adults: item.quantity,

@@ -89,6 +89,35 @@
             {{ validationError }}
           </div>
         </div>
+
+        <!-- Addon Editor -->
+        <div v-if="experience?.addons?.length" class="guest-editor addon-editor">
+          <h3 class="guest-editor__title">Tillval (valfritt)</h3>
+          
+          <div v-for="(addon, index) in experience.addons" :key="index" class="guest-row">
+            <div class="guest-row__info">
+              <span class="guest-row__label">{{ capitalize(addon.title) }}</span>
+              <span class="guest-row__desc">+{{ addon.price }} kr/gäst</span>
+            </div>
+            <div class="guest-row__controls">
+              <button 
+                @click="updateAddonQuantity(addon.title, -1)" 
+                :disabled="!selectedAddonQuantities[addon.title] || selectedAddonQuantities[addon.title] === 0"
+                type="button"
+                class="guest-btn">
+                −
+              </button>
+              <span class="guest-count">{{ selectedAddonQuantities[addon.title] || 0 }}</span>
+              <button 
+                @click="updateAddonQuantity(addon.title, 1)"
+                :disabled="(selectedAddonQuantities[addon.title] || 0) >= totalGuests || totalGuests === 0"
+                type="button"
+                class="guest-btn">
+                +
+              </button>
+            </div>
+          </div>
+        </div>
         
         <div class="calendar-container">
           <div class="date-picker-wrapper" @click="dateInput?.showPicker()">
@@ -151,11 +180,10 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emit = defineEmits<{
   close: []
-  update: [payload: { index: number; date: string; adults: number; children: number; seniors: number }]
+  update: [payload: { index: number; date: string; adults: number; children: number; seniors: number; addons: Array<{ slug: string; title: string; price: number; quantity: number }> }]
 }>()
 
 const cartStore = useCartStore()
-const { getAddon } = useExperiences()
 
 const selectedDate = ref(props.initialDate || '')
 const dateInput = ref<HTMLInputElement | null>(null)
@@ -164,6 +192,9 @@ const dateInput = ref<HTMLInputElement | null>(null)
 const localAdults = ref(props.adults)
 const localChildren = ref(props.children)
 const localSeniors = ref(props.seniors)
+
+// Addon quantities management
+const selectedAddonQuantities = ref<Record<string, number>>({})
 
 // Computed total guests
 const totalGuests = computed(() => localAdults.value + localChildren.value + localSeniors.value)
@@ -202,13 +233,13 @@ const totalPrice = computed(() => {
   
   const basePrice = props.experience.price * totalGuests.value
   
-  // Add addons price
-  const addonsPrice = props.experience.addons?.reduce((sum: number, slug: string) => {
-    const addon = getAddon(slug)
-    return sum + (addon?.price || 0)
-  }, 0) || 0
+  // Add addons price based on selected quantities
+  const addonsPrice = Object.entries(selectedAddonQuantities.value).reduce((sum, [title, quantity]) => {
+    const addon = props.experience.addons.find((a: any) => a.title === title)
+    return sum + (addon?.price || 0) * quantity
+  }, 0)
   
-  return basePrice + (addonsPrice * totalGuests.value)
+  return basePrice + addonsPrice
 })
 
 // Update guest counts
@@ -222,27 +253,75 @@ const updateGuests = (type: 'adults' | 'children' | 'seniors', delta: number) =>
   }
 }
 
+// Update addon quantities with zero-cleanup
+const updateAddonQuantity = (title: string, delta: number) => {
+  const currentQuantity = selectedAddonQuantities.value[title] || 0
+  const newQuantity = Math.max(0, Math.min(totalGuests.value, currentQuantity + delta))
+  
+  if (newQuantity === 0) {
+    // Zero-cleanup: remove from object
+    const { [title]: _, ...rest } = selectedAddonQuantities.value
+    selectedAddonQuantities.value = rest
+  } else {
+    selectedAddonQuantities.value[title] = newQuantity
+  }
+}
+
 // Set minimum date to today, autoimports from utils/date.ts
 const minDate = getTodayString();
 
-// Initialize selectedDate and guest counts when modal opens
+// Initialize selectedDate and guest counts when modal opens or cart item changes
+const initializeModalState = () => {
+  selectedDate.value = props.initialDate || ''
+  localAdults.value = props.adults
+  localChildren.value = props.children
+  localSeniors.value = props.seniors
+  
+  // Initialize addon quantities from cart item in edit mode
+  if (props.editMode && props.cartItemIndex !== undefined) {
+    const cartItem = cartStore.items[props.cartItemIndex]
+    if (cartItem?.selectedAddons && cartItem.selectedAddons.length > 0) {
+      const newQuantities = cartItem.selectedAddons.reduce((acc, addon) => {
+        acc[addon.title] = addon.quantity
+        return acc
+      }, {} as Record<string, number>)
+      selectedAddonQuantities.value = { ...newQuantities }
+    } else {
+      selectedAddonQuantities.value = {}
+    }
+  } else {
+    selectedAddonQuantities.value = {}
+  }
+}
+
 watch(() => props.show, (isOpen) => {
   if (isOpen) {
-    selectedDate.value = props.initialDate || ''
-    localAdults.value = props.adults
-    localChildren.value = props.children
-    localSeniors.value = props.seniors
+    initializeModalState()
   }
-})
+}, { immediate: true })
+
+// Re-initialize when cart item index changes (for edit mode)
+watch(() => props.cartItemIndex, () => {
+  if (props.show && props.editMode) {
+    initializeModalState()
+  }
+}, { immediate: true })
 
 // Sync with props when they change (including initialDate)
-watch(() => [props.initialDate, props.adults, props.children, props.seniors], () => {
+watch(() => [props.initialDate, props.adults, props.children, props.seniors, props.editMode, props.cartItemIndex], () => {
   if (props.show) {
-    selectedDate.value = props.initialDate || ''
-    localAdults.value = props.adults
-    localChildren.value = props.children
-    localSeniors.value = props.seniors
+    initializeModalState()
   }
+}, { immediate: true })
+
+// Watch totalGuests to clamp addon quantities
+watch(totalGuests, (newTotal) => {
+  Object.keys(selectedAddonQuantities.value).forEach(title => {
+    const currentQty = selectedAddonQuantities.value[title]
+    if (currentQty && currentQty > newTotal) {
+      selectedAddonQuantities.value[title] = newTotal
+    }
+  })
 })
 
 const formatDate = (dateString: string) => {
@@ -258,22 +337,24 @@ const formatDate = (dateString: string) => {
 const handleConfirm = () => {
   if (!selectedDate.value || !props.experience || totalGuests.value === 0) return
   
+  // Map selected addon quantities to addon objects
+  const selectedAddons = Object.entries(selectedAddonQuantities.value).map(([title, quantity]) => {
+    const addon = props.experience.addons.find((a: any) => a.title === title)
+    return addon ? { slug: addon.title, title: addon.title, price: addon.price, quantity } : null
+  }).filter(Boolean) as Array<{ slug: string; title: string; price: number; quantity: number }>
+  
   if (props.editMode && props.cartItemIndex !== undefined) {
-    // Edit mode: emit update event
+    // Edit mode: emit update event with addons
     emit('update', {
       index: props.cartItemIndex,
       date: selectedDate.value,
       adults: localAdults.value,
       children: localChildren.value,
-      seniors: localSeniors.value
+      seniors: localSeniors.value,
+      addons: selectedAddons
     })
   } else {
     // Add mode: add to cart
-    const selectedAddons = props.experience.addons?.map((slug: string) => {
-      const addon = getAddon(slug)
-      return addon ? { slug: addon.slug, title: addon.title, price: addon.price } : null
-    }).filter(Boolean) as Array<{ slug: string; title: string; price: number }> || []
-
     cartStore.addToCart(
       props.experience, 
       selectedAddons, 
@@ -380,6 +461,10 @@ const handleConfirm = () => {
   font-weight: 600;
   color: #1a1a1a;
   margin: 0 0 1rem 0;
+}
+
+.addon-editor {
+  margin-top: 1.5rem;
 }
 
 .guest-row {

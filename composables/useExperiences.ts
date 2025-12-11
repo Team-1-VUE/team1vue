@@ -10,7 +10,7 @@ export type Experience = {
   duration: string;
   price: number;
   image: string;
-  addons: string[];
+  addons: Array<{ title: string; price: number }>;
   minGuests: number;
   maxGuests: number;
   allowedCategories: {
@@ -67,11 +67,8 @@ export function useExperiences() {
   const getExperienceById = (id: string) =>
     data.value?.experiences.find((exp) => exp.id === id) || null;
 
-  const getAddon = (slug: string) =>
-    data.value?.addons.find((a) => a.slug === slug) || null;
-
   const totalAddonsPrice = (exp: Experience) =>
-    exp.addons.reduce((sum, slug) => sum + (getAddon(slug)?.price || 0), 0);
+    exp.addons.reduce((sum, addon) => sum + addon.price, 0);
 
   return {
     loading,
@@ -79,7 +76,6 @@ export function useExperiences() {
     getProfileExperiences,
     getProfileImage,
     getExperienceById,
-    getAddon,
     totalAddonsPrice,
   };
 }

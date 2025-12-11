@@ -88,12 +88,6 @@
               Totalt: {{ totalGuests }} gäst{{ totalGuests !== 1 ? "er" : "" }}
             </p>
 
-            <!-- visa hur många platser som återstår -->
-            <!-- <p v-if="currentSlot" class="slot-capacity-hint">
-              Platser kvar på denna tid:
-              {{ Math.max(maxGuestsForSelection - totalGuests, 0) }}
-            </p> -->
-
             <p v-if="selectedSlot" class="slot-capacity-hint">
               Platser kvar:
               {{
@@ -194,13 +188,6 @@
               class="date-picker-hidden" />
           </div>
         </div>
-
-        <!-- <p
-          v-if="selectedDate && !hasAnyUsableSlotsForSelectedDate"
-          class="date-full-hint">
-          Alla tider denna dag är redan fullbokade eller har för få platser.
-          Välj ett annat datum.
-        </p> -->
 
         <!-- Time slots -->
         <div v-if="selectedDate" class="timeslot-section">
@@ -330,6 +317,9 @@ const allowsSeniors = computed(() => {
 const maxGuestsForSelection = computed(() => {
   if (!props.experience) return Infinity;
 
+  // Försök använda remaining från DEN slotten du klickade på
+  // annars capacity
+  // annars fall back till experience.maxGuests
   const slotLimit =
     selectedSlot.value?.remaining ??
     selectedSlot.value?.capacity ??
@@ -961,12 +951,6 @@ const handleConfirm = () => {
   width: 0;
   height: 0;
 }
-
-/* .date-full-hint {
-  margin: 0.5rem 0 0.75rem;
-  font-size: 0.85rem;
-  color: #b91c1c;
-} */
 
 /* Time Slot Styles */
 .timeslot-section {

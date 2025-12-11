@@ -12,9 +12,7 @@ export type DecoratedTimeSlot = TimeSlot & {
   status: "full" | "few" | "available" | "tooSmall";
 };
 
-/**
- * Hämta alla tider för ett visst datum, med status + sortering
- */
+// * Hämta alla tider för ett visst datum, med status + sortering */
 export function getSlotsForDate(
   experience: Experience,
   date: string,
@@ -53,9 +51,7 @@ export function getSlotsForDate(
     .sort((a, b) => a.time.localeCompare(b.time));
 }
 
-/**
- * Finns det minst en slot denna dag där gruppen får plats?
- */
+/** Finns det minst en slot denna dag där gruppen får plats? */
 export function hasAvailableSlotForDate(
   experience: Experience,
   date: string,
@@ -65,9 +61,7 @@ export function hasAvailableSlotForDate(
   return slots.some((slot) => !slot.isFull && !slot.cannotFitGroup);
 }
 
-/**
- * Liten helper för att räkna totala gäster från filters
- */
+/** Liten helper för att räkna totala gäster från filters */
 export function getTotalGuestsFromFilters(filters: {
   adults: number;
   children: number;

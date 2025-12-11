@@ -43,12 +43,9 @@ const router = useRouter();
 
 const today = getTodayString();
 
-// const initialDateFromQuery = (route.query.date as string | undefined) ?? "";
-
 // Initiera filters från query params
 const filters = ref<SearchFilters>({
   date: (route.query.date as string) ?? today,
-  //   date: initialDateFromQuery,
   adults: Number(route.query.adults ?? 1),
   children: Number(route.query.children ?? 0),
   seniors: Number(route.query.seniors ?? 0),
@@ -157,12 +154,6 @@ const filteredExperiences = computed(() => {
     </section>
 
     <section v-else>
-      <!-- <p class="result-info">
-        Visar {{ filteredExperiences.length }} av
-        {{ experiences.length }} upplevelser
-        <span v-if="filters.date"> för datum {{ filters.date }} </span>
-      </p> -->
-
       <p class="result-info">
         Du har valt datum:
         <strong v-if="filters.date">{{ filters.date }}</strong>

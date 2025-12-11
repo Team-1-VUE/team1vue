@@ -60,7 +60,6 @@ const handleSearch = (filters: SearchFilters) => {
             <span>Explore Experiences</span>
             <ArrowRight :size="20" />
           </NuxtLink>
-          <!-- <button class="btn btn-secondary">Learn More</button> -->
         </div>
       </div>
     </section>
@@ -203,14 +202,14 @@ const handleSearch = (filters: SearchFilters) => {
 }
 
 .hero-subtitle {
-  margin: 0 auto 1.75rem; /* var 2.5rem – lite tajtare mot toppen */
+  margin: 0 auto 1.75rem;
   max-width: 48rem;
   font-size: 1.125rem;
   color: #4b5563;
 }
 
 .hero-search {
-  margin: 1.25rem auto 0; /* var 2rem – mindre “häng” neråt */
+  margin: 1.25rem auto 0;
   max-width: 800px;
 }
 
@@ -220,7 +219,7 @@ const handleSearch = (filters: SearchFilters) => {
   gap: 1rem;
   align-items: center;
   justify-content: center;
-  margin-top: 1.5rem; /* NY: lite extra luft under search-baren */
+  margin-top: 1.5rem;
 }
 
 .btn {

@@ -97,34 +97,6 @@ const handleClick = (slot: DecoratedTimeSlot) => {
 
       <ul v-else class="time-slot-list__items">
         <li v-for="slot in slots" :key="slot.time" class="time-slot-list__item">
-          <!-- <button
-            type="button"
-            class="time-slot-list__button"
-            :class="{
-              'time-slot-list__button--full': slot.isFull,
-              'time-slot-list__button--few': slot.status === 'few',
-              'time-slot-list__button--too-small': slot.status === 'tooSmall',
-            }"
-            :disabled="slot.isFull || slot.cannotFitGroup"
-            @click="handleClick(slot)">
-            <span class="time-slot-list__time">
-              {{ slot.time }}
-            </span>
-
-            <span class="time-slot-list__status" v-if="slot.isFull">
-              Fullbokat
-            </span>
-            <span
-              class="time-slot-list__status"
-              v-else-if="slot.cannotFitGroup">
-              För få platser för din grupp
-            </span>
-            <span class="time-slot-list__status" v-else>
-              {{ slot.remaining }} platser kvar
-              <span v-if="slot.status === 'few'">(få kvar)</span>
-            </span>
-          </button> -->
-
           <button
             type="button"
             class="time-slot-list__button"
@@ -146,20 +118,6 @@ const handleClick = (slot: DecoratedTimeSlot) => {
               <span v-if="slot.status === 'few'">(få kvar)</span>
             </span>
           </button>
-
-          <!-- <button
-            :class="{
-              'time-slot-list__button--full': slot.isFull,
-              'time-slot-list__button--few': slot.status === 'few',
-              'time-slot-list__button--too-small': slot.status === 'tooSmall',
-            }"
-            :disabled="slot.isFull || slot.cannotFitGroup">
-            <span v-if="slot.isFull">Fullbokat</span>
-            <span v-else-if="slot.cannotFitGroup"
-              >För få platser för din grupp</span
-            >
-            <span v-else>{{ slot.remaining }} platser kvar</span>
-          </button> -->
         </li>
       </ul>
     </template>

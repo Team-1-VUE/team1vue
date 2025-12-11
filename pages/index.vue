@@ -61,7 +61,7 @@ const handleSearch = (filters: SearchFilters) => {
             <span>Explore Experiences</span>
             <ArrowRight :size="20" />
           </NuxtLink>
-          <button class="btn btn-secondary">Learn More</button>
+          <!-- <button class="btn btn-secondary">Learn More</button> -->
         </div>
       </div>
     </section>

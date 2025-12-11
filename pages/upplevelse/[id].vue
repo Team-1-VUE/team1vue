@@ -43,12 +43,12 @@
           <div v-if="experience.addons?.length" class="experience-main__addons">
             <h3>Tillval</h3>
             <ul>
-              <li v-for="slug in experience.addons" :key="slug">
+              <li v-for="(addon, index) in experience.addons" :key="index">
                 <span class="addon-title">
-                  {{ capitalize(getAddon(slug)?.title || slug) }}
+                  {{ capitalize(addon.title) }}
                 </span>
                 <span class="addon-price">
-                  +{{ getAddon(slug)?.price }} kr/gäst
+                  +{{ addon.price }} kr/gäst
                 </span>
               </li>
             </ul>
@@ -109,7 +109,7 @@ import BookingModal from "~/components/BookingModal.vue";
 const route = useRoute();
 const id = route.params.id as string;
 
-const { loading, getExperienceById, getAddon, totalAddonsPrice } =
+const { loading, getExperienceById, totalAddonsPrice } =
   useExperiences();
 
 const experience = computed(() => getExperienceById(id));

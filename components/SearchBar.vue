@@ -12,12 +12,15 @@ export interface SearchFilters {
 const minDate = getTodayString();
 
 // Vi använder v-model på komponenten (modelValue in, update:modelValue ut)
-const props = withDefaults(defineProps<{
-  modelValue?: SearchFilters;
-  showSearchButton?: boolean;
-}>(), {
-  showSearchButton: true
-});
+const props = withDefaults(
+  defineProps<{
+    modelValue?: SearchFilters;
+    showSearchButton?: boolean;
+  }>(),
+  {
+    showSearchButton: true,
+  }
+);
 
 const emit = defineEmits<{
   "update:modelValue": [SearchFilters];
@@ -26,7 +29,7 @@ const emit = defineEmits<{
 
 // Lokalt state i komponenten
 const filters = reactive<SearchFilters>({
-  date: props.modelValue?.date || minDate,
+  date: props.modelValue?.date ?? minDate,
   adults: props.modelValue?.adults ?? 1,
   children: props.modelValue?.children ?? 0,
   seniors: props.modelValue?.seniors ?? 0,
@@ -37,6 +40,18 @@ watch(
   filters,
   (value) => {
     emit("update:modelValue", { ...value });
+  },
+  { deep: true }
+);
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    if (!value) return;
+    filters.date = value.date;
+    filters.adults = value.adults;
+    filters.children = value.children;
+    filters.seniors = value.seniors;
   },
   { deep: true }
 );
@@ -83,7 +98,9 @@ const onSubmit = (event: Event) => {
       </div>
     </div>
 
-    <button v-if="showSearchButton" class="search-button" type="submit">Sök upplevelser</button>
+    <button v-if="showSearchButton" class="search-button" type="submit">
+      Sök upplevelser
+    </button>
   </form>
 </template>
 

@@ -3,89 +3,127 @@
     <div v-if="show" class="modal-overlay" @click="$emit('close')">
       <div class="modal-content" @click.stop>
         <button class="modal-close" @click="$emit('close')">×</button>
-        
+
         <h2>Välj datum och gäster</h2>
         <p class="modal-subtitle">{{ experience?.title }}</p>
-        
+
         <!-- Guest Editor -->
         <div class="guest-editor">
           <h3 class="guest-editor__title">Antal gäster</h3>
-          
-          <div class="guest-row">
+
+          <div class="guest-row" v-if="allowsAdults">
             <div class="guest-row__info">
               <span class="guest-row__label">Vuxna</span>
               <span class="guest-row__desc">13+ år</span>
             </div>
             <div class="guest-row__controls">
-              <button 
-                @click="updateGuests('adults', -1)" 
+              <button
+                @click="updateGuests('adults', -1)"
                 :disabled="localAdults <= 0"
                 type="button"
                 class="guest-btn">
                 −
               </button>
               <span class="guest-count">{{ localAdults }}</span>
-              <button 
+              <button
                 @click="updateGuests('adults', 1)"
-                type="button" 
-                class="guest-btn">
+                type="button"
+                class="guest-btn"
+                :disabled="totalGuests >= maxGuestsForSelection">
                 +
               </button>
             </div>
           </div>
 
-          <div class="guest-row">
+          <div class="guest-row" v-if="allowsChildren">
             <div class="guest-row__info">
               <span class="guest-row__label">Barn</span>
               <span class="guest-row__desc">0-12 år</span>
             </div>
             <div class="guest-row__controls">
-              <button 
-                @click="updateGuests('children', -1)" 
+              <button
+                @click="updateGuests('children', -1)"
                 :disabled="localChildren <= 0"
                 type="button"
                 class="guest-btn">
                 −
               </button>
               <span class="guest-count">{{ localChildren }}</span>
-              <button 
+              <button
                 @click="updateGuests('children', 1)"
                 type="button"
-                class="guest-btn">
+                class="guest-btn"
+                :disabled="totalGuests >= maxGuestsForSelection">
                 +
               </button>
             </div>
           </div>
 
-          <div class="guest-row">
+          <div class="guest-row" v-if="allowsSeniors">
             <div class="guest-row__info">
               <span class="guest-row__label">Seniorer</span>
               <span class="guest-row__desc">65+ år</span>
             </div>
             <div class="guest-row__controls">
-              <button 
-                @click="updateGuests('seniors', -1)" 
+              <button
+                @click="updateGuests('seniors', -1)"
                 :disabled="localSeniors <= 0"
                 type="button"
                 class="guest-btn">
                 −
               </button>
               <span class="guest-count">{{ localSeniors }}</span>
-              <button 
+              <button
                 @click="updateGuests('seniors', 1)"
                 type="button"
-                class="guest-btn">
+                class="guest-btn"
+                :disabled="totalGuests >= maxGuestsForSelection">
                 +
               </button>
             </div>
           </div>
 
           <div class="guest-total-section">
-            <p class="guest-total">Totalt: {{ totalGuests }} gäst{{ totalGuests !== 1 ? 'er' : '' }}</p>
+            <p class="guest-total">
+              Totalt: {{ totalGuests }} gäst{{ totalGuests !== 1 ? "er" : "" }}
+            </p>
+
+            <!-- visa hur många platser som återstår -->
+            <!-- <p v-if="currentSlot" class="slot-capacity-hint">
+              Platser kvar på denna tid:
+              {{ Math.max(maxGuestsForSelection - totalGuests, 0) }}
+            </p> -->
+
+            <p v-if="selectedSlot" class="slot-capacity-hint">
+              Platser kvar:
+              {{
+                Math.max(
+                  (selectedSlot.remaining ?? maxGuestsForSelection) -
+                    totalGuests,
+                  0
+                )
+              }}
+            </p>
+
+            <!-- breakdown per kategori (om categoryPrices finns) -->
+            <p v-if="experience?.categoryPrices" class="price-breakdown">
+              <span v-if="localAdults">
+                {{ localAdults }} × {{ unitPrices.adults }} kr (vuxen)
+              </span>
+              <span v-if="localChildren">
+                <br v-if="localAdults" />
+                {{ localChildren }} × {{ unitPrices.children }} kr (barn)
+              </span>
+              <span v-if="localSeniors">
+                <br v-if="localAdults || localChildren" />
+                {{ localSeniors }} × {{ unitPrices.seniors }} kr (senior)
+              </span>
+            </p>
+
             <p class="price-total">{{ totalPrice }} kr</p>
           </div>
         </div>
-        
+
         <div class="calendar-container">
           <div class="date-picker-wrapper" @click="dateInput?.showPicker()">
             <div class="date-label">
@@ -93,25 +131,50 @@
               Välj datum för bokning
             </div>
             <div class="date-display">
-              <span v-if="!selectedDate" class="placeholder">Klicka för att välja datum</span>
-              <span v-else class="selected-date">{{ formatDate(selectedDate) }}</span>
+              <span v-if="!selectedDate" class="placeholder"
+                >Klicka för att välja datum</span
+              >
+              <span v-else class="selected-date">{{
+                formatDate(selectedDate)
+              }}</span>
             </div>
-            <input 
+            <input
               ref="dateInput"
-              type="date" 
+              type="date"
               v-model="selectedDate"
               :min="minDate"
               class="date-picker-hidden" />
           </div>
         </div>
 
+        <!-- <p
+          v-if="selectedDate && !hasAnyUsableSlotsForSelectedDate"
+          class="date-full-hint">
+          Alla tider denna dag är redan fullbokade eller har för få platser.
+          Välj ett annat datum.
+        </p> -->
+
+        <!-- Time slots -->
+        <div v-if="selectedDate" class="timeslot-section">
+          <h3 class="timeslot-title">Välj tid</h3>
+          <TimeSlotList
+            :experience="experience"
+            :selectedDate="selectedDate"
+            :guestCount="totalGuests"
+            @select="onTimeSelect" />
+
+          <p v-if="selectedTime" class="selected-time-label">
+            Vald tid: <strong>{{ selectedTime }}</strong>
+          </p>
+        </div>
+
         <div class="modal-actions">
           <button @click="$emit('close')" class="btn btn--secondary">
             Avbryt
           </button>
-          <button 
-            @click="handleConfirm" 
-            :disabled="!selectedDate || totalGuests === 0"
+          <button
+            @click="handleConfirm"
+            :disabled="!selectedDate || totalGuests === 0 || !selectedTime"
             class="btn btn--primary">
             Bekräfta bokning
           </button>
@@ -122,126 +185,368 @@
 </template>
 
 <script setup lang="ts">
-import { Calendar } from 'lucide-vue-next'
-import { useCartStore } from '~/stores/useCartStore'
-import { useExperiences } from '~/composables/useExperiences'
+import { Calendar } from "lucide-vue-next";
+import { useCartStore } from "~/stores/useCartStore";
+import { useExperiences } from "~/composables/useExperiences";
+import TimeSlotList from "~/components/TimeSlotList.vue";
+import {
+  getSlotsForDate,
+  type DecoratedTimeSlot,
+} from "~/utils/scheduleHelpers";
 
 interface Props {
-  show: boolean
-  experience: any
-  initialDate?: string
-  adults?: number
-  children?: number
-  seniors?: number
+  show: boolean;
+  experience: any;
+  initialDate?: string;
+  adults?: number;
+  children?: number;
+  seniors?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  initialDate: '',
+  initialDate: "",
   adults: 1,
   children: 0,
-  seniors: 0
-})
+  seniors: 0,
+});
 const emit = defineEmits<{
-  close: []
-}>()
+  close: [];
+}>();
 
-const cartStore = useCartStore()
-const { getAddon } = useExperiences()
+const cartStore = useCartStore();
+const { getAddon } = useExperiences();
 
-const selectedDate = ref('')
-const dateInput = ref<HTMLInputElement | null>(null)
+const selectedDate = ref("");
+const dateInput = ref<HTMLInputElement | null>(null);
+const selectedTime = ref<string | null>(null);
+
+// NY: vi sparar hela slot-objektet här
+const selectedSlot = ref<DecoratedTimeSlot | null>(null);
+
+// // hitta aktuell slot baserat på datum + tid
+// const currentSlot = computed<DecoratedTimeSlot | null>(() => {
+//   if (
+//     !props.experience ||
+//     !props.experience.schedule ||
+//     !selectedDate.value ||
+//     !selectedTime.value
+//   ) {
+//     return null;
+//   }
+
+//   const daySlots = props.experience.schedule[selectedDate.value] || [];
+//   return (
+//     (daySlots as DecoratedTimeSlot[]).find(
+//       (slot) => slot.time === selectedTime.value
+//     ) || null
+//   );
+// });
+
+// kolla om det finns NÅGON tid denna dag som faktiskt kan ta emot gruppen
+// const hasAnyUsableSlotsForSelectedDate = computed(() => {
+//   if (!props.experience || !selectedDate.value) return true;
+
+//   const guests = totalGuests.value || 1;
+
+//   // bas-slots (utan hänsyn till kundkorg)
+//   const baseSlots = getSlotsForDate(
+//     props.experience,
+//     selectedDate.value,
+//     guests
+//   );
+
+//   // dra av bokningar i kundkorg per tid
+//   const slotsWithRemaining = baseSlots.map((slot) => {
+//     const bookedForSlot = cartStore.items.reduce((sum, item) => {
+//       if (
+//         item.id !== props.experience.id ||
+//         item.bookingDate !== selectedDate.value ||
+//         item.bookingTime !== slot.time
+//       ) {
+//         return sum;
+//       }
+
+//       if (item.guestCounts) {
+//         const g = item.guestCounts;
+//         return sum + g.adults + g.children + g.seniors;
+//       }
+
+//       return sum + item.quantity;
+//     }, 0);
+
+//     const remaining = Math.max(slot.remaining - bookedForSlot, 0);
+//     const cannotFitGroup = remaining < guests;
+//     const isFull = remaining === 0;
+
+//     return { remaining, cannotFitGroup, isFull };
+//   });
+
+//   return slotsWithRemaining.some((s) => !s.isFull && !s.cannotFitGroup);
+// });
+
+// // max antal gäster som får plats för vald tid
+// const maxGuestsForSelection = computed(() => {
+//   if (!props.experience) return Infinity;
+
+//   const slotCapacity = currentSlot.value?.capacity;
+//   const baseMax = props.experience.maxGuests ?? Infinity;
+
+//   if (typeof slotCapacity === "number") {
+//     return Math.min(slotCapacity, baseMax);
+//   }
+
+//   return baseMax;
+// });
+
+const maxGuestsForSelection = computed(() => {
+  if (!props.experience) return Infinity;
+
+  // 1) Försök använda remaining från DEN slotten du klickade på
+  // 2) annars capacity
+  // 3) annars fall back till experience.maxGuests
+  const slotLimit =
+    selectedSlot.value?.remaining ??
+    selectedSlot.value?.capacity ??
+    props.experience.maxGuests ??
+    Infinity;
+
+  return slotLimit;
+});
 
 // Local guest counts that can be edited
-const localAdults = ref(props.adults)
-const localChildren = ref(props.children)
-const localSeniors = ref(props.seniors)
+const localAdults = ref(props.adults);
+const localChildren = ref(props.children);
+const localSeniors = ref(props.seniors);
 
 // Computed total guests
-const totalGuests = computed(() => localAdults.value + localChildren.value + localSeniors.value)
+const totalGuests = computed(
+  () => localAdults.value + localChildren.value + localSeniors.value
+);
 
 // Computed total price
 const totalPrice = computed(() => {
-  if (!props.experience) return 0
-  
-  const basePrice = props.experience.price * totalGuests.value
-  
-  // Add addons price
-  const addonsPrice = props.experience.addons?.reduce((sum: number, slug: string) => {
-    const addon = getAddon(slug)
-    return sum + (addon?.price || 0)
-  }, 0) || 0
-  
-  return basePrice + (addonsPrice * totalGuests.value)
-})
+  if (!props.experience) return 0;
+
+  const cp = props.experience.categoryPrices;
+
+  // Om categoryPrices finns → använd dem, annars fall back till experience.price
+  const adultPrice = cp?.adults ?? props.experience.price;
+  const childPrice = cp?.children ?? props.experience.price;
+  const seniorPrice = cp?.seniors ?? props.experience.price;
+
+  const adultsTotal = localAdults.value * adultPrice;
+  const childrenTotal = localChildren.value * childPrice;
+  const seniorsTotal = localSeniors.value * seniorPrice;
+
+  const guestsTotal = adultsTotal + childrenTotal + seniorsTotal;
+
+  // addons: vi räknar dem per person (vill du ha per bokning kan vi ändra sen)
+  const perGuestAddons =
+    props.experience.addons?.reduce((sum: number, slug: string) => {
+      const addon = getAddon(slug);
+      return sum + (addon?.price || 0);
+    }, 0) || 0;
+
+  const totalGuests =
+    localAdults.value + localChildren.value + localSeniors.value;
+
+  const addonsTotal = perGuestAddons * totalGuests;
+
+  return guestsTotal + addonsTotal;
+});
+
+// Unit prices for each category (vuxen, barn, senior)
+const unitPrices = computed(() => {
+  if (!props.experience) {
+    return { adults: 0, children: 0, seniors: 0 };
+  }
+
+  const cp = props.experience.categoryPrices;
+  const base = props.experience.price;
+
+  return {
+    adults: cp?.adults ?? base,
+    children: cp?.children ?? base,
+    seniors: cp?.seniors ?? base,
+  };
+});
+
+const allowsAdults = computed(() => {
+  return props.experience?.allowedCategories?.adults ?? true;
+});
+
+const allowsChildren = computed(() => {
+  return props.experience?.allowedCategories?.children ?? true;
+});
+
+const allowsSeniors = computed(() => {
+  return props.experience?.allowedCategories?.seniors ?? true;
+});
 
 // Update guest counts
-const updateGuests = (type: 'adults' | 'children' | 'seniors', delta: number) => {
-  if (type === 'adults') {
-    localAdults.value = Math.max(0, localAdults.value + delta)
-  } else if (type === 'children') {
-    localChildren.value = Math.max(0, localChildren.value + delta)
-  } else if (type === 'seniors') {
-    localSeniors.value = Math.max(0, localSeniors.value + delta)
+// const updateGuests = (
+//   type: "adults" | "children" | "seniors",
+//   delta: number
+// ) => {
+//   if (type === "adults") {
+//     localAdults.value = Math.max(0, localAdults.value + delta);
+//   } else if (type === "children") {
+//     localChildren.value = Math.max(0, localChildren.value + delta);
+//   } else if (type === "seniors") {
+//     localSeniors.value = Math.max(0, localSeniors.value + delta);
+//   }
+// };
+
+const updateGuests = (
+  type: "adults" | "children" | "seniors",
+  delta: number
+) => {
+  if (delta === 0) return;
+
+  const currentTotal = totalGuests.value;
+
+  // Om vi försöker ÖKA men redan är på max → gör inget
+  if (delta > 0 && currentTotal >= maxGuestsForSelection.value) {
+    return;
   }
-}
+
+  if (type === "adults") {
+    localAdults.value = Math.max(0, localAdults.value + delta);
+  } else if (type === "children") {
+    localChildren.value = Math.max(0, localChildren.value + delta);
+  } else if (type === "seniors") {
+    localSeniors.value = Math.max(0, localSeniors.value + delta);
+  }
+
+  // Safety: om vi ändå skulle passera max (edge case) → clamp tillbaka
+  const newTotal = totalGuests.value;
+  if (newTotal > maxGuestsForSelection.value) {
+    const overflow = newTotal - maxGuestsForSelection.value;
+    // enklast: dra av overflow från vuxna
+    localAdults.value = Math.max(0, localAdults.value - overflow);
+  }
+};
 
 // Set minimum date to today, autoimports from utils/date.ts
 const minDate = getTodayString();
 
 // Initialize selectedDate and guest counts when modal opens
-watch(() => props.show, (isOpen) => {
-  if (isOpen) {
-    selectedDate.value = props.initialDate || ''
-    localAdults.value = props.adults
-    localChildren.value = props.children
-    localSeniors.value = props.seniors
-  } else {
-    selectedDate.value = ''
+watch(
+  () => props.show,
+  (isOpen) => {
+    if (isOpen) {
+      selectedDate.value = props.initialDate || "";
+      localAdults.value = props.adults;
+      localChildren.value = props.children;
+      localSeniors.value = props.seniors;
+      selectedTime.value = null;
+
+      // Nolla kategorier som inte är tillåtna
+      const ac = props.experience?.allowedCategories;
+      if (ac) {
+        if (!ac.children) localChildren.value = 0;
+        if (!ac.seniors) localSeniors.value = 0;
+        if (!ac.adults) localAdults.value = 0;
+      }
+    } else {
+      selectedDate.value = "";
+      selectedTime.value = null;
+    }
   }
-})
+);
+
+watch(selectedDate, () => {
+  selectedTime.value = null;
+  selectedSlot.value = null;
+});
+
+// const onTimeSelect = (slot: DecoratedTimeSlot) => {
+//   selectedTime.value = slot.time;
+// };
+
+const onTimeSelect = (slot: DecoratedTimeSlot) => {
+  selectedSlot.value = slot; // spara hela slotten
+  selectedTime.value = slot.time;
+
+  // 🔁 Nollställ gäster när man byter tid
+  // starta om från “standard”
+  const defaultAdults = props.adults ?? 1;
+  const safeAdults = Math.min(defaultAdults, slot.remaining ?? defaultAdults);
+
+  localAdults.value = slot.remaining ? safeAdults || 1 : 0;
+  localChildren.value = 0;
+  localSeniors.value = 0;
+
+  // Safety: om nuvarande gästantal råkar vara större än den här slotens max → klampa ner
+  if (totalGuests.value > maxGuestsForSelection.value) {
+    const overflow = totalGuests.value - maxGuestsForSelection.value;
+    // enklast: dra av overflow från vuxna först
+    localAdults.value = Math.max(0, localAdults.value - overflow);
+  }
+};
 
 // Sync with props when they change
-watch(() => [props.adults, props.children, props.seniors], () => {
-  if (props.show) {
-    localAdults.value = props.adults
-    localChildren.value = props.children
-    localSeniors.value = props.seniors
+watch(
+  () => [props.adults, props.children, props.seniors],
+  () => {
+    if (props.show) {
+      localAdults.value = props.adults;
+      localChildren.value = props.children;
+      localSeniors.value = props.seniors;
+    }
   }
-})
+);
 
 const formatDate = (dateString: string) => {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('sv-SE', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric',
-    weekday: 'long'
-  })
-}
+  const date = new Date(dateString);
+  return date.toLocaleDateString("sv-SE", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    weekday: "long",
+  });
+};
 
 const handleConfirm = () => {
-  if (!selectedDate.value || !props.experience || totalGuests.value === 0) return
-  
+  if (
+    !selectedDate.value ||
+    !selectedTime.value ||
+    !props.experience ||
+    totalGuests.value === 0
+  )
+    return;
+
   // Get all addons for this experience
-  const selectedAddons = props.experience.addons?.map((slug: string) => {
-    const addon = getAddon(slug)
-    return addon ? { slug: addon.slug, title: addon.title, price: addon.price } : null
-  }).filter(Boolean) as Array<{ slug: string; title: string; price: number }> || []
+  const selectedAddons =
+    (props.experience.addons
+      ?.map((slug: string) => {
+        const addon = getAddon(slug);
+        return addon
+          ? { slug: addon.slug, title: addon.title, price: addon.price }
+          : null;
+      })
+      .filter(Boolean) as Array<{
+      slug: string;
+      title: string;
+      price: number;
+    }>) || [];
 
   // Add to cart with quantities for each category
   cartStore.addToCart(
-    props.experience, 
-    selectedAddons, 
+    props.experience,
+    selectedAddons,
     selectedDate.value,
     localAdults.value,
     localChildren.value,
-    localSeniors.value
-  )
-  
+    localSeniors.value,
+    selectedTime.value
+  );
+
   // Reset and close
-  selectedDate.value = ''
-  emit('close')
-}
+  selectedDate.value = "";
+  selectedTime.value = null;
+  emit("close");
+};
 </script>
 
 <style scoped>
@@ -423,6 +728,19 @@ const handleConfirm = () => {
   color: #1a1a1a;
 }
 
+.slot-capacity-hint {
+  margin: 0.25rem 0;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.price-breakdown {
+  margin: 0.25rem 0 0.35rem;
+  font-size: 0.85rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
 .price-total {
   margin: 0;
   font-size: 1.125rem;
@@ -498,6 +816,30 @@ const handleConfirm = () => {
   pointer-events: none;
   width: 0;
   height: 0;
+}
+
+/* .date-full-hint {
+  margin: 0.5rem 0 0.75rem;
+  font-size: 0.85rem;
+  color: #b91c1c;
+} */
+
+/* Time Slot Styles */
+.timeslot-section {
+  margin-bottom: 1.5rem;
+}
+
+.timeslot-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #111827;
+}
+
+.selected-time-label {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #374151;
 }
 
 .modal-actions {

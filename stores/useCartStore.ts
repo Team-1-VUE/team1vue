@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
 export type CartItem = {
   id: string;
@@ -10,7 +10,13 @@ export type CartItem = {
   selectedAddons: Array<{ slug: string; title: string; price: number }>;
   quantity: number;
   bookingDate?: string;
+  bookingTime?: string;
   guestCounts?: {
+    adults: number;
+    children: number;
+    seniors: number;
+  };
+  categoryPrices?: {
     adults: number;
     children: number;
     seniors: number;
@@ -39,22 +45,53 @@ export const useCartStore = defineStore("cart", () => {
       (newItems) => {
         localStorage.setItem("cart-items", JSON.stringify(newItems));
       },
-      { deep: true },
+      { deep: true }
     );
   }
 
   const totalItems = computed(() =>
-    items.value.reduce((sum, item) => sum + item.quantity, 0),
+    items.value.reduce((sum, item) => sum + item.quantity, 0)
   );
+
+  // const totalPrice = computed(() =>
+  //   items.value.reduce((sum, item) => {
+  //     const addonsPrice = item.selectedAddons.reduce(
+  //       (acc, addon) => acc + addon.price,
+  //       0
+  //     );
+  //     return sum + (item.price + addonsPrice) * item.quantity;
+  //   }, 0)
+  // );
 
   const totalPrice = computed(() =>
     items.value.reduce((sum, item) => {
-      const addonsPrice = item.selectedAddons.reduce(
+      const guestCounts = item.guestCounts || {
+        adults: item.quantity,
+        children: 0,
+        seniors: 0,
+      };
+
+      const cp = item.categoryPrices;
+      const adultPrice = cp?.adults ?? item.price;
+      const childPrice = cp?.children ?? item.price;
+      const seniorPrice = cp?.seniors ?? item.price;
+
+      const adultsTotal = guestCounts.adults * adultPrice;
+      const childrenTotal = guestCounts.children * childPrice;
+      const seniorsTotal = guestCounts.seniors * seniorPrice;
+
+      const guestsTotal = adultsTotal + childrenTotal + seniorsTotal;
+
+      const addonsPerGuest = item.selectedAddons.reduce(
         (acc, addon) => acc + addon.price,
-        0,
+        0
       );
-      return sum + (item.price + addonsPrice) * item.quantity;
-    }, 0),
+      const totalGuests =
+        guestCounts.adults + guestCounts.children + guestCounts.seniors;
+      const addonsTotal = addonsPerGuest * totalGuests;
+
+      return sum + guestsTotal + addonsTotal;
+    }, 0)
   );
 
   const cartItemCount = computed(() => items.value.length);
@@ -66,6 +103,7 @@ export const useCartStore = defineStore("cart", () => {
     adults: number = 1,
     children: number = 0,
     seniors: number = 0,
+    bookingTime?: string
   ) {
     const totalGuests = adults + children + seniors;
 
@@ -77,7 +115,8 @@ export const useCartStore = defineStore("cart", () => {
         item.id === experience.id &&
         JSON.stringify(item.selectedAddons) ===
           JSON.stringify(selectedAddons) &&
-        item.bookingDate === bookingDate,
+        item.bookingDate === bookingDate &&
+        item.bookingTime === bookingTime
     );
 
     if (existingItem) {
@@ -105,7 +144,9 @@ export const useCartStore = defineStore("cart", () => {
         selectedAddons,
         quantity: totalGuests,
         bookingDate,
+        bookingTime,
         guestCounts: { adults, children, seniors },
+        categoryPrices: experience.categoryPrices,
       });
     }
   }

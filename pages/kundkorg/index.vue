@@ -1,13 +1,15 @@
 <template>
   <div class="cart-page">
     <h1>Kundkorg</h1>
-    
+
     <div v-if="cartStore.cartItemCount === 0" class="empty-cart">
       <div class="empty-cart__icon">
         <ShoppingCart :size="64" :stroke-width="1.5" />
       </div>
       <h2 class="empty-cart__title">Din kundkorg är tom</h2>
-      <p class="empty-cart__text">Utforska våra upplevelser och hitta något spännande att boka!</p>
+      <p class="empty-cart__text">
+        Utforska våra upplevelser och hitta något spännande att boka!
+      </p>
       <NuxtLink to="/" class="btn btn--primary">
         <Compass :size="18" />
         Utforska upplevelser
@@ -16,8 +18,10 @@
 
     <div v-else>
       <div class="cart-items">
-        <div v-for="(item, index) in cartStore.items" :key="`${item.id}-${index}`" class="cart-item">
-          <!-- container for all -->
+        <div
+          v-for="(item, index) in cartStore.items"
+          :key="`${item.id}-${index}`"
+          class="cart-item">
           <div @click="handleEditItem(index)" class="cart-item__container">
             <!-- container for img -->
             <div class="cart-item__image-container">
@@ -47,28 +51,30 @@
                 {{ formatDate(item.bookingDate) }}
               </p>
             </div>
-            <!-- /container for event details -->
-            
-            <!-- container for guest details -->
-            <div v-if="item.guestCounts" class="guest-details">
-              <p class="guest-counts-label">Antal gäster:</p>
-              <ul class="guest-list">
-                <li>
-                  Vuxna: {{ item.guestCounts.adults || 0 }}
-                </li>
-                <li>
-                  Barn: {{ item.guestCounts.children || 0 }}
-                </li>
-                <li>
-                  Pensionärer: {{ item.guestCounts.seniors || 0 }}
+
+          <div class="cart-item__details">
+            <h3>{{ item.title }}</h3>
+            <p class="owner">med {{ capitalize(item.owner) }}</p>
+            <p class="duration">{{ item.duration }}</p>
+            <p v-if="item.bookingDate" class="booking-date">
+              <Calendar :size="16" />
+              {{ formatDate(item.bookingDate) }}
+            </p>
+
+            <div v-if="item.selectedAddons.length" class="addons">
+              <p class="addons-label">Tillval:</p>
+              <ul>
+                <li v-for="addon in item.selectedAddons" :key="addon.slug">
+                  {{ addon.title }} (+{{ addon.price }} kr)
                 </li>
               </ul>
-              <p class="total-guests">Totalt: {{ getTotalGuests(item) }} gäster</p>
+              <p class="total-guests">
+                Totalt: {{ getTotalGuests(item) }} gäster
+              </p>
             </div>
             <!-- /container for guest details -->
           </div>
           <!-- /container for all -->
-
           <div class="cart-item__actions">
             <p class="item-price">
               {{ itemTotal(item) }} kr
@@ -83,6 +89,7 @@
               </button>
             </div>
           </div>
+          
         </div>
       </div>
 
@@ -95,13 +102,13 @@
           <span>Totalt:</span>
           <span class="total-price">{{ cartStore.totalPrice }} kr</span>
         </div>
-        
+
         <button class="btn btn--primary" @click="handleCheckout">
           Gå till betalning
         </button>
       </div>
     </div>
-    
+
     <!-- Edit Booking Modal -->
     <BookingModal
       v-if="editingExperience && editingItemIndex !== null"
@@ -119,72 +126,34 @@
 </template>
 
 <script setup lang="ts">
-import { Calendar, ShoppingCart, Compass, Trash2, Edit } from 'lucide-vue-next'
-import { useCartStore } from '~/stores/useCartStore'
-import { useExperiences } from '~/composables/useExperiences'
-import BookingModal from '~/components/BookingModal.vue'
+import { Calendar, ShoppingCart, Compass } from "lucide-vue-next";
+import { useCartStore } from "~/stores/useCartStore";
 
-const cartStore = useCartStore()
-const { getExperienceById } = useExperiences()
-
-// Edit state
-const editingItemIndex = ref<number | null>(null)
-const editingExperience = ref<any>(null)
-const showEditModal = ref(false)
-
-const handleEditItem = (index: number) => {
-  const item = cartStore.items[index]
-  if (!item) return
-  
-  const experience = getExperienceById(item.id)
-  if (!experience) return
-  
-  editingItemIndex.value = index
-  editingExperience.value = experience
-  showEditModal.value = true
-}
-
-const handleUpdateBooking = (payload: { index: number; date: string; adults: number; children: number; seniors: number; addons: Array<{ slug: string; title: string; price: number; quantity: number }> }) => {
-  cartStore.updateCartItem(
-    payload.index,
-    payload.date,
-    payload.adults,
-    payload.children,
-    payload.seniors,
-    payload.addons
-  )
-  handleCloseEditModal()
-}
-
-const handleCloseEditModal = () => {
-  showEditModal.value = false
-  editingItemIndex.value = null
-  editingExperience.value = null
-}
+const cartStore = useCartStore();
 
 const itemTotal = (item: any) => {
-  const addonsPrice = item.selectedAddons.reduce((sum: number, addon: any) => sum + (addon.price * addon.quantity), 0)
-  return (item.price * item.quantity) + addonsPrice
-}
-
-const getTotalGuests = (item: any) => {
-  if (!item.guestCounts) return 0
-  return item.guestCounts.adults + item.guestCounts.children + item.guestCounts.seniors
-}
+  const addonsPrice = item.selectedAddons.reduce(
+    (sum: number, addon: any) => sum + addon.price,
+    0
+  );
+  return (item.price + addonsPrice) * item.quantity;
+};
 
 const formatDate = (dateString: string) => {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('sv-SE', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-  })
-}
+  const date = new Date(dateString);
+  return date.toLocaleDateString("sv-SE", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
 
 const handleCheckout = () => {
-  alert(`Tack! Du har blivit debiterad ${cartStore.totalPrice} SEK för din bokning.`)
-  cartStore.clearCart()
-}
+  alert(
+    `Tack! Du har blivit debiterad ${cartStore.totalPrice} SEK för din bokning.`
+  );
+  cartStore.clearCart();
+};
 </script>
 
 <style scoped>
@@ -220,7 +189,8 @@ const handleCheckout = () => {
 }
 
 @keyframes floatIcon {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -313,8 +283,10 @@ const handleCheckout = () => {
   font-size: 1.25rem;
 }
 
-.duration, .booking-date, .description {
-  margin: 0.25rem 0 0;
+.owner,
+.duration,
+.booking-date {
+  margin: 0.25rem 0;
   color: #6b7280;
   font-size: 0.875rem;
 }

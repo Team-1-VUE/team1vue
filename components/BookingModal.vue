@@ -280,11 +280,12 @@ const initializeModalState = () => {
   // Initialize addon quantities from cart item in edit mode
   if (props.editMode && props.cartItemIndex !== undefined) {
     const cartItem = cartStore.items[props.cartItemIndex]
-    if (cartItem?.selectedAddons) {
-      selectedAddonQuantities.value = cartItem.selectedAddons.reduce((acc, addon) => {
+    if (cartItem?.selectedAddons && cartItem.selectedAddons.length > 0) {
+      const newQuantities = cartItem.selectedAddons.reduce((acc, addon) => {
         acc[addon.title] = addon.quantity
         return acc
       }, {} as Record<string, number>)
+      selectedAddonQuantities.value = { ...newQuantities }
     } else {
       selectedAddonQuantities.value = {}
     }
@@ -297,24 +298,21 @@ watch(() => props.show, (isOpen) => {
   if (isOpen) {
     initializeModalState()
   }
-})
+}, { immediate: true })
 
 // Re-initialize when cart item index changes (for edit mode)
 watch(() => props.cartItemIndex, () => {
   if (props.show && props.editMode) {
     initializeModalState()
   }
-})
+}, { immediate: true })
 
 // Sync with props when they change (including initialDate)
-watch(() => [props.initialDate, props.adults, props.children, props.seniors], () => {
+watch(() => [props.initialDate, props.adults, props.children, props.seniors, props.editMode, props.cartItemIndex], () => {
   if (props.show) {
-    selectedDate.value = props.initialDate || ''
-    localAdults.value = props.adults
-    localChildren.value = props.children
-    localSeniors.value = props.seniors
+    initializeModalState()
   }
-})
+}, { immediate: true })
 
 // Watch totalGuests to clamp addon quantities
 watch(totalGuests, (newTotal) => {

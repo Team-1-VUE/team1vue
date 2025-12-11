@@ -274,16 +274,5 @@
       "availableDates": ["2025-12-19", "2025-12-20", "2025-12-27"]
     }
   ],
-  "addons": [
-    { "slug": "hjälm", "title": "hjälm", "price": 75 },
-    { "slug": "klätterutrustning", "title": "klätterutrustning", "price": 120 },
-    { "slug": "ingrediensbox", "title": "ingrediensbox", "price": 80 },
-    { "slug": "handduk", "title": "handduk", "price": 30 },
-    { "slug": "danssko", "title": "danssko", "price": 50 },
-    { "slug": "sminkmaterial", "title": "sminkmaterial", "price": 60 },
-    { "slug": "te-fika", "title": "te och fika", "price": 50 },
-    { "slug": "meditationsguide", "title": "meditationsguide", "price": 75 },
-    { "slug": "livsstilscoach", "title": "livsstilscoach", "price": 100 }
-  ],
   "articles": []
 }

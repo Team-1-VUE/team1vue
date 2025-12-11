@@ -47,9 +47,7 @@
                 <span class="addon-title">
                   {{ capitalize(addon.title) }}
                 </span>
-                <span class="addon-price">
-                  +{{ addon.price }} kr/gäst
-                </span>
+                <span class="addon-price"> +{{ addon.price }} kr/gäst </span>
               </li>
             </ul>
           </div>
@@ -58,8 +56,33 @@
         <!-- Right column (booking card) -->
         <aside class="experience-sidebar">
           <div class="booking-card">
-            <p class="booking-card__label">{{ experience.addons?.length ? 'Från' : 'Pris' }}</p>
+            <p class="booking-card__label">
+              {{ experience.addons?.length ? "Från" : "Pris" }}
+            </p>
             <p class="booking-card__price">{{ experience.price }} kr</p>
+
+            <p
+              v-if="experience.categoryPrices"
+              class="booking-card__per-category">
+              Pris per person:
+              <br />
+              <span>Vuxen: {{ experience.categoryPrices.adults }} kr</span>
+              <span v-if="experience.allowedCategories.children">
+                • Barn: {{ experience.categoryPrices.children }} kr
+              </span>
+              <span v-if="experience.allowedCategories.seniors">
+                • Senior: {{ experience.categoryPrices.seniors }} kr
+              </span>
+            </p>
+
+            <p
+              v-if="
+                experience.addons?.length && totalAddonsPrice(experience) > 0
+              "
+              class="booking-card__total">
+              {{ experience.price + totalAddonsPrice(experience) }} kr med
+              tillval
+            </p>
 
             <button @click="showModal = true" class="booking-card__button">
               Boka upplevelse
@@ -100,8 +123,7 @@ import BookingModal from "~/components/BookingModal.vue";
 const route = useRoute();
 const id = route.params.id as string;
 
-const { loading, getExperienceById, totalAddonsPrice } =
-  useExperiences();
+const { loading, getExperienceById, totalAddonsPrice } = useExperiences();
 
 const experience = computed(() => getExperienceById(id));
 
@@ -286,6 +308,13 @@ const showModal = ref(false);
   font-size: 1.8rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
+}
+
+.booking-card__per-category {
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
 }
 
 .booking-card__total {

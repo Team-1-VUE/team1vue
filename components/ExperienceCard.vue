@@ -26,13 +26,8 @@
 
       <div class="experience-card__footer">
         <div class="price-section">
-          <span class="price-label">PRIS</span>
+          <span class="price-label">{{ experience.addons?.length ? 'PRIS FRÅN' : 'PRIS' }}</span>
           <span class="price-value">{{ experience.price }} kr</span>
-          <span
-            v-if="experience.addons?.length && totalAddonsPrice(experience) > 0"
-            class="price-total">
-            {{ experience.price + totalAddonsPrice(experience) }} kr med tillval
-          </span>
         </div>
 
         <div class="action-buttons">

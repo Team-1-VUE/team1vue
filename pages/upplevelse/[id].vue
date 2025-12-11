@@ -58,17 +58,8 @@
         <!-- Right column (booking card) -->
         <aside class="experience-sidebar">
           <div class="booking-card">
-            <p class="booking-card__label">Från</p>
+            <p class="booking-card__label">{{ experience.addons?.length ? 'Från' : 'Pris' }}</p>
             <p class="booking-card__price">{{ experience.price }} kr</p>
-
-            <p
-              v-if="
-                experience.addons?.length && totalAddonsPrice(experience) > 0
-              "
-              class="booking-card__total">
-              {{ experience.price + totalAddonsPrice(experience) }} kr med
-              tillval
-            </p>
 
             <button @click="showModal = true" class="booking-card__button">
               Boka upplevelse

@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import ExperienceCard from "~/components/ExperienceCard.vue";
+import ExperienceCardList from "~/components/ExperienceCardList.vue";
 import { useExperiences } from "~/composables/useExperiences";
 import SearchBar, { type SearchFilters } from "~/components/SearchBar.vue";
-import { ref, computed } from "vue";
 import { useRoute, useRouter } from "#imports";
 
 const { loading, experiences } = useExperiences();
@@ -89,12 +88,7 @@ const filteredExperiences = computed(() => {
         <span v-else>inget specifikt datum</span>
       </p>
 
-      <div class="experiences-grid">
-        <ExperienceCard
-          v-for="experience in filteredExperiences"
-          :key="experience.id"
-          :experience="experience" />
-      </div>
+      <ExperienceCardList :experiences="filteredExperiences" class="experience-grid" />
 
       <p v-if="!filteredExperiences.length">
         Inga upplevelser matchar din sökning. Testa att ändra datum eller antal
@@ -135,7 +129,7 @@ const filteredExperiences = computed(() => {
   color: #4b5563;
 }
 
-.experiences-grid {
+.experience-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(250px, 1fr));
   gap: 1.5rem;

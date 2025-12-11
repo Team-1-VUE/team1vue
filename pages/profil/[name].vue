@@ -19,18 +19,7 @@
     <section v-else>
       <h2>Upplevelser</h2>
 
-      <div v-if="profileExperiences.length" class="experience-list">
-        <ExperienceCard
-          v-for="exp in profileExperiences"
-          :key="exp.slug"
-          :experience="exp"
-          :profile-name="name"
-        />
-      </div>
-
-      <div v-else>
-        <p>Inga upplevelser hittades för denna profil.</p>
-      </div>
+      <ExperienceCardList class="experience-grid" />
     </section>
   </div>
 </template>
@@ -48,8 +37,6 @@ const { getProfile } = useProfiles();
 const { loading, getProfileExperiences } = useExperiences();
 
 const profile = computed(() => getProfile(name));
-console.log(profile);
-const profileExperiences = computed(() => getProfileExperiences(name));
 </script>
 
 <style scoped>
@@ -90,7 +77,7 @@ const profileExperiences = computed(() => getProfileExperiences(name));
   }
 }
 
-.experience-list {
+.experience-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(250px, 1fr));
   gap: 2rem;

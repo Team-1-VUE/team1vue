@@ -1,13 +1,15 @@
 <template>
   <div class="cart-page">
     <h1>Kundkorg</h1>
-    
+
     <div v-if="cartStore.cartItemCount === 0" class="empty-cart">
       <div class="empty-cart__icon">
         <ShoppingCart :size="64" :stroke-width="1.5" />
       </div>
       <h2 class="empty-cart__title">Din kundkorg är tom</h2>
-      <p class="empty-cart__text">Utforska våra upplevelser och hitta något spännande att boka!</p>
+      <p class="empty-cart__text">
+        Utforska våra upplevelser och hitta något spännande att boka!
+      </p>
       <NuxtLink to="/" class="btn btn--primary">
         <Compass :size="18" />
         Utforska upplevelser
@@ -16,18 +18,35 @@
 
     <div v-else>
       <div class="cart-items">
-        <div v-for="(item, index) in cartStore.items" :key="`${item.id}-${index}`" class="cart-item">
+        <div
+          v-for="(item, index) in cartStore.items"
+          :key="`${item.id}-${index}`"
+          class="cart-item">
           <img :src="item.image" :alt="item.title" class="cart-item__image" />
-          
+
           <div class="cart-item__details">
             <h3>{{ item.title }}</h3>
             <p class="owner">med {{ capitalize(item.owner) }}</p>
             <p class="duration">{{ item.duration }}</p>
+
             <p v-if="item.bookingDate" class="booking-date">
               <Calendar :size="16" />
               {{ formatDate(item.bookingDate) }}
+              <span v-if="item.bookingTime"> kl {{ item.bookingTime }}</span>
+              <span v-if="item.bookingTime"> • {{ item.bookingTime }} </span>
             </p>
-            
+
+            <!-- gäster -->
+            <p v-if="item.guestCounts" class="owner">
+              {{ item.guestCounts.adults }} vuxna
+              <span v-if="item.guestCounts.children">
+                , {{ item.guestCounts.children }} barn
+              </span>
+              <span v-if="item.guestCounts.seniors">
+                , {{ item.guestCounts.seniors }} seniorer
+              </span>
+            </p>
+
             <div v-if="item.selectedAddons.length" class="addons">
               <p class="addons-label">Tillval:</p>
               <ul>
@@ -40,15 +59,19 @@
 
           <div class="cart-item__actions">
             <div class="quantity-control">
-              <button @click="cartStore.updateQuantity(index, item.quantity - 1)">-</button>
+              <button
+                @click="cartStore.updateQuantity(index, item.quantity - 1)">
+                -
+              </button>
               <span>{{ item.quantity }}</span>
-              <button @click="cartStore.updateQuantity(index, item.quantity + 1)">+</button>
+              <button
+                @click="cartStore.updateQuantity(index, item.quantity + 1)">
+                +
+              </button>
             </div>
-            
-            <p class="item-price">
-              {{ itemTotal(item) }} kr
-            </p>
-            
+
+            <p class="item-price">{{ itemTotal(item) }} kr</p>
+
             <button @click="cartStore.removeFromCart(index)" class="btn-remove">
               Ta bort
             </button>
@@ -65,7 +88,7 @@
           <span>Totalt:</span>
           <span class="total-price">{{ cartStore.totalPrice }} kr</span>
         </div>
-        
+
         <button class="btn btn--primary" @click="handleCheckout">
           Gå till betalning
         </button>
@@ -75,29 +98,63 @@
 </template>
 
 <script setup lang="ts">
-import { Calendar, ShoppingCart, Compass } from 'lucide-vue-next'
-import { useCartStore } from '~/stores/useCartStore'
+import { Calendar, ShoppingCart, Compass } from "lucide-vue-next";
+import { useCartStore } from "~/stores/useCartStore";
 
-const cartStore = useCartStore()
+const cartStore = useCartStore();
+
+// const itemTotal = (item: any) => {
+//   const addonsPrice = item.selectedAddons.reduce(
+//     (sum: number, addon: any) => sum + addon.price,
+//     0
+//   );
+//   return (item.price + addonsPrice) * item.quantity;
+// };
 
 const itemTotal = (item: any) => {
-  const addonsPrice = item.selectedAddons.reduce((sum: number, addon: any) => sum + addon.price, 0)
-  return (item.price + addonsPrice) * item.quantity
-}
+  const guestCounts = item.guestCounts || {
+    adults: item.quantity,
+    children: 0,
+    seniors: 0,
+  };
+
+  const cp = item.categoryPrices;
+  const adultPrice = cp?.adults ?? item.price;
+  const childPrice = cp?.children ?? item.price;
+  const seniorPrice = cp?.seniors ?? item.price;
+
+  const adultsTotal = guestCounts.adults * adultPrice;
+  const childrenTotal = guestCounts.children * childPrice;
+  const seniorsTotal = guestCounts.seniors * seniorPrice;
+
+  const guestsTotal = adultsTotal + childrenTotal + seniorsTotal;
+
+  const addonsPerGuest = item.selectedAddons.reduce(
+    (sum: number, addon: any) => sum + addon.price,
+    0
+  );
+  const totalGuests =
+    guestCounts.adults + guestCounts.children + guestCounts.seniors;
+  const addonsTotal = addonsPerGuest * totalGuests;
+
+  return guestsTotal + addonsTotal;
+};
 
 const formatDate = (dateString: string) => {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('sv-SE', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-  })
-}
+  const date = new Date(dateString);
+  return date.toLocaleDateString("sv-SE", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
 
 const handleCheckout = () => {
-  alert(`Tack! Du har blivit debiterad ${cartStore.totalPrice} SEK för din bokning.`)
-  cartStore.clearCart()
-}
+  alert(
+    `Tack! Du har blivit debiterad ${cartStore.totalPrice} SEK för din bokning.`
+  );
+  cartStore.clearCart();
+};
 </script>
 
 <style scoped>
@@ -133,7 +190,8 @@ const handleCheckout = () => {
 }
 
 @keyframes floatIcon {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -200,7 +258,9 @@ const handleCheckout = () => {
   font-size: 1.25rem;
 }
 
-.owner, .duration, .booking-date {
+.owner,
+.duration,
+.booking-date {
   margin: 0.25rem 0;
   color: #6b7280;
   font-size: 0.875rem;

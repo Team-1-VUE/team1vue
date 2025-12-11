@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
 export type CartItem = {
   id: string;
@@ -16,7 +16,13 @@ export type CartItem = {
   }>;
   quantity: number;
   bookingDate?: string;
+  bookingTime?: string;
   guestCounts?: {
+    adults: number;
+    children: number;
+    seniors: number;
+  };
+  categoryPrices?: {
     adults: number;
     children: number;
     seniors: number;
@@ -52,21 +58,52 @@ export const useCartStore = defineStore("cart", () => {
         localStorage.setItem("cart-items", JSON.stringify(newItems));
       }
     },
-    { deep: true },
+    { deep: true }
   );
 
   const totalItems = computed(() =>
-    items.value.reduce((sum, item) => sum + item.quantity, 0),
+    items.value.reduce((sum, item) => sum + item.quantity, 0)
   );
+
+  // const totalPrice = computed(() =>
+  //   items.value.reduce((sum, item) => {
+  //     const addonsPrice = item.selectedAddons.reduce(
+  //       (acc, addon) => acc + addon.price,
+  //       0
+  //     );
+  //     return sum + (item.price + addonsPrice) * item.quantity;
+  //   }, 0)
+  // );
 
   const totalPrice = computed(() =>
     items.value.reduce((sum, item) => {
-      const addonsPrice = item.selectedAddons.reduce(
-        (acc, addon) => acc + addon.price * addon.quantity,
-        0,
+      const guestCounts = item.guestCounts || {
+        adults: item.quantity,
+        children: 0,
+        seniors: 0,
+      };
+
+      const cp = item.categoryPrices;
+      const adultPrice = cp?.adults ?? item.price;
+      const childPrice = cp?.children ?? item.price;
+      const seniorPrice = cp?.seniors ?? item.price;
+
+      const adultsTotal = guestCounts.adults * adultPrice;
+      const childrenTotal = guestCounts.children * childPrice;
+      const seniorsTotal = guestCounts.seniors * seniorPrice;
+
+      const guestsTotal = adultsTotal + childrenTotal + seniorsTotal;
+
+      const addonsPerGuest = item.selectedAddons.reduce(
+        (acc, addon) => acc + addon.price,
+        0
       );
-      return sum + item.price * item.quantity + addonsPrice;
-    }, 0),
+      const totalGuests =
+        guestCounts.adults + guestCounts.children + guestCounts.seniors;
+      const addonsTotal = addonsPerGuest * totalGuests;
+
+      return sum + guestsTotal + addonsTotal;
+    }, 0)
   );
 
   const cartItemCount = computed(() => items.value.length);
@@ -83,25 +120,49 @@ export const useCartStore = defineStore("cart", () => {
     adults: number = 1,
     children: number = 0,
     seniors: number = 0,
+    bookingTime?: string
   ) {
     const totalGuests = adults + children + seniors;
 
     if (totalGuests === 0) return;
 
-    // Always create a new cart item - no merging
-    items.value.push({
-      id: experience.id,
-      title: experience.title,
-      price: experience.price,
-      image: experience.image,
-      duration: experience.duration,
-      owner: experience.owner,
-      description: experience.description,
-      selectedAddons,
-      quantity: totalGuests,
-      bookingDate,
-      guestCounts: { adults, children, seniors },
-    });
+    // Find existing item with same experience, addons, and booking date
+    const existingItem = items.value.find(
+      (item) =>
+        item.id === experience.id &&
+        JSON.stringify(item.selectedAddons) ===
+          JSON.stringify(selectedAddons) &&
+        item.bookingDate === bookingDate
+    );
+
+    if (existingItem) {
+      // Update existing item's guest counts
+      if (existingItem.guestCounts) {
+        existingItem.guestCounts.adults += adults;
+        existingItem.guestCounts.children += children;
+        existingItem.guestCounts.seniors += seniors;
+      } else {
+        existingItem.guestCounts = { adults, children, seniors };
+      }
+      existingItem.quantity =
+        existingItem.guestCounts.adults +
+        existingItem.guestCounts.children +
+        existingItem.guestCounts.seniors;
+    } else {
+      // Create new cart item with guest counts
+      items.value.push({
+        id: experience.id,
+        title: experience.title,
+        price: experience.price,
+        image: experience.image,
+        duration: experience.duration,
+        owner: experience.owner,
+        selectedAddons,
+        quantity: totalGuests,
+        bookingDate,
+        guestCounts: { adults, children, seniors },
+      });
+    }
   }
 
   function removeFromCart(index: number) {
@@ -130,7 +191,7 @@ export const useCartStore = defineStore("cart", () => {
       title: string;
       price: number;
       quantity: number;
-    }> = [],
+    }> = []
   ) {
     const item = items.value[index];
     if (!item) return;

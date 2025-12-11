@@ -54,6 +54,11 @@
       "description": "Följ med Kristoffer på ett klätteräventyr.",
       "duration": "2h",
       "price": 350,
+      "categoryPrices": {
+        "children": 250,
+        "adults": 350,
+        "seniors": 300
+      },
       "image": "/images/benckert3.png",
       "addons": [
         { "title": "hjälm", "price": 75 },
@@ -66,7 +71,74 @@
         "adults": true,
         "seniors": false
       },
-      "availableDates": ["2025-12-20", "2025-12-21", "2025-12-28"]
+      "availableDates": [
+        "2025-12-10",
+        "2025-12-12",
+        "2025-12-14",
+        "2025-12-17",
+        "2025-12-19",
+        "2025-12-21",
+        "2025-12-28",
+        "2025-12-30",
+        "2026-01-02",
+        "2026-01-04",
+        "2026-01-07",
+        "2026-01-09"
+      ],
+      "schedule": {
+        "2025-12-10": [
+          { "time": "10:00", "capacity": 4, "booked": 0 },
+          { "time": "14:00", "capacity": 4, "booked": 0 },
+          { "time": "18:00", "capacity": 4, "booked": 0 }
+        ],
+        "2025-12-12": [
+          { "time": "10:00", "capacity": 4, "booked": 2 },
+          { "time": "14:00", "capacity": 4, "booked": 1 },
+          { "time": "18:00", "capacity": 4, "booked": 4 }
+        ],
+        "2025-12-14": [
+          { "time": "11:00", "capacity": 4, "booked": 3 },
+          { "time": "15:00", "capacity": 4, "booked": 0 }
+        ],
+        "2025-12-17": [
+          { "time": "10:00", "capacity": 4, "booked": 1 },
+          { "time": "14:00", "capacity": 4, "booked": 0 },
+          { "time": "18:00", "capacity": 4, "booked": 0 }
+        ],
+        "2025-12-19": [
+          { "time": "10:00", "capacity": 4, "booked": 4 },
+          { "time": "14:00", "capacity": 4, "booked": 4 }
+        ],
+        "2025-12-21": [
+          { "time": "09:00", "capacity": 4, "booked": 2 },
+          { "time": "13:30", "capacity": 4, "booked": 1 }
+        ],
+        "2025-12-28": [
+          { "time": "11:00", "capacity": 4, "booked": 0 },
+          { "time": "16:00", "capacity": 4, "booked": 3 }
+        ],
+        "2025-12-30": [
+          { "time": "10:00", "capacity": 4, "booked": 1 },
+          { "time": "18:00", "capacity": 4, "booked": 0 }
+        ],
+        "2026-01-02": [
+          { "time": "10:00", "capacity": 4, "booked": 0 },
+          { "time": "14:00", "capacity": 4, "booked": 2 },
+          { "time": "18:00", "capacity": 4, "booked": 0 }
+        ],
+        "2026-01-04": [
+          { "time": "11:00", "capacity": 4, "booked": 0 },
+          { "time": "15:00", "capacity": 4, "booked": 0 }
+        ],
+        "2026-01-07": [
+          { "time": "10:00", "capacity": 4, "booked": 3 },
+          { "time": "14:00", "capacity": 4, "booked": 1 }
+        ],
+        "2026-01-09": [
+          { "time": "10:00", "capacity": 4, "booked": 0 },
+          { "time": "18:00", "capacity": 4, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "2",
@@ -76,6 +148,11 @@
       "description": "Styrketräning och teknik med Benckert.",
       "duration": "1.5h",
       "price": 300,
+      "categoryPrices": {
+        "children": 260,
+        "adults": 300,
+        "seniors": 270
+      },
       "image": "/images/benckert2.png",
       "addons": [],
       "minGuests": 1,
@@ -85,7 +162,70 @@
         "adults": true,
         "seniors": true
       },
-      "availableDates": ["2025-12-19", "2025-12-21", "2025-12-27"]
+      "availableDates": [
+        "2025-12-11",
+        "2025-12-13",
+        "2025-12-16",
+        "2025-12-19",
+        "2025-12-21",
+        "2025-12-27",
+        "2025-12-29",
+        "2026-01-02",
+        "2026-01-03",
+        "2026-01-05",
+        "2026-01-08",
+        "2026-01-10"
+      ],
+      "schedule": {
+        "2025-12-11": [
+          { "time": "08:00", "capacity": 3, "booked": 0 },
+          { "time": "10:30", "capacity": 3, "booked": 0 }
+        ],
+        "2025-12-13": [
+          { "time": "09:00", "capacity": 3, "booked": 2 },
+          { "time": "11:30", "capacity": 3, "booked": 1 }
+        ],
+        "2025-12-16": [
+          { "time": "07:30", "capacity": 3, "booked": 1 },
+          { "time": "10:00", "capacity": 3, "booked": 0 }
+        ],
+        "2025-12-19": [
+          { "time": "08:00", "capacity": 3, "booked": 3 },
+          { "time": "10:30", "capacity": 3, "booked": 1 }
+        ],
+        "2025-12-21": [
+          { "time": "12:00", "capacity": 3, "booked": 0 },
+          { "time": "15:00", "capacity": 3, "booked": 2 }
+        ],
+        "2025-12-27": [
+          { "time": "09:30", "capacity": 3, "booked": 3 },
+          { "time": "14:30", "capacity": 3, "booked": 1 }
+        ],
+        "2025-12-29": [
+          { "time": "08:00", "capacity": 3, "booked": 0 },
+          { "time": "10:30", "capacity": 3, "booked": 0 }
+        ],
+        "2026-01-02": [
+          { "time": "08:00", "capacity": 3, "booked": 2 },
+          { "time": "10:30", "capacity": 3, "booked": 0 }
+        ],
+        "2026-01-03": [
+          { "time": "09:00", "capacity": 3, "booked": 0 },
+          { "time": "11:30", "capacity": 3, "booked": 0 }
+        ],
+        "2026-01-05": [
+          { "time": "07:30", "capacity": 3, "booked": 1 },
+          { "time": "10:00", "capacity": 3, "booked": 1 }
+        ],
+        "2026-01-08": [
+          { "time": "08:00", "capacity": 3, "booked": 0 },
+          { "time": "10:30", "capacity": 3, "booked": 0 }
+        ],
+        "2026-01-10": [
+          { "time": "09:00", "capacity": 3, "booked": 0 },
+          { "time": "11:30", "capacity": 3, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "3",
@@ -95,6 +235,11 @@
       "description": "En underhållande genomgång av vilda teorier.",
       "duration": "2h",
       "price": 200,
+      "categoryPrices": {
+        "children": 150,
+        "adults": 200,
+        "seniors": 180
+      },
       "image": "/images/benckert1.png",
       "addons": [],
       "minGuests": 1,
@@ -104,7 +249,77 @@
         "adults": true,
         "seniors": true
       },
-      "availableDates": ["2025-12-18", "2025-12-20", "2025-12-22"]
+      "availableDates": [
+        "2025-12-10",
+        "2025-12-12",
+        "2025-12-13",
+        "2025-12-18",
+        "2025-12-19",
+        "2025-12-20",
+        "2025-12-22",
+        "2025-12-27",
+        "2025-12-28",
+        "2025-12-30",
+        "2026-01-02",
+        "2026-01-04",
+        "2026-01-06",
+        "2026-01-09"
+      ],
+      "schedule": {
+        "2025-12-10": [
+          { "time": "18:00", "capacity": 10, "booked": 0 },
+          { "time": "20:30", "capacity": 10, "booked": 0 }
+        ],
+        "2025-12-12": [
+          { "time": "18:00", "capacity": 10, "booked": 3 },
+          { "time": "20:30", "capacity": 10, "booked": 1 }
+        ],
+        "2025-12-13": [
+          { "time": "18:00", "capacity": 10, "booked": 5 },
+          { "time": "20:30", "capacity": 10, "booked": 0 }
+        ],
+        "2025-12-18": [
+          { "time": "18:00", "capacity": 10, "booked": 8 },
+          { "time": "20:30", "capacity": 10, "booked": 10 }
+        ],
+        "2025-12-19": [
+          { "time": "18:00", "capacity": 10, "booked": 0 },
+          { "time": "20:30", "capacity": 10, "booked": 4 }
+        ],
+        "2025-12-20": [
+          { "time": "17:00", "capacity": 8, "booked": 4 },
+          { "time": "21:00", "capacity": 8, "booked": 8 }
+        ],
+        "2025-12-22": [{ "time": "19:00", "capacity": 10, "booked": 2 }],
+        "2025-12-27": [
+          { "time": "18:00", "capacity": 10, "booked": 0 },
+          { "time": "20:30", "capacity": 10, "booked": 0 }
+        ],
+        "2025-12-28": [
+          { "time": "18:00", "capacity": 10, "booked": 6 },
+          { "time": "20:30", "capacity": 10, "booked": 0 }
+        ],
+        "2025-12-30": [
+          { "time": "18:00", "capacity": 10, "booked": 1 },
+          { "time": "20:30", "capacity": 10, "booked": 0 }
+        ],
+        "2026-01-02": [
+          { "time": "18:00", "capacity": 10, "booked": 0 },
+          { "time": "20:30", "capacity": 10, "booked": 0 }
+        ],
+        "2026-01-04": [
+          { "time": "18:00", "capacity": 10, "booked": 3 },
+          { "time": "20:30", "capacity": 10, "booked": 1 }
+        ],
+        "2026-01-06": [
+          { "time": "18:00", "capacity": 10, "booked": 0 },
+          { "time": "20:30", "capacity": 10, "booked": 0 }
+        ],
+        "2026-01-09": [
+          { "time": "18:00", "capacity": 10, "booked": 0 },
+          { "time": "20:30", "capacity": 10, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "4",
@@ -114,6 +329,11 @@
       "description": "Koka, knåda och njut av pasta från grunden.",
       "duration": "2h",
       "price": 350,
+      "categoryPrices": {
+        "children": 280,
+        "adults": 350,
+        "seniors": 320
+      },
       "image": "/images/pencheff1.png",
       "addons": [{ "title": "ingrediensbox", "price": 80 }],
       "minGuests": 2,
@@ -123,7 +343,75 @@
         "adults": true,
         "seniors": true
       },
-      "availableDates": ["2025-12-19", "2025-12-23", "2025-12-27"]
+      "availableDates": [
+        "2025-12-11",
+        "2025-12-13",
+        "2025-12-17",
+        "2025-12-19",
+        "2025-12-20",
+        "2025-12-23",
+        "2025-12-27",
+        "2025-12-29",
+        "2026-01-02",
+        "2026-01-03",
+        "2026-01-05",
+        "2026-01-08",
+        "2026-01-10"
+      ],
+      "schedule": {
+        "2025-12-11": [
+          { "time": "17:00", "capacity": 6, "booked": 0 },
+          { "time": "20:00", "capacity": 6, "booked": 0 }
+        ],
+        "2025-12-13": [
+          { "time": "17:00", "capacity": 6, "booked": 2 },
+          { "time": "20:00", "capacity": 6, "booked": 0 }
+        ],
+        "2025-12-17": [
+          { "time": "17:00", "capacity": 6, "booked": 0 },
+          { "time": "20:00", "capacity": 6, "booked": 3 }
+        ],
+        "2025-12-19": [
+          { "time": "17:00", "capacity": 6, "booked": 6 },
+          { "time": "20:00", "capacity": 6, "booked": 3 }
+        ],
+        "2025-12-20": [
+          { "time": "17:00", "capacity": 6, "booked": 0 },
+          { "time": "20:00", "capacity": 6, "booked": 4 }
+        ],
+        "2025-12-23": [
+          { "time": "16:00", "capacity": 6, "booked": 2 },
+          { "time": "19:30", "capacity": 6, "booked": 6 }
+        ],
+        "2025-12-27": [
+          { "time": "11:00", "capacity": 6, "booked": 0 },
+          { "time": "18:00", "capacity": 6, "booked": 5 }
+        ],
+        "2025-12-29": [
+          { "time": "17:00", "capacity": 6, "booked": 0 },
+          { "time": "20:00", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-02": [
+          { "time": "17:00", "capacity": 6, "booked": 1 },
+          { "time": "20:00", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-03": [
+          { "time": "17:00", "capacity": 6, "booked": 0 },
+          { "time": "20:00", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-05": [
+          { "time": "17:00", "capacity": 6, "booked": 3 },
+          { "time": "20:00", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-08": [
+          { "time": "17:00", "capacity": 6, "booked": 0 },
+          { "time": "20:00", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-10": [
+          { "time": "17:00", "capacity": 6, "booked": 0 },
+          { "time": "20:00", "capacity": 6, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "5",
@@ -133,6 +421,11 @@
       "description": "Kreativt uttryck och spoken word.",
       "duration": "1.5h",
       "price": 280,
+      "categoryPrices": {
+        "children": 230,
+        "adults": 280,
+        "seniors": 250
+      },
       "image": "/images/pencheff3.png",
       "addons": [],
       "minGuests": 1,
@@ -142,7 +435,67 @@
         "adults": true,
         "seniors": true
       },
-      "availableDates": ["2025-12-18", "2025-12-20", "2025-12-28"]
+      "availableDates": [
+        "2025-12-11",
+        "2025-12-13",
+        "2025-12-18",
+        "2025-12-20",
+        "2025-12-22",
+        "2025-12-23",
+        "2025-12-28",
+        "2025-12-30",
+        "2026-01-02",
+        "2026-01-04",
+        "2026-01-07",
+        "2026-01-10"
+      ],
+      "schedule": {
+        "2025-12-11": [
+          { "time": "18:00", "capacity": 15, "booked": 0 },
+          { "time": "20:00", "capacity": 15, "booked": 2 }
+        ],
+        "2025-12-13": [
+          { "time": "18:00", "capacity": 15, "booked": 5 },
+          { "time": "20:00", "capacity": 15, "booked": 0 }
+        ],
+        "2025-12-18": [
+          { "time": "18:00", "capacity": 15, "booked": 10 },
+          { "time": "20:00", "capacity": 15, "booked": 15 }
+        ],
+        "2025-12-20": [
+          { "time": "17:30", "capacity": 12, "booked": 12 },
+          { "time": "21:00", "capacity": 12, "booked": 4 }
+        ],
+        "2025-12-22": [
+          { "time": "18:00", "capacity": 15, "booked": 0 },
+          { "time": "20:00", "capacity": 15, "booked": 3 }
+        ],
+        "2025-12-23": [
+          { "time": "18:00", "capacity": 15, "booked": 4 },
+          { "time": "20:00", "capacity": 15, "booked": 0 }
+        ],
+        "2025-12-28": [{ "time": "19:00", "capacity": 15, "booked": 7 }],
+        "2025-12-30": [
+          { "time": "18:00", "capacity": 15, "booked": 0 },
+          { "time": "20:00", "capacity": 15, "booked": 0 }
+        ],
+        "2026-01-02": [
+          { "time": "18:00", "capacity": 15, "booked": 2 },
+          { "time": "20:00", "capacity": 15, "booked": 0 }
+        ],
+        "2026-01-04": [
+          { "time": "18:00", "capacity": 15, "booked": 0 },
+          { "time": "20:00", "capacity": 15, "booked": 5 }
+        ],
+        "2026-01-07": [
+          { "time": "18:00", "capacity": 15, "booked": 0 },
+          { "time": "20:00", "capacity": 15, "booked": 0 }
+        ],
+        "2026-01-10": [
+          { "time": "18:00", "capacity": 15, "booked": 3 },
+          { "time": "20:00", "capacity": 15, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "6",
@@ -152,6 +505,11 @@
       "description": "Smidig, lugn och effektiv träning.",
       "duration": "1h",
       "price": 250,
+      "categoryPrices": {
+        "children": 210,
+        "adults": 250,
+        "seniors": 230
+      },
       "image": "/images/pencheff2.png",
       "addons": [],
       "minGuests": 1,
@@ -161,7 +519,75 @@
         "adults": true,
         "seniors": true
       },
-      "availableDates": ["2025-12-19", "2025-12-21", "2025-12-29"]
+      "availableDates": [
+        "2025-12-10",
+        "2025-12-12",
+        "2025-12-14",
+        "2025-12-19",
+        "2025-12-21",
+        "2025-12-23",
+        "2025-12-27",
+        "2025-12-29",
+        "2025-12-31",
+        "2026-01-02",
+        "2026-01-05",
+        "2026-01-08",
+        "2026-01-10"
+      ],
+      "schedule": {
+        "2025-12-10": [
+          { "time": "08:30", "capacity": 8, "booked": 0 },
+          { "time": "10:00", "capacity": 8, "booked": 1 }
+        ],
+        "2025-12-12": [
+          { "time": "08:30", "capacity": 8, "booked": 2 },
+          { "time": "10:00", "capacity": 8, "booked": 0 }
+        ],
+        "2025-12-14": [
+          { "time": "08:30", "capacity": 8, "booked": 0 },
+          { "time": "10:00", "capacity": 8, "booked": 0 }
+        ],
+        "2025-12-19": [
+          { "time": "08:30", "capacity": 8, "booked": 5 },
+          { "time": "10:00", "capacity": 8, "booked": 8 }
+        ],
+        "2025-12-21": [
+          { "time": "09:00", "capacity": 8, "booked": 2 },
+          { "time": "18:00", "capacity": 8, "booked": 8 }
+        ],
+        "2025-12-23": [
+          { "time": "08:30", "capacity": 8, "booked": 0 },
+          { "time": "10:00", "capacity": 8, "booked": 3 }
+        ],
+        "2025-12-27": [
+          { "time": "08:30", "capacity": 8, "booked": 0 },
+          { "time": "10:00", "capacity": 8, "booked": 0 }
+        ],
+        "2025-12-29": [
+          { "time": "07:30", "capacity": 8, "booked": 0 },
+          { "time": "19:30", "capacity": 8, "booked": 3 }
+        ],
+        "2025-12-31": [
+          { "time": "08:30", "capacity": 8, "booked": 1 },
+          { "time": "10:00", "capacity": 8, "booked": 0 }
+        ],
+        "2026-01-02": [
+          { "time": "08:30", "capacity": 8, "booked": 0 },
+          { "time": "10:00", "capacity": 8, "booked": 2 }
+        ],
+        "2026-01-05": [
+          { "time": "08:30", "capacity": 8, "booked": 0 },
+          { "time": "10:00", "capacity": 8, "booked": 0 }
+        ],
+        "2026-01-08": [
+          { "time": "08:30", "capacity": 8, "booked": 4 },
+          { "time": "10:00", "capacity": 8, "booked": 0 }
+        ],
+        "2026-01-10": [
+          { "time": "08:30", "capacity": 8, "booked": 0 },
+          { "time": "10:00", "capacity": 8, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "7",
@@ -171,7 +597,12 @@
       "description": "Följ med Simon ut med sportbilen.",
       "duration": "1h",
       "price": 500,
-      "image": "/images/simon1.png",
+      "categoryPrices": {
+        "children": 450,
+        "adults": 500,
+        "seniors": 480
+      },
+      "image": "/images/experiences/sportbil-med-simon.webp",
       "addons": [],
       "minGuests": 1,
       "maxGuests": 2,
@@ -180,7 +611,70 @@
         "adults": true,
         "seniors": true
       },
-      "availableDates": ["2025-12-20", "2025-12-22", "2025-12-30"]
+      "availableDates": [
+        "2025-12-12",
+        "2025-12-14",
+        "2025-12-18",
+        "2025-12-20",
+        "2025-12-22",
+        "2025-12-27",
+        "2025-12-29",
+        "2025-12-30",
+        "2026-01-02",
+        "2026-01-04",
+        "2026-01-06",
+        "2026-01-09"
+      ],
+      "schedule": {
+        "2025-12-12": [
+          { "time": "10:00", "capacity": 2, "booked": 0 },
+          { "time": "14:00", "capacity": 2, "booked": 1 }
+        ],
+        "2025-12-14": [
+          { "time": "10:00", "capacity": 2, "booked": 0 },
+          { "time": "14:00", "capacity": 2, "booked": 0 }
+        ],
+        "2025-12-18": [
+          { "time": "10:00", "capacity": 2, "booked": 0 },
+          { "time": "14:00", "capacity": 2, "booked": 2 }
+        ],
+        "2025-12-20": [
+          { "time": "10:00", "capacity": 2, "booked": 2 },
+          { "time": "14:00", "capacity": 2, "booked": 1 }
+        ],
+        "2025-12-22": [
+          { "time": "09:30", "capacity": 2, "booked": 0 },
+          { "time": "16:00", "capacity": 2, "booked": 2 }
+        ],
+        "2025-12-27": [
+          { "time": "10:00", "capacity": 2, "booked": 0 },
+          { "time": "14:00", "capacity": 2, "booked": 0 }
+        ],
+        "2025-12-29": [
+          { "time": "10:00", "capacity": 2, "booked": 1 },
+          { "time": "14:00", "capacity": 2, "booked": 0 }
+        ],
+        "2025-12-30": [
+          { "time": "11:00", "capacity": 2, "booked": 1 },
+          { "time": "15:30", "capacity": 2, "booked": 2 }
+        ],
+        "2026-01-02": [
+          { "time": "10:00", "capacity": 2, "booked": 0 },
+          { "time": "14:00", "capacity": 2, "booked": 0 }
+        ],
+        "2026-01-04": [
+          { "time": "10:00", "capacity": 2, "booked": 2 },
+          { "time": "14:00", "capacity": 2, "booked": 0 }
+        ],
+        "2026-01-06": [
+          { "time": "10:00", "capacity": 2, "booked": 0 },
+          { "time": "14:00", "capacity": 2, "booked": 1 }
+        ],
+        "2026-01-09": [
+          { "time": "10:00", "capacity": 2, "booked": 0 },
+          { "time": "14:00", "capacity": 2, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "8",
@@ -190,7 +684,12 @@
       "description": "En meditativ sittning med ro och fokus.",
       "duration": "45min",
       "price": 150,
-      "image": "/images/simon2.png",
+      "categoryPrices": {
+        "children": 120,
+        "adults": 150,
+        "seniors": 130
+      },
+      "image": "/images/experiences/sitt-med-simon.webp",
       "addons": [],
       "minGuests": 1,
       "maxGuests": 12,
@@ -199,7 +698,75 @@
         "adults": true,
         "seniors": true
       },
-      "availableDates": ["2025-12-18", "2025-12-19", "2025-12-21"]
+      "availableDates": [
+        "2025-12-10",
+        "2025-12-12",
+        "2025-12-14",
+        "2025-12-18",
+        "2025-12-19",
+        "2025-12-21",
+        "2025-12-23",
+        "2025-12-27",
+        "2025-12-29",
+        "2025-12-31",
+        "2026-01-03",
+        "2026-01-06",
+        "2026-01-09"
+      ],
+      "schedule": {
+        "2025-12-10": [
+          { "time": "08:00", "capacity": 12, "booked": 3 },
+          { "time": "18:00", "capacity": 12, "booked": 0 }
+        ],
+        "2025-12-12": [
+          { "time": "08:00", "capacity": 12, "booked": 0 },
+          { "time": "18:00", "capacity": 12, "booked": 4 }
+        ],
+        "2025-12-14": [
+          { "time": "09:00", "capacity": 12, "booked": 0 },
+          { "time": "19:00", "capacity": 12, "booked": 0 }
+        ],
+        "2025-12-18": [
+          { "time": "08:00", "capacity": 12, "booked": 6 },
+          { "time": "18:00", "capacity": 12, "booked": 12 }
+        ],
+        "2025-12-19": [
+          { "time": "07:30", "capacity": 10, "booked": 10 },
+          { "time": "20:00", "capacity": 10, "booked": 3 }
+        ],
+        "2025-12-21": [
+          { "time": "09:00", "capacity": 12, "booked": 0 },
+          { "time": "19:00", "capacity": 12, "booked": 9 }
+        ],
+        "2025-12-23": [
+          { "time": "08:00", "capacity": 12, "booked": 1 },
+          { "time": "18:00", "capacity": 12, "booked": 0 }
+        ],
+        "2025-12-27": [
+          { "time": "08:00", "capacity": 12, "booked": 0 },
+          { "time": "18:00", "capacity": 12, "booked": 2 }
+        ],
+        "2025-12-29": [
+          { "time": "08:00", "capacity": 12, "booked": 0 },
+          { "time": "18:00", "capacity": 12, "booked": 0 }
+        ],
+        "2025-12-31": [
+          { "time": "08:00", "capacity": 12, "booked": 4 },
+          { "time": "18:00", "capacity": 12, "booked": 0 }
+        ],
+        "2026-01-03": [
+          { "time": "08:00", "capacity": 12, "booked": 0 },
+          { "time": "18:00", "capacity": 12, "booked": 5 }
+        ],
+        "2026-01-06": [
+          { "time": "08:00", "capacity": 12, "booked": 0 },
+          { "time": "18:00", "capacity": 12, "booked": 0 }
+        ],
+        "2026-01-09": [
+          { "time": "08:00", "capacity": 12, "booked": 2 },
+          { "time": "18:00", "capacity": 12, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "9",
@@ -209,9 +776,13 @@
       "description": "Lär dig sminktekniker och kreativa looks.",
       "duration": "2h",
       "price": 300,
-      "image": "/images/simon3.png",
-      "addons": [{ "title": "sminkmaterial", "price": 60 }],
-
+      "categoryPrices": {
+        "children": 240,
+        "adults": 300,
+        "seniors": 270
+      },
+      "image": "/images/experiences/smink-med-simon.webp",
+      "addons": [],
       "minGuests": 1,
       "maxGuests": 6,
       "allowedCategories": {
@@ -219,7 +790,80 @@
         "adults": true,
         "seniors": false
       },
-      "availableDates": ["2025-12-19", "2025-12-22", "2025-12-28"]
+      "availableDates": [
+        "2025-12-11",
+        "2025-12-13",
+        "2025-12-19",
+        "2025-12-20",
+        "2025-12-22",
+        "2025-12-24",
+        "2025-12-28",
+        "2025-12-29",
+        "2025-12-31",
+        "2026-01-02",
+        "2026-01-04",
+        "2026-01-06",
+        "2026-01-08",
+        "2026-01-10"
+      ],
+      "schedule": {
+        "2025-12-11": [
+          { "time": "16:00", "capacity": 6, "booked": 0 },
+          { "time": "19:30", "capacity": 6, "booked": 1 }
+        ],
+        "2025-12-13": [
+          { "time": "16:00", "capacity": 6, "booked": 2 },
+          { "time": "19:30", "capacity": 6, "booked": 0 }
+        ],
+        "2025-12-19": [
+          { "time": "16:00", "capacity": 6, "booked": 4 },
+          { "time": "19:30", "capacity": 6, "booked": 6 }
+        ],
+        "2025-12-20": [
+          { "time": "16:00", "capacity": 6, "booked": 0 },
+          { "time": "19:30", "capacity": 6, "booked": 0 }
+        ],
+        "2025-12-22": [
+          { "time": "15:00", "capacity": 6, "booked": 0 },
+          { "time": "18:30", "capacity": 6, "booked": 5 }
+        ],
+        "2025-12-24": [
+          { "time": "16:00", "capacity": 6, "booked": 0 },
+          { "time": "19:30", "capacity": 6, "booked": 0 }
+        ],
+        "2025-12-28": [
+          { "time": "13:00", "capacity": 6, "booked": 6 },
+          { "time": "17:30", "capacity": 6, "booked": 2 }
+        ],
+        "2025-12-29": [
+          { "time": "16:00", "capacity": 6, "booked": 0 },
+          { "time": "19:30", "capacity": 6, "booked": 0 }
+        ],
+        "2025-12-31": [
+          { "time": "16:00", "capacity": 6, "booked": 0 },
+          { "time": "19:30", "capacity": 6, "booked": 3 }
+        ],
+        "2026-01-02": [
+          { "time": "16:00", "capacity": 6, "booked": 0 },
+          { "time": "19:30", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-04": [
+          { "time": "16:00", "capacity": 6, "booked": 1 },
+          { "time": "19:30", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-06": [
+          { "time": "16:00", "capacity": 6, "booked": 0 },
+          { "time": "19:30", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-08": [
+          { "time": "16:00", "capacity": 6, "booked": 0 },
+          { "time": "19:30", "capacity": 6, "booked": 2 }
+        ],
+        "2026-01-10": [
+          { "time": "16:00", "capacity": 6, "booked": 0 },
+          { "time": "19:30", "capacity": 6, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "10",
@@ -229,6 +873,11 @@
       "description": "Svettig men rolig träningssession med fokus på styrka, rörlighet och pepp.",
       "duration": "1.5h",
       "price": 350,
+      "categoryPrices": {
+        "adults": 350,
+        "children": 200,
+        "seniors": 250
+      },
       "image": "/images/antonio_img/antonio_workout_1.png",
       "addons": [{ "title": "handduk", "price": 30 }],
       "minGuests": 1,
@@ -238,7 +887,87 @@
         "adults": true,
         "seniors": true
       },
-      "availableDates": ["2025-12-20", "2025-12-23", "2025-12-27"]
+      "availableDates": [
+        "2025-12-10",
+        "2025-12-12",
+        "2025-12-16",
+        "2025-12-20",
+        "2025-12-23",
+        "2025-12-27",
+        "2025-12-29",
+        "2025-12-30",
+        "2026-01-02",
+        "2026-01-04",
+        "2026-01-06",
+        "2026-01-08",
+        "2026-01-10"
+      ],
+      "schedule": {
+        "2025-12-10": [
+          { "time": "09:00", "capacity": 6, "booked": 1 },
+          { "time": "13:00", "capacity": 6, "booked": 0 },
+          { "time": "18:00", "capacity": 6, "booked": 0 }
+        ],
+        "2025-12-12": [
+          { "time": "09:00", "capacity": 6, "booked": 0 },
+          { "time": "13:00", "capacity": 6, "booked": 2 },
+          { "time": "18:00", "capacity": 6, "booked": 0 }
+        ],
+        "2025-12-16": [
+          { "time": "09:00", "capacity": 6, "booked": 0 },
+          { "time": "13:00", "capacity": 6, "booked": 0 },
+          { "time": "18:00", "capacity": 6, "booked": 3 }
+        ],
+        "2025-12-20": [
+          { "time": "09:00", "capacity": 6, "booked": 2 },
+          { "time": "13:00", "capacity": 6, "booked": 6 },
+          { "time": "18:00", "capacity": 6, "booked": 1 }
+        ],
+        "2025-12-23": [
+          { "time": "10:00", "capacity": 4, "booked": 4 },
+          { "time": "17:00", "capacity": 4, "booked": 2 }
+        ],
+        "2025-12-27": [
+          { "time": "08:30", "capacity": 5, "booked": 0 },
+          { "time": "12:00", "capacity": 5, "booked": 3 },
+          { "time": "19:00", "capacity": 5, "booked": 5 }
+        ],
+        "2025-12-29": [
+          { "time": "09:00", "capacity": 6, "booked": 0 },
+          { "time": "13:00", "capacity": 6, "booked": 1 },
+          { "time": "18:00", "capacity": 6, "booked": 0 }
+        ],
+        "2025-12-30": [
+          { "time": "09:00", "capacity": 6, "booked": 0 },
+          { "time": "13:00", "capacity": 6, "booked": 0 },
+          { "time": "18:00", "capacity": 6, "booked": 2 }
+        ],
+        "2026-01-02": [
+          { "time": "09:00", "capacity": 6, "booked": 0 },
+          { "time": "13:00", "capacity": 6, "booked": 0 },
+          { "time": "18:00", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-04": [
+          { "time": "09:00", "capacity": 6, "booked": 3 },
+          { "time": "13:00", "capacity": 6, "booked": 0 },
+          { "time": "18:00", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-06": [
+          { "time": "09:00", "capacity": 6, "booked": 0 },
+          { "time": "13:00", "capacity": 6, "booked": 2 },
+          { "time": "18:00", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-08": [
+          { "time": "09:00", "capacity": 6, "booked": 0 },
+          { "time": "13:00", "capacity": 6, "booked": 0 },
+          { "time": "18:00", "capacity": 6, "booked": 4 }
+        ],
+        "2026-01-10": [
+          { "time": "09:00", "capacity": 6, "booked": 0 },
+          { "time": "13:00", "capacity": 6, "booked": 0 },
+          { "time": "18:00", "capacity": 6, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "11",
@@ -248,6 +977,11 @@
       "description": "Lär dig enkla men snygga dansmoves – fokus på glädje, rytm och självkänsla.",
       "duration": "1.5h",
       "price": 320,
+      "categoryPrices": {
+        "children": 240,
+        "adults": 320,
+        "seniors": 280
+      },
       "image": "/images/antonio_horizontal/antonio_dancing_salsa.png",
       "addons": [{ "title": "danssko", "price": 50 }],
       "minGuests": 1,
@@ -257,7 +991,71 @@
         "adults": true,
         "seniors": true
       },
-      "availableDates": ["2025-12-18", "2025-12-21", "2025-12-29"]
+      "availableDates": [
+        "2025-12-10",
+        "2025-12-11",
+        "2025-12-13",
+        "2025-12-15",
+        "2025-12-18",
+        "2025-12-19",
+        "2025-12-21",
+        "2025-12-23",
+        "2025-12-26",
+        "2025-12-29",
+        "2025-12-30",
+        "2026-01-02",
+        "2026-01-04",
+        "2026-01-08",
+        "2026-01-10"
+      ],
+      "schedule": {
+        "2025-12-10": [{ "time": "18:00", "capacity": 8, "booked": 0 }],
+        "2025-12-11": [
+          { "time": "17:30", "capacity": 10, "booked": 0 },
+          { "time": "19:30", "capacity": 10, "booked": 0 }
+        ],
+        "2025-12-13": [
+          { "time": "14:00", "capacity": 8, "booked": 0 },
+          { "time": "18:30", "capacity": 8, "booked": 0 }
+        ],
+        "2025-12-15": [{ "time": "17:00", "capacity": 6, "booked": 0 }],
+
+        "2025-12-18": [
+          { "time": "17:00", "capacity": 10, "booked": 10 },
+          { "time": "19:30", "capacity": 10, "booked": 4 }
+        ],
+
+        "2025-12-19": [
+          { "time": "16:00", "capacity": 10, "booked": 0 },
+          { "time": "19:00", "capacity": 10, "booked": 0 }
+        ],
+
+        "2025-12-21": [
+          { "time": "15:00", "capacity": 8, "booked": 2 },
+          { "time": "20:00", "capacity": 8, "booked": 8 }
+        ],
+
+        "2025-12-23": [{ "time": "18:00", "capacity": 8, "booked": 0 }],
+        "2025-12-26": [
+          { "time": "15:00", "capacity": 10, "booked": 0 },
+          { "time": "20:00", "capacity": 10, "booked": 0 }
+        ],
+
+        "2025-12-29": [{ "time": "18:00", "capacity": 10, "booked": 0 }],
+
+        "2025-12-30": [{ "time": "17:30", "capacity": 8, "booked": 0 }],
+
+        "2026-01-02": [{ "time": "18:00", "capacity": 10, "booked": 0 }],
+        "2026-01-04": [
+          { "time": "16:00", "capacity": 8, "booked": 0 },
+          { "time": "19:00", "capacity": 8, "booked": 0 }
+        ],
+        "2026-01-08": [{ "time": "18:30", "capacity": 10, "booked": 0 }],
+        "2026-01-10": [
+          { "time": "17:00", "capacity": 10, "booked": 0 },
+          { "time": "19:30", "capacity": 10, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "12",
@@ -267,6 +1065,11 @@
       "description": "Mixa färgglada mocktails eller cocktails och lär dig bartricks på vägen.",
       "duration": "2h",
       "price": 380,
+      "categoryPrices": {
+        "children": 0,
+        "adults": 380,
+        "seniors": 340
+      },
       "image": "/images/antonio_horizontal/antonio_mixing_coctail.png",
       "addons": [],
       "minGuests": 2,
@@ -276,8 +1079,74 @@
         "adults": true,
         "seniors": true
       },
-      "availableDates": ["2025-12-19", "2025-12-20", "2025-12-27"]
+      "availableDates": [
+        "2025-12-11",
+        "2025-12-13",
+        "2025-12-16",
+        "2025-12-19",
+        "2025-12-20",
+        "2025-12-22",
+        "2025-12-24",
+        "2025-12-27",
+        "2025-12-28",
+        "2025-12-30",
+        "2026-01-01",
+        "2026-01-03",
+        "2026-01-05",
+        "2026-01-07",
+        "2026-01-10"
+      ],
+      "schedule": {
+        "2025-12-11": [{ "time": "19:00", "capacity": 6, "booked": 0 }],
+        "2025-12-13": [
+          { "time": "17:30", "capacity": 8, "booked": 0 },
+          { "time": "20:30", "capacity": 8, "booked": 0 }
+        ],
+        "2025-12-16": [{ "time": "18:00", "capacity": 8, "booked": 0 }],
+
+        "2025-12-19": [
+          { "time": "18:00", "capacity": 8, "booked": 5 },
+          { "time": "21:00", "capacity": 8, "booked": 8 }
+        ],
+
+        "2025-12-20": [
+          { "time": "17:00", "capacity": 8, "booked": 2 },
+          { "time": "20:30", "capacity": 8, "booked": 8 }
+        ],
+
+        "2025-12-22": [
+          { "time": "18:30", "capacity": 8, "booked": 0 },
+          { "time": "21:30", "capacity": 8, "booked": 0 }
+        ],
+        "2025-12-24": [{ "time": "16:00", "capacity": 6, "booked": 0 }],
+
+        "2025-12-27": [{ "time": "19:00", "capacity": 8, "booked": 0 }],
+
+        "2025-12-28": [
+          { "time": "19:00", "capacity": 8, "booked": 0 },
+          { "time": "22:00", "capacity": 8, "booked": 0 }
+        ],
+
+        "2025-12-30": [{ "time": "20:00", "capacity": 8, "booked": 0 }],
+
+        "2026-01-01": [{ "time": "18:00", "capacity": 8, "booked": 0 }],
+        "2026-01-03": [
+          { "time": "17:00", "capacity": 8, "booked": 0 },
+          { "time": "20:00", "capacity": 8, "booked": 0 }
+        ],
+        "2026-01-05": [{ "time": "18:30", "capacity": 8, "booked": 0 }],
+        "2026-01-07": [{ "time": "19:00", "capacity": 8, "booked": 0 }],
+        "2026-01-10": [
+          { "time": "19:30", "capacity": 8, "booked": 0 },
+          { "time": "22:00", "capacity": 8, "booked": 0 }
+        ]
+      }
     }
+  ],
+  "addons": [
+    { "slug": "te-fika", "title": "Te och fika", "price": 50 },
+    { "slug": "meditationsguide", "title": "Meditationsguide", "price": 75 },
+    { "slug": "livsstilscoach", "title": "Livsstilscoach", "price": 100 }
   ],
   "articles": []
 }

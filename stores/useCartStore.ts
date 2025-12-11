@@ -8,7 +8,12 @@ export type CartItem = {
   duration: string;
   owner: string;
   description?: string;
-  selectedAddons: Array<{ slug: string; title: string; price: number }>;
+  selectedAddons: Array<{
+    slug: string;
+    title: string;
+    price: number;
+    quantity: number;
+  }>;
   quantity: number;
   bookingDate?: string;
   guestCounts?: {
@@ -51,10 +56,10 @@ export const useCartStore = defineStore("cart", () => {
   const totalPrice = computed(() =>
     items.value.reduce((sum, item) => {
       const addonsPrice = item.selectedAddons.reduce(
-        (acc, addon) => acc + addon.price,
+        (acc, addon) => acc + addon.price * addon.quantity,
         0,
       );
-      return sum + (item.price + addonsPrice) * item.quantity;
+      return sum + item.price * item.quantity + addonsPrice;
     }, 0),
   );
 
@@ -62,7 +67,12 @@ export const useCartStore = defineStore("cart", () => {
 
   function addToCart(
     experience: any,
-    selectedAddons: Array<{ slug: string; title: string; price: number }> = [],
+    selectedAddons: Array<{
+      slug: string;
+      title: string;
+      price: number;
+      quantity: number;
+    }> = [],
     bookingDate?: string,
     adults: number = 1,
     children: number = 0,

@@ -36,7 +36,7 @@
                 <span class="addons-label">Tillval:</span>
                 <span v-if="item.selectedAddons.length" class="addons-list">
                   <span v-for="addon in item.selectedAddons" :key="addon.slug" class="addon-item">
-                    {{ addon.title }} (+{{ addon.price }} kr)
+                    {{ capitalize(addon.title) }}{{ addon.quantity > 1 ? ` ×${addon.quantity}` : '' }} (+{{ addon.price * addon.quantity }} kr)
                   </span>
                 </span>
                 <span v-else class="no-addons">Inga tillval</span>
@@ -162,8 +162,8 @@ const handleCloseEditModal = () => {
 }
 
 const itemTotal = (item: any) => {
-  const addonsPrice = item.selectedAddons.reduce((sum: number, addon: any) => sum + addon.price, 0)
-  return (item.price + addonsPrice) * item.quantity
+  const addonsPrice = item.selectedAddons.reduce((sum: number, addon: any) => sum + (addon.price * addon.quantity), 0)
+  return (item.price * item.quantity) + addonsPrice
 }
 
 const getTotalGuests = (item: any) => {

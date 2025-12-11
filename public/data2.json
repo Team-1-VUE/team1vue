@@ -51,7 +51,7 @@
       "duration": "2h",
       "price": 350,
       "image": "/images/benckert3.png",
-      "addons": [],
+      "addons": ["hjälm", "klätterutrustning"],
       "minGuests": 1,
       "maxGuests": 4,
       "allowedCategories": {
@@ -108,7 +108,7 @@
       "duration": "2h",
       "price": 350,
       "image": "/images/pencheff1.png",
-      "addons": [],
+      "addons": ["ingrediensbox"],
       "minGuests": 2,
       "maxGuests": 6,
       "allowedCategories": {
@@ -203,7 +203,7 @@
       "duration": "2h",
       "price": 300,
       "image": "/images/experiences/smink-med-simon.webp",
-      "addons": [],
+      "addons": ["sminkmaterial"],
       "minGuests": 1,
       "maxGuests": 6,
       "allowedCategories": {
@@ -222,7 +222,7 @@
       "duration": "1.5h",
       "price": 350,
       "image": "/images/antonio_img/antonio_workout_1.png",
-      "addons": [],
+      "addons": ["handduk"],
       "minGuests": 1,
       "maxGuests": 6,
       "allowedCategories": {
@@ -241,7 +241,7 @@
       "duration": "1.5h",
       "price": 320,
       "image": "/images/antonio_horizontal/antonio_dancing_salsa.png",
-      "addons": [],
+      "addons": ["danssko"],
       "minGuests": 1,
       "maxGuests": 10,
       "allowedCategories": {
@@ -272,9 +272,15 @@
     }
   ],
   "addons": [
-    { "slug": "te-fika", "title": "Te och fika", "price": 50 },
-    { "slug": "meditationsguide", "title": "Meditationsguide", "price": 75 },
-    { "slug": "livsstilscoach", "title": "Livsstilscoach", "price": 100 }
+    { "slug": "hjälm", "title": "hjälm", "price": 75 },
+    { "slug": "klätterutrustning", "title": "klätterutrustning", "price": 120 },
+    { "slug": "ingrediensbox", "title": "ingrediensbox", "price": 80 },
+    { "slug": "handduk", "title": "handduk", "price": 30 },
+    { "slug": "danssko", "title": "danssko", "price": 50 },
+    { "slug": "sminkmaterial", "title": "sminkmaterial", "price": 60 },
+    { "slug": "te-fika", "title": "te och fika", "price": 50 },
+    { "slug": "meditationsguide", "title": "meditationsguide", "price": 75 },
+    { "slug": "livsstilscoach", "title": "livsstilscoach", "price": 100 }
   ],
   "articles": []
 }

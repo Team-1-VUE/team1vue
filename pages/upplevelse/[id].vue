@@ -45,10 +45,10 @@
             <ul>
               <li v-for="slug in experience.addons" :key="slug">
                 <span class="addon-title">
-                  {{ getAddon(slug)?.title }}
+                  {{ capitalize(getAddon(slug)?.title || slug) }}
                 </span>
                 <span class="addon-price">
-                  +{{ getAddon(slug)?.price }} kr
+                  +{{ getAddon(slug)?.price }} kr/gäst
                 </span>
               </li>
             </ul>

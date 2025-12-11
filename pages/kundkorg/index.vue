@@ -144,13 +144,14 @@ const handleEditItem = (index: number) => {
   showEditModal.value = true
 }
 
-const handleUpdateBooking = (payload: { index: number; date: string; adults: number; children: number; seniors: number }) => {
+const handleUpdateBooking = (payload: { index: number; date: string; adults: number; children: number; seniors: number; addons: Array<{ slug: string; title: string; price: number; quantity: number }> }) => {
   cartStore.updateCartItem(
     payload.index,
     payload.date,
     payload.adults,
     payload.children,
-    payload.seniors
+    payload.seniors,
+    payload.addons
   )
   handleCloseEditModal()
 }

@@ -344,26 +344,14 @@ const handleConfirm = () => {
   }).filter(Boolean) as Array<{ slug: string; title: string; price: number; quantity: number }>
   
   if (props.editMode && props.cartItemIndex !== undefined) {
-    // Edit mode: update cart item directly
-    cartStore.updateCartItem(
-      props.cartItemIndex,
-      selectedDate.value,
-      localAdults.value,
-      localChildren.value,
-      localSeniors.value
-    )
-    // Update addons
-    const cartItem = cartStore.items[props.cartItemIndex]
-    if (cartItem) {
-      cartItem.selectedAddons = selectedAddons
-    }
-    
+    // Edit mode: emit update event with addons
     emit('update', {
       index: props.cartItemIndex,
       date: selectedDate.value,
       adults: localAdults.value,
       children: localChildren.value,
-      seniors: localSeniors.value
+      seniors: localSeniors.value,
+      addons: selectedAddons
     })
   } else {
     // Add mode: add to cart

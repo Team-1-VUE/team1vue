@@ -215,7 +215,7 @@
               !selectedTime
             "
             class="btn btn--primary">
-            {{ editMode ? "Uppdatera bokning" : "Bekräfta bokning" }}
+            {{ props.editMode ? "Uppdatera bokning" : "Bekräfta bokning" }}
           </button>
         </div>
       </div>
@@ -574,31 +574,340 @@ const handleConfirm = () => {
 </script>
 
 <style scoped>
-/* keep your existing styles; add these from feature if missing */
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #9ca3af;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.modal-close:hover {
+  background: #f3f4f6;
+  color: #1a1a1a;
+}
+
+.modal-content h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.modal-subtitle {
+  color: #6b7280;
+  margin: 0 0 1.5rem 0;
+  font-size: 1rem;
+}
+
+/* Guest Editor Styles */
+.guest-editor {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.guest-editor__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 1rem 0;
+}
+
+.guest-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.guest-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.guest-row__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.guest-row__label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.guest-row__desc {
+  font-size: 0.8125rem;
+  color: #6b7280;
+}
+
+.guest-row__controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.guest-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #374151;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.guest-btn:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.guest-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.guest-count {
+  min-width: 2rem;
+  text-align: center;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.guest-total-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.guest-total {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
 .slot-capacity-hint {
   margin: 0.25rem 0;
   font-size: 0.8rem;
   color: #6b7280;
 }
+
 .price-breakdown {
   margin: 0.25rem 0 0.35rem;
   font-size: 0.85rem;
   color: #6b7280;
   line-height: 1.4;
 }
+
+.price-total {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.calendar-container {
+  margin-bottom: 2rem;
+}
+
+.date-picker-wrapper {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  position: relative;
+  padding: 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  transition: all 0.2s;
+  background: white;
+  box-sizing: border-box;
+}
+
+.date-picker-wrapper:hover {
+  border-color: #d1d5db;
+  background: #f9fafb;
+}
+
+.date-picker-wrapper:active {
+  transform: scale(0.99);
+}
+
+.date-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.date-label :deep(svg) {
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.date-display {
+  padding: 0.5rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder {
+  color: #9ca3af;
+  font-size: 0.9375rem;
+}
+
+.selected-date {
+  color: #1a1a1a;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.date-picker-hidden {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+/* Time Slot Styles */
 .timeslot-section {
   margin-bottom: 1.5rem;
 }
+
 .timeslot-title {
   font-size: 0.95rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: #111827;
 }
+
 .selected-time-label {
   margin-top: 0.5rem;
   font-size: 0.9rem;
   color: #374151;
 }
-/* plus all your existing modal styles from main */
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.modal-actions .btn {
+  flex: 1;
+}
+
+.btn {
+  flex: 1;
+  padding: 0.875rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.3s ease;
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+}
+
+.btn--secondary {
+  background: #f9fafb;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.btn--secondary:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.btn--primary {
+  background: #1a1a1a;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(26, 26, 26, 0.15);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(26, 26, 26, 0.25);
+}
+
+.btn--primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 </style>

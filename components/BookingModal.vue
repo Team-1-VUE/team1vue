@@ -27,9 +27,9 @@
               <span class="guest-count">{{ localAdults }}</span>
               <button
                 @click="updateGuests('adults', 1)"
-                :disabled="totalGuests >= maxGuestsForSelection"
                 type="button"
-                class="guest-btn">
+                class="guest-btn"
+                :disabled="totalGuests >= maxGuestsForSelection">
                 +
               </button>
             </div>
@@ -51,9 +51,9 @@
               <span class="guest-count">{{ localChildren }}</span>
               <button
                 @click="updateGuests('children', 1)"
-                :disabled="totalGuests >= maxGuestsForSelection"
                 type="button"
-                class="guest-btn">
+                class="guest-btn"
+                :disabled="totalGuests >= maxGuestsForSelection">
                 +
               </button>
             </div>
@@ -75,47 +75,44 @@
               <span class="guest-count">{{ localSeniors }}</span>
               <button
                 @click="updateGuests('seniors', 1)"
-                :disabled="totalGuests >= maxGuestsForSelection"
                 type="button"
-                class="guest-btn">
+                class="guest-btn"
+                :disabled="totalGuests >= maxGuestsForSelection">
                 +
               </button>
             </div>
           </div>
 
           <div class="guest-total-section">
-            <div>
-              <p class="guest-total">
-                Totalt: {{ totalGuests }} gäst{{
-                  totalGuests !== 1 ? "er" : ""
-                }}
-              </p>
+            <p class="guest-total">
+              Totalt: {{ totalGuests }} gäst{{ totalGuests !== 1 ? "er" : "" }}
+            </p>
 
-              <p v-if="selectedSlot" class="slot-capacity-hint">
-                Platser kvar:
-                {{
-                  Math.max(
-                    (selectedSlot.remaining ?? maxGuestsForSelection) -
-                      totalGuests,
-                    0
-                  )
-                }}
-              </p>
+            <p v-if="selectedSlot" class="slot-capacity-hint">
+              Platser kvar:
+              {{
+                Math.max(
+                  (selectedSlot.remaining ?? maxGuestsForSelection) -
+                    totalGuests,
+                  0
+                )
+              }}
+            </p>
 
-              <p v-if="experience?.categoryPrices" class="price-breakdown">
-                <span v-if="localAdults">
-                  {{ localAdults }} × {{ unitPrices.adults }} kr (vuxen)
-                </span>
-                <span v-if="localChildren">
-                  <br v-if="localAdults" />
-                  {{ localChildren }} × {{ unitPrices.children }} kr (barn)
-                </span>
-                <span v-if="localSeniors">
-                  <br v-if="localAdults || localChildren" />
-                  {{ localSeniors }} × {{ unitPrices.seniors }} kr (senior)
-                </span>
-              </p>
-            </div>
+            <!-- breakdown per kategori (om categoryPrices finns) -->
+            <p v-if="experience?.categoryPrices" class="price-breakdown">
+              <span v-if="localAdults">
+                {{ localAdults }} × {{ unitPrices.adults }} kr (vuxen)
+              </span>
+              <span v-if="localChildren">
+                <br v-if="localAdults" />
+                {{ localChildren }} × {{ unitPrices.children }} kr (barn)
+              </span>
+              <span v-if="localSeniors">
+                <br v-if="localAdults || localChildren" />
+                {{ localSeniors }} × {{ unitPrices.seniors }} kr (senior)
+              </span>
+            </p>
 
             <p class="price-total">{{ totalPrice }} kr</p>
           </div>
@@ -125,13 +122,15 @@
           </div>
         </div>
 
-        <!-- Addon Editor (from main) -->
-        <div v-if="normalizedAddons.length" class="guest-editor addon-editor">
+        <!-- Addon Editor -->
+        <div
+          v-if="experience?.addons?.length"
+          class="guest-editor addon-editor">
           <h3 class="guest-editor__title">Tillval (valfritt)</h3>
 
           <div
-            v-for="addon in normalizedAddons"
-            :key="addon.slug"
+            v-for="(addon, index) in experience.addons"
+            :key="index"
             class="guest-row">
             <div class="guest-row__info">
               <span class="guest-row__label">{{
@@ -141,19 +140,22 @@
             </div>
             <div class="guest-row__controls">
               <button
-                @click="updateAddonQuantity(addon.slug, -1)"
-                :disabled="(selectedAddonQuantities[addon.slug] || 0) === 0"
+                @click="updateAddonQuantity(addon.title, -1)"
+                :disabled="
+                  !selectedAddonQuantities[addon.title] ||
+                  selectedAddonQuantities[addon.title] === 0
+                "
                 type="button"
                 class="guest-btn">
                 −
               </button>
               <span class="guest-count">{{
-                selectedAddonQuantities[addon.slug] || 0
+                selectedAddonQuantities[addon.title] || 0
               }}</span>
               <button
-                @click="updateAddonQuantity(addon.slug, 1)"
+                @click="updateAddonQuantity(addon.title, 1)"
                 :disabled="
-                  (selectedAddonQuantities[addon.slug] || 0) >= totalGuests ||
+                  (selectedAddonQuantities[addon.title] || 0) >= totalGuests ||
                   totalGuests === 0
                 "
                 type="button"
@@ -164,7 +166,6 @@
           </div>
         </div>
 
-        <!-- Date picker -->
         <div class="calendar-container">
           <div class="date-picker-wrapper" @click="dateInput?.showPicker()">
             <div class="date-label">
@@ -188,7 +189,7 @@
           </div>
         </div>
 
-        <!-- Time slots (from feature) -->
+        <!-- Time slots -->
         <div v-if="selectedDate" class="timeslot-section">
           <h3 class="timeslot-title">Välj tid</h3>
           <TimeSlotList
@@ -209,12 +210,7 @@
 
           <button
             @click="handleConfirm"
-            :disabled="
-              !selectedDate ||
-              totalGuests === 0 ||
-              !!validationError ||
-              !selectedTime
-            "
+            :disabled="!selectedDate || totalGuests === 0 || !selectedTime"
             class="btn btn--primary">
             {{ editMode ? "Uppdatera bokning" : "Bekräfta bokning" }}
           </button>
@@ -226,10 +222,13 @@
 
 <script setup lang="ts">
 import { Calendar } from "lucide-vue-next";
-import TimeSlotList from "~/components/TimeSlotList.vue";
 import { useCartStore } from "~/stores/useCartStore";
 import { useExperiences } from "~/composables/useExperiences";
-import type { DecoratedTimeSlot } from "~/utils/scheduleHelpers";
+import TimeSlotList from "~/components/TimeSlotList.vue";
+import {
+  getSlotsForDate,
+  type DecoratedTimeSlot,
+} from "~/utils/scheduleHelpers";
 
 interface Props {
   show: boolean;
@@ -250,7 +249,6 @@ const props = withDefaults(defineProps<Props>(), {
   editMode: false,
   cartItemIndex: undefined,
 });
-
 const emit = defineEmits<{
   close: [];
   update: [
@@ -288,7 +286,7 @@ const selectedDate = computed<string>(() =>
 const dateInput = ref<HTMLInputElement | null>(null);
 const selectedTime = ref<string | undefined>(undefined);
 
-const selectedTime = ref<string | undefined>(undefined);
+// vi sparar hela slot-objektet här
 const selectedSlot = ref<DecoratedTimeSlot | null>(null);
 
 // Local guest counts that can be edited
@@ -317,10 +315,15 @@ const allowsSeniors = computed(() => {
 });
 
 const maxGuestsForSelection = computed(() => {
+  if (!props.experience) return Infinity;
+
+  // Försök använda remaining från DEN slotten du klickade på
+  // annars capacity
+  // annars fall back till experience.maxGuests
   const slotLimit =
     selectedSlot.value?.remaining ??
     selectedSlot.value?.capacity ??
-    props.experience?.maxGuests ??
+    props.experience.maxGuests ??
     Infinity;
 
   return slotLimit;
@@ -435,52 +438,50 @@ const updateGuests = (
   type: "adults" | "children" | "seniors",
   delta: number
 ) => {
-  if (delta > 0 && totalGuests.value >= maxGuestsForSelection.value) return;
+  if (delta === 0) return;
 
-  if (type === "adults")
+  const currentTotal = totalGuests.value;
+
+  // Om vi försöker ÖKA men redan är på max → gör inget
+  if (delta > 0 && currentTotal >= maxGuestsForSelection.value) {
+    return;
+  }
+
+  if (type === "adults") {
     localAdults.value = Math.max(0, localAdults.value + delta);
-  if (type === "children")
+  } else if (type === "children") {
     localChildren.value = Math.max(0, localChildren.value + delta);
-  if (type === "seniors")
+  } else if (type === "seniors") {
     localSeniors.value = Math.max(0, localSeniors.value + delta);
+  }
 
-  // clamp if somehow overflow
-  if (totalGuests.value > maxGuestsForSelection.value) {
-    const overflow = totalGuests.value - maxGuestsForSelection.value;
+  // Safety: om vi ändå skulle passera max (edge case) → clamp tillbaka
+  const newTotal = totalGuests.value;
+  if (newTotal > maxGuestsForSelection.value) {
+    const overflow = newTotal - maxGuestsForSelection.value;
+    // enklast: dra av overflow från vuxna
     localAdults.value = Math.max(0, localAdults.value - overflow);
   }
 };
 
-const updateAddonQuantity = (slug: string, delta: number) => {
-  const current = selectedAddonQuantities.value[slug] || 0;
-  const next = Math.max(0, Math.min(totalGuests.value, current + delta));
+// Update addon quantities with zero-cleanup
+const updateAddonQuantity = (title: string, delta: number) => {
+  const currentQuantity = selectedAddonQuantities.value[title] || 0;
+  const newQuantity = Math.max(
+    0,
+    Math.min(totalGuests.value, currentQuantity + delta)
+  );
 
-  if (next === 0) {
-    const { [slug]: _, ...rest } = selectedAddonQuantities.value;
+  if (newQuantity === 0) {
+    // Zero-cleanup: remove from object
+    const { [title]: _, ...rest } = selectedAddonQuantities.value;
     selectedAddonQuantities.value = rest;
   } else {
-    selectedAddonQuantities.value[slug] = next;
+    selectedAddonQuantities.value[title] = newQuantity;
   }
 };
 
-// clamp addon quantities if guests go down
-// watch(totalGuests, (newTotal) => {
-//   Object.keys(selectedAddonQuantities.value).forEach((slug) => {
-//     if (selectedAddonQuantities.value[slug] > newTotal) {
-//       selectedAddonQuantities.value[slug] = newTotal;
-//     }
-//   });
-// });
-
-watch(totalGuests, (newTotal) => {
-  Object.keys(selectedAddonQuantities.value).forEach((slug) => {
-    const current = selectedAddonQuantities.value[slug] ?? 0;
-    if (current > newTotal) {
-      selectedAddonQuantities.value[slug] = newTotal;
-    }
-  });
-});
-
+// Set minimum date to today, autoimports from utils/date.ts
 const minDate = getTodayString();
 
 // --- AVAILABLE DATES FOR CALENDAR ---
@@ -854,6 +855,7 @@ const handleConfirm = () => {
   font-size: 0.8rem;
   color: #6b7280;
 }
+
 .price-breakdown {
   margin: 0.25rem 0 0.35rem;
   font-size: 0.85rem;
@@ -954,16 +956,68 @@ const handleConfirm = () => {
 .timeslot-section {
   margin-bottom: 1.5rem;
 }
+
 .timeslot-title {
   font-size: 0.95rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: #111827;
 }
+
 .selected-time-label {
   margin-top: 0.5rem;
   font-size: 0.9rem;
   color: #374151;
 }
-/* plus all your existing modal styles from main */
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.modal-actions .btn {
+  flex: 1;
+}
+
+.btn {
+  flex: 1;
+  padding: 0.875rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.3s ease;
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+}
+
+.btn--secondary {
+  background: #f9fafb;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.btn--secondary:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.btn--primary {
+  background: #1a1a1a;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(26, 26, 26, 0.15);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(26, 26, 26, 0.25);
+}
+
+.btn--primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 </style>

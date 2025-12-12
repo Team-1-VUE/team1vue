@@ -878,8 +878,8 @@
         "children": 200,
         "seniors": 250
       },
-      "image": "/images/antonio_img/antonio_workout_1.png",
-      "addons": [{ "title": "handduk", "price": 30 }],
+      "image": "/images/antonio_horizontal/antonio_workout_squat.png",
+      "addons": [],
       "minGuests": 1,
       "maxGuests": 6,
       "allowedCategories": {

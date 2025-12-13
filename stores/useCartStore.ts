@@ -3,11 +3,17 @@ import { defineStore } from "pinia";
 export type CartItem = {
   id: string;
   title: string;
+  description?: string;
   price: number;
   image: string;
   duration: string;
   owner: string;
-  selectedAddons: Array<{ slug: string; title: string; price: number }>;
+  selectedAddons: Array<{
+    slug: string;
+    title: string;
+    price: number;
+    quantity: number;
+  }>;
   quantity: number;
   bookingDate?: string;
   bookingTime?: string;
@@ -73,7 +79,7 @@ export const useCartStore = defineStore("cart", () => {
       const guestsTotal = adultsTotal + childrenTotal + seniorsTotal;
 
       const addonsPerGuest = item.selectedAddons.reduce(
-        (acc, addon) => acc + addon.price,
+        (acc, addon) => acc + addon.price * (addon.quantity ?? 1),
         0
       );
       const totalGuests =
@@ -88,7 +94,12 @@ export const useCartStore = defineStore("cart", () => {
 
   function addToCart(
     experience: any,
-    selectedAddons: Array<{ slug: string; title: string; price: number }> = [],
+    selectedAddons: Array<{
+      slug: string;
+      title: string;
+      price: number;
+      quantity: number;
+    }> = [],
     bookingDate?: string,
     adults: number = 1,
     children: number = 0,
@@ -141,6 +152,37 @@ export const useCartStore = defineStore("cart", () => {
     }
   }
 
+  function updateCartItem(
+    index: number,
+    bookingDate: string,
+    adults: number,
+    children: number,
+    seniors: number,
+    selectedAddons: Array<{
+      slug: string;
+      title: string;
+      price: number;
+      quantity?: number;
+    }>,
+    bookingTime?: string
+  ) {
+    const item = items.value[index];
+    if (!item) return;
+
+    item.bookingDate = bookingDate;
+    item.bookingTime = bookingTime ?? item.bookingTime;
+
+    item.guestCounts = { adults, children, seniors };
+    item.quantity = adults + children + seniors;
+
+    item.selectedAddons = selectedAddons.map((addon) => ({
+      slug: addon.slug,
+      title: addon.title,
+      price: addon.price,
+      quantity: addon.quantity ?? 1,
+    }));
+  }
+
   function removeFromCart(index: number) {
     items.value.splice(index, 1);
   }
@@ -166,6 +208,7 @@ export const useCartStore = defineStore("cart", () => {
     totalPrice,
     cartItemCount,
     addToCart,
+    updateCartItem,
     removeFromCart,
     updateQuantity,
     clearCart,

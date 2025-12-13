@@ -1,6 +1,9 @@
 <template>
   <Teleport to="body">
-    <div v-if="show" class="modal-overlay" @click="$emit('close')">
+    <div
+      v-if="show && experience"
+      class="modal-overlay"
+      @click="$emit('close')">
       <div class="modal-content" @click.stop>
         <button class="modal-close" @click="$emit('close')">×</button>
 
@@ -165,7 +168,7 @@
         </div>
 
         <!-- Date picker -->
-        <div class="calendar-container">
+        <!-- <div class="calendar-container">
           <div class="date-picker-wrapper" @click="dateInput?.showPicker()">
             <div class="date-label">
               <Calendar :size="18" />
@@ -186,11 +189,39 @@
               :min="minDate"
               class="date-picker-hidden" />
           </div>
+        </div> -->
+
+        <!-- Date picker (V-Calendar) -->
+        <div class="calendar-container">
+          <h3 class="timeslot-title">Välj datum</h3>
+
+          <!-- <VDatePicker
+            v-model.string="selectedDate"
+            :min-date="minDateObj"
+            :available-dates="availableDateObjects"
+            :attributes="calendarAttrs"
+            is-required
+            expanded /> -->
+          <VDatePicker
+            v-model="selectedDateObj"
+            :min-date="minDateObj"
+            :available-dates="availableDateObjects"
+            :attributes="calendarAttrs"
+            is-required
+            expanded />
+
+          <p
+            v-if="!availableDates.length"
+            class="validation-error"
+            style="margin-top: 0.75rem">
+            Inga tillgängliga datum för denna upplevelse.
+          </p>
         </div>
 
         <!-- Time slots (from feature) -->
         <div v-if="selectedDate" class="timeslot-section">
           <h3 class="timeslot-title">Välj tid</h3>
+
           <TimeSlotList
             :experience="experience"
             :selectedDate="selectedDate"
@@ -224,7 +255,7 @@
 </template>
 
 <script setup lang="ts">
-import { Calendar } from "lucide-vue-next";
+// import { Calendar } from "lucide-vue-next";
 import TimeSlotList from "~/components/TimeSlotList.vue";
 import { useCartStore } from "~/stores/useCartStore";
 import { useExperiences } from "~/composables/useExperiences";
@@ -273,7 +304,20 @@ const emit = defineEmits<{
 const cartStore = useCartStore();
 const { getAddon } = useExperiences();
 
-const selectedDate = ref(props.initialDate || "");
+// const selectedDate = ref(props.initialDate || "");
+// const selectedDate = ref<string>(""); // new
+//Latest
+const selectedDateObj = ref<Date | null>(null);
+
+const pad2 = (n: number) => String(n).padStart(2, "0");
+const toYMDLocal = (d: Date) =>
+  `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+
+// This is the ONLY date key you should use for schedule/cart/etc.
+const selectedDate = computed<string>(() =>
+  selectedDateObj.value ? toYMDLocal(selectedDateObj.value) : ""
+);
+
 const dateInput = ref<HTMLInputElement | null>(null);
 
 const selectedTime = ref<string | undefined>(undefined);
@@ -448,8 +492,64 @@ watch(totalGuests, (newTotal) => {
 
 const minDate = getTodayString();
 
+// --- AVAILABLE DATES FOR CALENDAR ---
+const minDateObj = computed(() => new Date(`${minDate}T12:00:00`));
+
+// Available dates from experience (your JSON)
+const availableDates = computed<string[]>(() => {
+  const schedule = props.experience?.schedule ?? {};
+
+  return Object.entries(schedule)
+    .filter(
+      ([_, slots]: any) =>
+        Array.isArray(slots) &&
+        slots.some((s) => (s.capacity ?? 0) > (s.booked ?? 0))
+    )
+    .map(([date]) => date)
+    .sort(); // "YYYY-MM-DD" sorts correctly
+});
+
+// const availableDates = computed<string[]>(
+//   () => props.experience?.availableDates ?? []
+// );
+
+const availableDateObjects = computed(() =>
+  availableDates.value.map((d) => new Date(`${d}T12:00:00`))
+);
+
+// Highlight available dates
+const calendarAttrs = computed(() => [
+  {
+    key: "available",
+    dates: availableDateObjects.value,
+    highlight: true,
+  },
+]);
+
+// Optional: auto-pick first available date when opening modal
+watch(
+  () => props.show,
+  (open) => {
+    if (!open) return;
+
+    initializeModalState();
+
+    // if (!selectedDate.value) {
+    //   const first = availableDates.value.at(0);
+    //   if (first) selectedDate.value = first;
+    // }
+    if (!selectedDateObj.value) {
+      const first = availableDates.value.at(0);
+      if (first) selectedDateObj.value = new Date(`${first}T12:00:00`);
+    }
+  }
+);
+
 const initializeModalState = () => {
-  selectedDate.value = props.initialDate || "";
+  // selectedDate.value = props.initialDate ?? "";
+  selectedDateObj.value = props.initialDate
+    ? new Date(`${props.initialDate}T12:00:00`)
+    : null;
   selectedTime.value = undefined;
   selectedSlot.value = null;
 
@@ -486,12 +586,12 @@ const initializeModalState = () => {
   }
 };
 
-watch(
-  () => props.show,
-  (open) => {
-    if (open) initializeModalState();
-  }
-);
+// watch(
+//   () => props.show,
+//   (open) => {
+//     if (open) initializeModalState();
+//   }
+// );
 
 watch(selectedDate, () => {
   selectedTime.value = undefined;
@@ -772,8 +872,19 @@ const handleConfirm = () => {
   color: #1a1a1a;
 }
 
-.calendar-container {
+/* .calendar-container {
   margin-bottom: 2rem;
+} */
+
+.calendar-container :deep(.vc-container) {
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0.75rem;
+  background: white;
+}
+
+.calendar-container :deep(.vc-day-content) {
+  border-radius: 8px;
 }
 
 .date-picker-wrapper {

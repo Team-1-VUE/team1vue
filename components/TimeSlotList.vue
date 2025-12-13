@@ -104,7 +104,7 @@ const handleClick = (slot: DecoratedTimeSlot) => {
               'time-slot-list__button--full': slot.isFull,
               'time-slot-list__button--few': slot.status === 'few',
             }"
-            :disabled="slot.isFull"
+            :disabled="slot.isFull || slot.cannotFitGroup"
             @click="handleClick(slot)">
             <span class="time-slot-list__time">
               {{ slot.time }}

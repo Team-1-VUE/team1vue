@@ -1,6 +1,9 @@
 <template>
   <Teleport to="body">
-    <div v-if="show" class="modal-overlay" @click="$emit('close')">
+    <div
+      v-if="show && experience"
+      class="modal-overlay"
+      @click="$emit('close')">
       <div class="modal-content" @click.stop>
         <button class="modal-close" @click="$emit('close')">×</button>
 
@@ -166,6 +169,7 @@
           </div>
         </div>
 
+        <!-- Date picker -->
         <div class="calendar-container">
           <div class="date-picker-wrapper" @click="dateInput?.showPicker()">
             <div class="date-label">
@@ -188,10 +192,39 @@
               class="date-picker-hidden" />
           </div>
         </div>
+        -->
+
+        <!-- Date picker (V-Calendar) -->
+        <div class="calendar-container">
+          <h3 class="timeslot-title">Välj datum</h3>
+
+          <!-- <VDatePicker
+            v-model.string="selectedDate"
+            :min-date="minDateObj"
+            :available-dates="availableDateObjects"
+            :attributes="calendarAttrs"
+            is-required
+            expanded /> -->
+          <VDatePicker
+            v-model="selectedDateObj"
+            :min-date="minDateObj"
+            :available-dates="availableDateObjects"
+            :attributes="calendarAttrs"
+            is-required
+            expanded />
+
+          <p
+            v-if="!availableDates.length"
+            class="validation-error"
+            style="margin-top: 0.75rem">
+            Inga tillgängliga datum för denna upplevelse.
+          </p>
+        </div>
 
         <!-- Time slots -->
         <div v-if="selectedDate" class="timeslot-section">
           <h3 class="timeslot-title">Välj tid</h3>
+
           <TimeSlotList
             :experience="experience"
             :selectedDate="selectedDate"
@@ -221,7 +254,6 @@
 </template>
 
 <script setup lang="ts">
-import { Calendar } from "lucide-vue-next";
 import { useCartStore } from "~/stores/useCartStore";
 import { useExperiences } from "~/composables/useExperiences";
 import TimeSlotList from "~/components/TimeSlotList.vue";
@@ -272,17 +304,7 @@ const emit = defineEmits<{
 const cartStore = useCartStore();
 const { getAddon } = useExperiences();
 
-const selectedDateObj = ref<Date | null>(null);
-
-const pad2 = (n: number) => String(n).padStart(2, "0");
-const toYMDLocal = (d: Date) =>
-  `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
-
-// This is the ONLY date key you should use for schedule/cart/etc.
-const selectedDate = computed<string>(() =>
-  selectedDateObj.value ? toYMDLocal(selectedDateObj.value) : ""
-);
-
+const selectedDate = ref(props.initialDate || "");
 const dateInput = ref<HTMLInputElement | null>(null);
 const selectedTime = ref<string | undefined>(undefined);
 
@@ -542,6 +564,10 @@ const initializeModalState = () => {
   selectedDateObj.value = props.initialDate
     ? new Date(`${props.initialDate}T12:00:00`)
     : null;
+  // selectedDate.value = props.initialDate ?? "";
+  selectedDateObj.value = props.initialDate
+    ? new Date(`${props.initialDate}T12:00:00`)
+    : null;
   selectedTime.value = undefined;
   selectedSlot.value = null;
 
@@ -578,6 +604,12 @@ const initializeModalState = () => {
   }
 };
 
+// watch(
+//   () => props.show,
+//   (open) => {
+//     if (open) initializeModalState();
+//   }
+// );
 // watch(
 //   () => props.show,
 //   (open) => {
@@ -868,18 +900,6 @@ const handleConfirm = () => {
   font-size: 1.125rem;
   font-weight: 700;
   color: #1a1a1a;
-}
-
-.validation-error {
-  margin-top: 1rem;
-  padding: 0.75rem;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 8px;
-  color: #dc2626;
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-align: center;
 }
 
 .calendar-container {

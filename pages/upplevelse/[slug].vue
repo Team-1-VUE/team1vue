@@ -27,18 +27,26 @@
 
             <!-- Capacity and category badges -->
             <div class="capacity-section">
-              <div class="capacity-badge">
-                <Users :size="20" class="badge-icon" />
-                <span class="capacity-text">
-                  {{ experience.minGuests }}{{ experience.maxGuests !== experience.minGuests ? `-${experience.maxGuests}` : '' }} pers
-                </span>
-              </div>
-              <div v-if="experience.allowedCategories?.children" class="category-badge category-badge--children">
-                <Baby :size="20" class="badge-icon" />
-              </div>
-              <div v-if="experience.allowedCategories?.seniors" class="category-badge category-badge--seniors">
-                <HatGlasses :size="20" class="badge-icon" />
-              </div>
+              <Tooltip :content="`För grupper mellan ${experience.minGuests} och ${experience.maxGuests} personer`">
+                <div class="capacity-badge">
+                  <Users :size="20" class="badge-icon" />
+                  <span class="capacity-text">
+                    {{ experience.minGuests }}{{ experience.maxGuests !== experience.minGuests ? `-${experience.maxGuests}` : '' }} pers
+                  </span>
+                </div>
+              </Tooltip>
+
+              <Tooltip v-if="experience.allowedCategories?.children" content="Prisvärt för de små">
+                <div v-if="experience.allowedCategories?.children" class="category-badge category-badge--children">
+                  <Baby :size="20" class="badge-icon" />
+                </div>
+              </Tooltip>
+
+              <Tooltip v-if="experience.allowedCategories?.seniors" content="Prisvärt för seniorerna">
+                <div v-if="experience.allowedCategories?.seniors" class="category-badge category-badge--seniors">
+                  <HatGlasses :size="20" class="badge-icon" />
+                </div>
+              </Tooltip>
             </div>
           </div>
 
@@ -266,8 +274,6 @@ const showModal = ref(false);
 .image-wrapper {
   position: relative;
   width: 100%;
-  border-radius: 20px;
-  overflow: hidden;
   background-color: #f3f4f6;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
@@ -278,6 +284,7 @@ const showModal = ref(false);
   display: block;
   object-fit: cover;
   aspect-ratio: 4 / 3;
+  border-radius: 20px;
 }
 
 .image-badges {

@@ -3,7 +3,6 @@ import { defineStore } from "pinia";
 export type CartItem = {
   id: string;
   title: string;
-  description?: string;
   price: number;
   image: string;
   duration: string;
@@ -202,29 +201,6 @@ export const useCartStore = defineStore("cart", () => {
     }
   }
 
-  function updateCartItem(
-    index: number,
-    bookingDate: string,
-    adults: number,
-    children: number,
-    seniors: number,
-    selectedAddons: Array<{
-      slug: string;
-      title: string;
-      price: number;
-      quantity: number;
-    }> = []
-  ) {
-    const item = items.value[index];
-    if (!item) return;
-
-    // Update item properties - no merging
-    item.bookingDate = bookingDate;
-    item.guestCounts = { adults, children, seniors };
-    item.quantity = adults + children + seniors;
-    item.selectedAddons = selectedAddons;
-  }
-
   function clearCart() {
     items.value = [];
   }
@@ -235,7 +211,6 @@ export const useCartStore = defineStore("cart", () => {
     totalPrice,
     cartItemCount,
     addToCart,
-    updateCartItem,
     removeFromCart,
     updateQuantity,
     updateCartItem,

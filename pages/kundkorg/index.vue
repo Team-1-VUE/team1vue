@@ -25,91 +25,107 @@
           <div @click="handleEditItem(index)" class="cart-item__container">
             <!-- container for img -->
             <div class="cart-item__image-container">
-              <img :src="item.image" :alt="item.title" class="cart-item__image" />
+              <img
+                :src="item.image"
+                :alt="item.title"
+                class="cart-item__image" />
             </div>
             <!-- /container for img -->
-            
+
             <!-- container for event details -->
             <div class="cart-item__details">
               <h3>{{ item.title }}</h3>
-              <p class="description">{{ item.description || 'Ingen beskrivning tillgänglig' }}</p>
+              <p class="description">
+                {{ item.description || "Ingen beskrivning tillgänglig" }}
+              </p>
               <p class="duration">{{ item.duration }}</p>
-              
+
               <!-- addons included here -->
               <div class="addons">
                 <span class="addons-label">Tillval:</span>
                 <span v-if="item.selectedAddons.length" class="addons-list">
-                  <span v-for="addon in item.selectedAddons" :key="addon.slug" class="addon-item">
-                    {{ capitalize(addon.title) }}{{ addon.quantity > 1 ? ` ×${addon.quantity}` : '' }} (+{{ addon.price * addon.quantity }} kr)
+                  <span
+                    v-for="addon in item.selectedAddons"
+                    :key="addon.slug"
+                    class="addon-item">
+                    {{ capitalize(addon.title)
+                    }}{{ addon.quantity > 1 ? ` ×${addon.quantity}` : "" }} (+{{
+                      addon.price * addon.quantity
+                    }}
+                    kr)
                   </span>
                 </span>
                 <span v-else class="no-addons">Inga tillval</span>
               </div>
-              
+
               <p v-if="item.bookingDate" class="booking-date">
                 <Calendar :size="16" />
                 {{ formatDate(item.bookingDate) }}
               </p>
             </div>
 
-          <div class="cart-item__details">
-            <h3>{{ item.title }}</h3>
-            <p class="owner">med {{ capitalize(item.owner) }}</p>
-            <p class="duration">{{ item.duration }}</p>
-            <p v-if="item.bookingDate" class="booking-date">
-              <Calendar :size="16" />
-              {{ formatDate(item.bookingDate) }}
-            </p>
-
-            <div v-if="item.selectedAddons.length" class="addons">
-              <p class="addons-label">Tillval:</p>
-              <ul>
-                <li v-for="addon in item.selectedAddons" :key="addon.slug">
-                  {{ addon.title }} (+{{ addon.price }} kr)
-                </li>
-              </ul>
-              <p class="total-guests">
-                Totalt: {{ getTotalGuests(item) }} gäster
+            <div class="cart-item__details">
+              <h3>{{ item.title }}</h3>
+              <p class="owner">med {{ capitalize(item.owner) }}</p>
+              <p class="duration">{{ item.duration }}</p>
+              <p v-if="item.bookingDate" class="booking-date">
+                <Calendar :size="16" />
+                {{ formatDate(item.bookingDate) }}
               </p>
+
+              <div v-if="item.selectedAddons.length" class="addons">
+                <p class="addons-label">Tillval:</p>
+                <ul>
+                  <li v-for="addon in item.selectedAddons" :key="addon.slug">
+                    {{ addon.title }} (+{{ addon.price }} kr)
+                  </li>
+                </ul>
+                <p class="total-guests">
+                  Totalt: {{ getTotalGuests(item) }} gäster
+                </p>
+              </div>
+              <!-- /container for guest details -->
             </div>
-            <!-- /container for guest details -->
-          </div>
-          <!-- /container for all -->
-          <div class="cart-item__actions">
-            <p class="item-price">
-              {{ itemTotal(item) }} kr
-            </p>
-            
-            <div class="action-buttons">
-              <button @click="handleEditItem(index)" class="btn-edit" title="Redigera">
-                <Edit :size="20" />
-              </button>
-              <button @click="cartStore.removeFromCart(index)" class="btn-remove" title="Ta bort">
-                <Trash2 :size="20" />
-              </button>
+            <!-- /container for all -->
+            <div class="cart-item__actions">
+              <p class="item-price">{{ itemTotal(item) }} kr</p>
+
+              <div class="action-buttons">
+                <button
+                  @click="handleEditItem(index)"
+                  class="btn-edit"
+                  title="Redigera">
+                  <Edit :size="20" />
+                </button>
+                <button
+                  @click="cartStore.removeFromCart(index)"
+                  class="btn-remove"
+                  title="Ta bort">
+                  <Trash2 :size="20" />
+                </button>
+              </div>
             </div>
           </div>
+        </div>
+
+        <div class="cart-summary">
+          <div class="summary-row">
+            <span>Antal bokningar:</span>
+            <span>{{ cartStore.cartItemCount }}</span>
+          </div>
+          <div class="summary-row total">
+            <span>Totalt:</span>
+            <span class="total-price">{{ cartStore.totalPrice }} kr</span>
+          </div>
+
+          <button class="btn btn--primary" @click="handleCheckout">
+            Gå till betalning
+          </button>
         </div>
       </div>
 
-      <div class="cart-summary">
-        <div class="summary-row">
-          <span>Antal bokningar:</span>
-          <span>{{ cartStore.cartItemCount }}</span>
-        </div>
-        <div class="summary-row total">
-          <span>Totalt:</span>
-          <span class="total-price">{{ cartStore.totalPrice }} kr</span>
-        </div>
-
-        <button class="btn btn--primary" @click="handleCheckout">
-          Gå till betalning
-        </button>
-      </div>
-    </div>
-
-    <!-- Edit Booking Modal -->
-    <!-- <BookingModal
+      <!-- Edit Booking Modal -->
+      <!-- <BookingModal
       v-if="editingExperience && editingItemIndex !== null"
       :show="showEditModal"
       :experience="editingExperience"
@@ -122,15 +138,16 @@
       @update="handleUpdateBooking"
       @close="handleCloseEditModal" /> -->
 
-    <EditBookingModal
-      v-if="editingExperience && editingItemIndex !== null"
-      :show="showEditModal"
-      :experience="editingExperience"
-      :cartItem="cartStore.items[editingItemIndex]"
-      :cartItemIndex="editingItemIndex"
-      :slot="editingSlot"
-      @update="handleUpdateBooking"
-      @close="handleCloseEditModal" />
+      <EditBookingModal
+        v-if="editingExperience && editingItemIndex !== null"
+        :show="showEditModal"
+        :experience="editingExperience"
+        :cartItem="cartStore.items[editingItemIndex]"
+        :cartItemIndex="editingItemIndex"
+        :slot="editingSlot"
+        @update="handleUpdateBooking"
+        @close="handleCloseEditModal" />
+    </div>
   </div>
 </template>
 

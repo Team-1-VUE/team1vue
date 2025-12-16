@@ -1,16 +1,20 @@
 import { ref, onMounted, computed } from "vue";
 
-type Addon = { slug: string; title: string; price: number };
+interface Addon {
+  slug: string;
+  title: string;
+  price: number;
+}
 
-export type TimeSlot = {
+export interface TimeSlot {
   time: string;
   capacity: number;
   booked: number;
-};
+}
 
 export type ExperienceSchedule = Record<string, TimeSlot[]>;
 
-export type Experience = {
+export interface Experience {
   id: string;
   slug: string;
   owner: string;
@@ -34,7 +38,7 @@ export type Experience = {
   };
   availableDates: string[];
   schedule?: ExperienceSchedule;
-};
+}
 
 type ProfileData = {
   profileImage: string;
@@ -50,9 +54,7 @@ export function useExperiences() {
   } | null>(null);
   const loading = ref(true);
 
-  const experiences = computed<Experience[]>(() => {
-    return data.value?.experiences ?? [];
-  });
+  const experiences = computed(() => data.value?.experiences ?? []);
 
   onMounted(async () => {
     try {
@@ -85,6 +87,14 @@ export function useExperiences() {
   const totalAddonsPrice = (exp: Experience) =>
     exp.addons.reduce((sum, addon) => sum + addon.price, 0);
 
+  const getAddon = (slug: string) => {
+    return (
+      data.value?.addons.find(
+        (addon) => addon.slug === slug || addon.title === slug
+      ) ?? null
+    );
+  };
+
   return {
     loading,
     experiences,
@@ -92,5 +102,6 @@ export function useExperiences() {
     getProfileImage,
     getExperienceById,
     totalAddonsPrice,
+    getAddon,
   };
 }

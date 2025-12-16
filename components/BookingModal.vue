@@ -192,7 +192,6 @@
               class="date-picker-hidden" />
           </div>
         </div>
-        -->
 
         <!-- Date picker (V-Calendar) -->
         <div class="calendar-container">
@@ -304,7 +303,18 @@ const emit = defineEmits<{
 const cartStore = useCartStore();
 const { getAddon } = useExperiences();
 
-const selectedDate = ref(props.initialDate || "");
+const selectedDateObj = ref<Date | null>(
+  props.initialDate ? new Date(`${props.initialDate}T12:00:00`) : null
+);
+
+const pad2 = (n: number) => String(n).padStart(2, "0");
+const toYMDLocal = (d: Date) =>
+  `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+
+const selectedDate = computed(() =>
+  selectedDateObj.value ? toYMDLocal(selectedDateObj.value) : ""
+);
+
 const dateInput = ref<HTMLInputElement | null>(null);
 const selectedTime = ref<string | undefined>(undefined);
 
@@ -560,10 +570,6 @@ watch(
 );
 
 const initializeModalState = () => {
-  // selectedDate.value = props.initialDate ?? "";
-  selectedDateObj.value = props.initialDate
-    ? new Date(`${props.initialDate}T12:00:00`)
-    : null;
   // selectedDate.value = props.initialDate ?? "";
   selectedDateObj.value = props.initialDate
     ? new Date(`${props.initialDate}T12:00:00`)

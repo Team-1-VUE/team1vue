@@ -11,7 +11,10 @@
         <ul class="navbar-menu">
           <li v-for="link in navLinks" :key="link.path">
             <NuxtLink :to="link.path" exact-active-class="active">
-              {{ link.name }}
+              <template v-if="link.name !== 'Kundkorg'">{{
+                link.name
+              }}</template>
+              <ShoppingCart v-else :size="24" :stroke-width="1.5" />
               <span
                 v-if="link.path === '/kundkorg' && cartStore.cartItemCount > 0"
                 class="cart-badge"
@@ -210,42 +213,44 @@ onMounted(async () => {
 }
 
 .navbar-menu li a {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  padding: 8px 10px;
-  border-radius: 10px;
+  position: relative;
+  display: inline-block;
+  padding: 5px;
+  border-radius: 5px;
   text-decoration: none;
-
   color: var(--text-color);
-  font-weight: 700;
-  white-space: nowrap;
-  transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  font-style: normal;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
-
 .navbar-menu li a:hover,
 .navbar-menu li a.active {
+  background-color: var(--hover-color);
+  cursor: pointer;
+  color: white;
   background-color: var(--secondary-color);
-  color: #fff;
+  scale: 1.05;
+}
+.navbar-menu li a[href="/kundkorg"]:hover,
+.navbar-menu li a[href="/kundkorg"].active {
+  scale: 1;
 }
 
-.navbar-menu li a:active {
-  transform: scale(0.98);
-}
-
-/* Badge */
 .cart-badge {
-  display: inline-grid;
-  place-items: center;
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  display: inline-block;
   background: #ef4444;
   color: white;
-  border-radius: 999px;
-  min-width: 20px;
+  border-radius: 50%;
+  width: 20px;
   height: 20px;
-  padding: 0 6px;
   font-size: 0.75rem;
-  font-weight: 800;
+  text-align: center;
+  line-height: 20px;
+  font-weight: 700;
+  transition: all 0.3s ease;
 }
 /* =========================
    MOBILE WOW MENU BUTTON

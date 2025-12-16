@@ -8,228 +8,285 @@
       <div class="modal-content" @click.stop>
         <button class="modal-close" @click="$emit('close')">×</button>
 
-        <h2>Välj datum och gäster</h2>
+        <h2>Boka upplevelse</h2>
         <p class="modal-subtitle">{{ experience?.title }}</p>
 
-        <!-- Guest Editor -->
-        <div class="guest-editor">
-          <h3 class="guest-editor__title">Antal gäster</h3>
-
-          <div class="guest-row" v-if="allowsAdults">
-            <div class="guest-row__info">
-              <span class="guest-row__label">Vuxna</span>
-              <span class="guest-row__desc">13+ år</span>
+        <!-- SECTION 1: Calendar (Date Picker) -->
+        <div class="collapsible-section">
+          <div 
+            class="section-header"
+            @click="toggleCalendar"
+            @keydown.enter="toggleCalendar"
+            @keydown.space.prevent="toggleCalendar"
+            role="button"
+            tabindex="0"
+            :aria-expanded="calendarExpanded"
+            aria-controls="calendar-content"
+          >
+            <div class="section-header-left">
+              <Calendar :size="20" />
+              <span class="section-title">Datum</span>
             </div>
-            <div class="guest-row__controls">
-              <button
-                @click="updateGuests('adults', -1)"
-                :disabled="localAdults <= 0"
-                type="button"
-                class="guest-btn"
-              >
-                −
-              </button>
-              <span class="guest-count">{{ localAdults }}</span>
-              <button
-                @click="updateGuests('adults', 1)"
-                type="button"
-                class="guest-btn"
-                :disabled="totalGuests >= maxGuestsForSelection"
-              >
-                +
-              </button>
+            <div class="section-header-right">
+              <span class="section-preview">{{ calendarPreview }}</span>
+              <ChevronDown v-if="!calendarExpanded" :size="20" />
+              <ChevronUp v-else :size="20" />
             </div>
           </div>
 
-          <div class="guest-row" v-if="allowsChildren">
-            <div class="guest-row__info">
-              <span class="guest-row__label">Barn</span>
-              <span class="guest-row__desc">0-12 år</span>
-            </div>
-            <div class="guest-row__controls">
-              <button
-                @click="updateGuests('children', -1)"
-                :disabled="localChildren <= 0"
-                type="button"
-                class="guest-btn"
-              >
-                −
-              </button>
-              <span class="guest-count">{{ localChildren }}</span>
-              <button
-                @click="updateGuests('children', 1)"
-                type="button"
-                class="guest-btn"
-                :disabled="totalGuests >= maxGuestsForSelection"
-              >
-                +
-              </button>
-            </div>
-          </div>
+          <Transition name="collapse">
+            <div v-show="calendarExpanded" id="calendar-content" class="section-content">
+              <VDatePicker
+                v-model="selectedDateObj"
+                :min-date="minDateObj"
+                :available-dates="availableDateObjects"
+                :attributes="calendarAttrs"
+                is-required
+                expanded
+              />
 
-          <div class="guest-row" v-if="allowsSeniors">
-            <div class="guest-row__info">
-              <span class="guest-row__label">Seniorer</span>
-              <span class="guest-row__desc">65+ år</span>
+              <p
+                v-if="!availableDates.length"
+                class="validation-error"
+                style="margin-top: 0.75rem"
+              >
+                Inga tillgängliga datum för denna upplevelse.
+              </p>
             </div>
-            <div class="guest-row__controls">
-              <button
-                @click="updateGuests('seniors', -1)"
-                :disabled="localSeniors <= 0"
-                type="button"
-                class="guest-btn"
-              >
-                −
-              </button>
-              <span class="guest-count">{{ localSeniors }}</span>
-              <button
-                @click="updateGuests('seniors', 1)"
-                type="button"
-                class="guest-btn"
-                :disabled="totalGuests >= maxGuestsForSelection"
-              >
-                +
-              </button>
+          </Transition>
+        </div>
+
+        <!-- SECTION 2: Time Slots -->
+        <div v-if="selectedDate" class="collapsible-section">
+          <div 
+            class="section-header"
+            @click="toggleTimeSlots"
+            @keydown.enter="toggleTimeSlots"
+            @keydown.space.prevent="toggleTimeSlots"
+            role="button"
+            tabindex="0"
+            :aria-expanded="timeSlotsExpanded"
+            aria-controls="timeslots-content"
+          >
+            <div class="section-header-left">
+              <Clock :size="20" />
+              <span class="section-title">Tid</span>
+            </div>
+            <div class="section-header-right">
+              <span class="section-preview">{{ timeSlotsPreview }}</span>
+              <ChevronDown v-if="!timeSlotsExpanded" :size="20" />
+              <ChevronUp v-else :size="20" />
             </div>
           </div>
 
-          <div class="guest-total-section">
-            <p class="guest-total">
-              Totalt: {{ totalGuests }} gäst{{ totalGuests !== 1 ? "er" : "" }}
-            </p>
+          <Transition name="collapse">
+            <div v-show="timeSlotsExpanded" id="timeslots-content" class="section-content">
+              <TimeSlotList
+                :experience="experience"
+                :selectedDate="selectedDate"
+                :guestCount="totalGuests"
+                @select="onTimeSelect"
+              />
+            </div>
+          </Transition>
+        </div>
 
-            <p v-if="selectedSlot" class="slot-capacity-hint">
-              Platser kvar:
-              {{
-                Math.max(
-                  (selectedSlot.remaining ?? maxGuestsForSelection) -
-                    totalGuests,
-                  0
-                )
-              }}
-            </p>
-
-            <!-- breakdown per kategori (om categoryPrices finns) -->
-            <p v-if="experience?.categoryPrices" class="price-breakdown">
-              <span v-if="localAdults">
-                {{ localAdults }} × {{ unitPrices.adults }} kr (vuxen)
-              </span>
-              <span v-if="localChildren">
-                <br v-if="localAdults" />
-                {{ localChildren }} × {{ unitPrices.children }} kr (barn)
-              </span>
-              <span v-if="localSeniors">
-                <br v-if="localAdults || localChildren" />
-                {{ localSeniors }} × {{ unitPrices.seniors }} kr (senior)
-              </span>
-            </p>
-
-            <p class="price-total">{{ totalPrice }} kr</p>
+        <!-- SECTION 3: Guests & Addons (Combined) -->
+        <div class="collapsible-section">
+          <div 
+            class="section-header"
+            @click="toggleGuestAndAddons"
+            @keydown.enter="toggleGuestAndAddons"
+            @keydown.space.prevent="toggleGuestAndAddons"
+            role="button"
+            tabindex="0"
+            :aria-expanded="guestAndAddonsExpanded"
+            aria-controls="guests-addons-content"
+          >
+            <div class="section-header-left">
+              <Users :size="20" />
+              <span class="section-title">Gäster & Tillval</span>
+            </div>
+            <div class="section-header-right">
+              <span class="section-preview">{{ guestAndAddonsPreview }}</span>
+              <ChevronDown v-if="!guestAndAddonsExpanded" :size="20" />
+              <ChevronUp v-else :size="20" />
+            </div>
           </div>
 
-          <div v-if="validationError" class="validation-error">
+          <Transition name="collapse">
+            <div v-show="guestAndAddonsExpanded" id="guests-addons-content" class="section-content">
+              <!-- Guest Editor -->
+              <div class="guest-editor">
+                <h4 class="subsection-title">Antal gäster</h4>
+
+                <div class="guest-row" v-if="allowsAdults">
+                  <div class="guest-row__info">
+                    <span class="guest-row__label">Vuxna ({{ unitPrices.adults }} kr/person)</span>
+                    <span class="guest-row__desc">13+ år</span>
+                  </div>
+                  <div class="guest-row__controls">
+                    <button
+                      @click="updateGuests('adults', -1)"
+                      :disabled="localAdults <= 0"
+                      type="button"
+                      class="guest-btn"
+                    >
+                      −
+                    </button>
+                    <span class="guest-count">{{ localAdults }}</span>
+                    <button
+                      @click="updateGuests('adults', 1)"
+                      type="button"
+                      class="guest-btn"
+                      :disabled="totalGuests >= maxGuestsForSelection"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                <div class="guest-row" v-if="allowsChildren">
+                  <div class="guest-row__info">
+                    <span class="guest-row__label">Barn ({{ unitPrices.children }} kr/person)</span>
+                    <span class="guest-row__desc">0-12 år</span>
+                  </div>
+                  <div class="guest-row__controls">
+                    <button
+                      @click="updateGuests('children', -1)"
+                      :disabled="localChildren <= 0"
+                      type="button"
+                      class="guest-btn"
+                    >
+                      −
+                    </button>
+                    <span class="guest-count">{{ localChildren }}</span>
+                    <button
+                      @click="updateGuests('children', 1)"
+                      type="button"
+                      class="guest-btn"
+                      :disabled="totalGuests >= maxGuestsForSelection"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                <div class="guest-row" v-if="allowsSeniors">
+                  <div class="guest-row__info">
+                    <span class="guest-row__label">Seniorer ({{ unitPrices.seniors }} kr/person)</span>
+                    <span class="guest-row__desc">65+ år</span>
+                  </div>
+                  <div class="guest-row__controls">
+                    <button
+                      @click="updateGuests('seniors', -1)"
+                      :disabled="localSeniors <= 0"
+                      type="button"
+                      class="guest-btn"
+                    >
+                      −
+                    </button>
+                    <span class="guest-count">{{ localSeniors }}</span>
+                    <button
+                      @click="updateGuests('seniors', 1)"
+                      type="button"
+                      class="guest-btn"
+                      :disabled="totalGuests >= maxGuestsForSelection"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                <div class="guest-total-row">
+                  <span class="guest-total-label">Totalt antal gäster:</span>
+                  <span class="guest-total-value">{{ totalGuests }}</span>
+                </div>
+              </div>
+
+              <!-- Addon Editor -->
+              <div
+                v-if="experience?.addons?.length"
+                class="addon-editor"
+              >
+                <h4 class="subsection-title">Tillval (valfritt)</h4>
+
+                <div
+                  v-for="(addon, index) in experience.addons"
+                  :key="index"
+                  class="guest-row"
+                >
+                  <div class="guest-row__info">
+                    <span class="guest-row__label">{{ capitalize(addon.title) }} (+{{ addon.price }} kr/st)</span>
+                  </div>
+                  <div class="guest-row__controls">
+                    <button
+                      @click="updateAddonQuantity(addon.title, -1)"
+                      :disabled="
+                        !selectedAddonQuantities[addon.title] ||
+                        selectedAddonQuantities[addon.title] === 0
+                      "
+                      type="button"
+                      class="guest-btn"
+                    >
+                      −
+                    </button>
+                    <span class="guest-count">{{
+                      selectedAddonQuantities[addon.title] || 0
+                    }}</span>
+                    <button
+                      @click="updateAddonQuantity(addon.title, 1)"
+                      :disabled="
+                        (selectedAddonQuantities[addon.title] || 0) >= totalGuests ||
+                        totalGuests === 0
+                      "
+                      type="button"
+                      class="guest-btn"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Transition>
+        </div>
+
+        <!-- Footer with validation, price, and actions -->
+        <div class="modal-footer">
+          <div v-if="validationError" class="validation-error-footer">
             {{ validationError }}
           </div>
-        </div>
 
-        <!-- Addon Editor -->
-        <div
-          v-if="experience?.addons?.length"
-          class="guest-editor addon-editor"
-        >
-          <h3 class="guest-editor__title">Tillval (valfritt)</h3>
-
-          <div
-            v-for="(addon, index) in experience.addons"
-            :key="index"
-            class="guest-row"
-          >
-            <div class="guest-row__info">
-              <span class="guest-row__label">{{
-                capitalize(addon.title)
-              }}</span>
-              <span class="guest-row__desc">+{{ addon.price }} kr/gäst</span>
-            </div>
-            <div class="guest-row__controls">
-              <button
-                @click="updateAddonQuantity(addon.title, -1)"
-                :disabled="
-                  !selectedAddonQuantities[addon.title] ||
-                  selectedAddonQuantities[addon.title] === 0
-                "
-                type="button"
-                class="guest-btn"
-              >
-                −
-              </button>
-              <span class="guest-count">{{
-                selectedAddonQuantities[addon.title] || 0
-              }}</span>
-              <button
-                @click="updateAddonQuantity(addon.title, 1)"
-                :disabled="
-                  (selectedAddonQuantities[addon.title] || 0) >= totalGuests ||
-                  totalGuests === 0
-                "
-                type="button"
-                class="guest-btn"
-              >
-                +
-              </button>
-            </div>
+          <div v-if="selectedSlot" class="slot-capacity-hint-footer">
+            Platser kvar:
+            {{
+              Math.max(
+                (selectedSlot.remaining ?? maxGuestsForSelection) -
+                  totalGuests,
+                0
+              )
+            }}
           </div>
-        </div>
 
-        <!-- Date picker (V-Calendar) -->
-        <div class="calendar-container">
-          <h3 class="timeslot-title">Välj datum</h3>
+          <div class="price-footer">
+            <span class="price-label">Totalt pris:</span>
+            <span class="price-value">{{ totalPrice }} kr</span>
+          </div>
 
-          <VDatePicker
-            v-model="selectedDateObj"
-            :min-date="minDateObj"
-            :available-dates="availableDateObjects"
-            :attributes="calendarAttrs"
-            is-required
-            expanded
-          />
+          <div class="modal-actions">
+            <button @click="$emit('close')" class="btn btn--secondary">
+              Avbryt
+            </button>
 
-          <p
-            v-if="!availableDates.length"
-            class="validation-error"
-            style="margin-top: 0.75rem"
-          >
-            Inga tillgängliga datum för denna upplevelse.
-          </p>
-        </div>
-
-        <!-- Time slots -->
-        <div v-if="selectedDate" class="timeslot-section">
-          <h3 class="timeslot-title">Välj tid</h3>
-
-          <TimeSlotList
-            :experience="experience"
-            :selectedDate="selectedDate"
-            :guestCount="totalGuests"
-            @select="onTimeSelect"
-          />
-
-          <p v-if="selectedTime" class="selected-time-label">
-            Vald tid: <strong>{{ selectedTime }}</strong>
-          </p>
-        </div>
-
-        <div class="modal-actions">
-          <button @click="$emit('close')" class="btn btn--secondary">
-            Avbryt
-          </button>
-
-          <button
-            @click="handleConfirm"
-            :disabled="!selectedDate || totalGuests === 0 || !selectedTime"
-            class="btn btn--primary"
-          >
-            {{ editMode ? "Uppdatera bokning" : "Bekräfta bokning" }}
-          </button>
+            <button
+              @click="handleConfirm"
+              :disabled="!selectedDate || totalGuests === 0 || !selectedTime || !!validationError"
+              class="btn btn--primary"
+            >
+              {{ editMode ? "Uppdatera bokning" : "Bekräfta bokning" }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -241,6 +298,7 @@ import { useCartStore } from "~/stores/useCartStore";
 import { useExperiences } from "~/composables/useExperiences";
 import TimeSlotList from "~/components/TimeSlotList.vue";
 import { type DecoratedTimeSlot } from "~/utils/scheduleHelpers";
+import { Calendar, Clock, Users, ChevronDown, ChevronUp } from "lucide-vue-next";
 
 interface Props {
   show: boolean;
@@ -284,6 +342,14 @@ const emit = defineEmits<{
 const cartStore = useCartStore();
 const { getAddon } = useExperiences();
 
+// Track if modal has been initialized with query params
+const hasInitialized = ref(false);
+
+// Accordion collapse state
+const calendarExpanded = ref(true);
+const timeSlotsExpanded = ref(false);
+const guestAndAddonsExpanded = ref(false);
+
 const selectedDateObj = ref<Date | null>(
   props.initialDate ? new Date(`${props.initialDate}T12:00:00`) : null
 );
@@ -301,6 +367,36 @@ const selectedTime = ref<string | undefined>(undefined);
 
 // vi sparar hela slot-objektet här
 const selectedSlot = ref<DecoratedTimeSlot | null>(null);
+
+// Toggle functions with accordion behavior (only one section open at a time)
+const toggleCalendar = () => {
+  calendarExpanded.value = !calendarExpanded.value;
+  if (calendarExpanded.value) {
+    timeSlotsExpanded.value = false;
+    guestAndAddonsExpanded.value = false;
+  }
+};
+
+const toggleTimeSlots = () => {
+  timeSlotsExpanded.value = !timeSlotsExpanded.value;
+  if (timeSlotsExpanded.value) {
+    calendarExpanded.value = false;
+    guestAndAddonsExpanded.value = false;
+  }
+};
+
+const toggleGuestAndAddons = () => {
+  // Prevent collapse if there are validation errors
+  if (guestAndAddonsExpanded.value && validationError.value) {
+    return; // Don't allow collapse when there's an error
+  }
+  
+  guestAndAddonsExpanded.value = !guestAndAddonsExpanded.value;
+  if (guestAndAddonsExpanded.value) {
+    calendarExpanded.value = false;
+    timeSlotsExpanded.value = false;
+  }
+};
 
 // Local guest counts that can be edited
 const localAdults = ref(props.adults);
@@ -414,6 +510,34 @@ const validationError = computed(() => {
   }
 
   return null;
+});
+
+// Preview text for collapsed sections
+const calendarPreview = computed(() => {
+  if (!selectedDate.value) return "Välj datum";
+  const date = new Date(selectedDate.value);
+  return date.toLocaleDateString("sv-SE", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+});
+
+const timeSlotsPreview = computed(() => {
+  if (!selectedTime.value) return "Välj tid";
+  return `Kl ${selectedTime.value}`;
+});
+
+const guestAndAddonsPreview = computed(() => {
+  const parts: string[] = [];
+  if (localAdults.value) parts.push(`${localAdults.value} vuxna`);
+  if (localChildren.value) parts.push(`${localChildren.value} barn`);
+  if (localSeniors.value) parts.push(`${localSeniors.value} seniorer`);
+  
+  const addonCount = Object.values(selectedAddonQuantities.value).reduce((sum, qty) => sum + qty, 0);
+  if (addonCount > 0) parts.push(`${addonCount} tillval`);
+  
+  return parts.length ? parts.join(", ") : "Ange antal gäster";
 });
 
 const totalPrice = computed(() => {
@@ -531,7 +655,7 @@ const calendarAttrs = computed(() => [
   },
 ]);
 
-// Optional: auto-pick first available date when opening modal
+// Modal open watcher with smart initial state
 watch(
   () => props.show,
   (open) => {
@@ -539,55 +663,77 @@ watch(
 
     initializeModalState();
 
-    // if (!selectedDate.value) {
-    //   const first = availableDates.value.at(0);
-    //   if (first) selectedDate.value = first;
-    // }
+    // Auto-select first available date if none selected
     if (!selectedDateObj.value) {
       const first = availableDates.value.at(0);
       if (first) selectedDateObj.value = new Date(`${first}T12:00:00`);
     }
+
+    // Smart initial expand state
+    const hasQueryParams = props.initialDate && (props.adults > 0 || props.children > 0 || props.seniors > 0);
+    
+    if (props.editMode) {
+      // Edit mode: start with all sections expanded
+      calendarExpanded.value = true;
+      timeSlotsExpanded.value = true;
+      guestAndAddonsExpanded.value = true;
+    } else if (!hasInitialized.value && hasQueryParams) {
+      // Query params provided: skip to time slots
+      calendarExpanded.value = false;
+      timeSlotsExpanded.value = true;
+      guestAndAddonsExpanded.value = false;
+    } else {
+      // Default: start with calendar
+      calendarExpanded.value = true;
+      timeSlotsExpanded.value = false;
+      guestAndAddonsExpanded.value = false;
+    }
+
+    // Mark as initialized after first open
+    hasInitialized.value = true;
   }
 );
 
 const initializeModalState = () => {
-  // selectedDate.value = props.initialDate ?? "";
-  selectedDateObj.value = props.initialDate
-    ? new Date(`${props.initialDate}T12:00:00`)
-    : null;
-  selectedTime.value = undefined;
-  selectedSlot.value = null;
+  // Only apply props on first initialization
+  if (!hasInitialized.value) {
+    selectedDateObj.value = props.initialDate
+      ? new Date(`${props.initialDate}T12:00:00`)
+      : null;
+    selectedTime.value = undefined;
+    selectedSlot.value = null;
 
-  localAdults.value = props.adults;
-  localChildren.value = props.children;
-  localSeniors.value = props.seniors;
+    localAdults.value = props.adults;
+    localChildren.value = props.children;
+    localSeniors.value = props.seniors;
 
-  // zero categories not allowed
-  if (!allowsAdults.value) localAdults.value = 0;
-  if (!allowsChildren.value) localChildren.value = 0;
-  if (!allowsSeniors.value) localSeniors.value = 0;
+    // zero categories not allowed
+    if (!allowsAdults.value) localAdults.value = 0;
+    if (!allowsChildren.value) localChildren.value = 0;
+    if (!allowsSeniors.value) localSeniors.value = 0;
 
-  // init addon quantities in edit mode
-  if (props.editMode && props.cartItemIndex !== undefined) {
-    const cartItem = cartStore.items[props.cartItemIndex];
-    if (cartItem?.selectedAddons?.length) {
-      const q = cartItem.selectedAddons.reduce(
-        (acc: Record<string, number>, a: any) => {
-          const key = a.slug ?? a.title;
-          acc[key] = a.quantity ?? 0;
-          return acc;
-        },
-        {}
-      );
-      selectedAddonQuantities.value = { ...q };
+    // init addon quantities in edit mode
+    if (props.editMode && props.cartItemIndex !== undefined) {
+      const cartItem = cartStore.items[props.cartItemIndex];
+      if (cartItem?.selectedAddons?.length) {
+        const q = cartItem.selectedAddons.reduce(
+          (acc: Record<string, number>, a: any) => {
+            const key = a.slug ?? a.title;
+            acc[key] = a.quantity ?? 0;
+            return acc;
+          },
+          {}
+        );
+        selectedAddonQuantities.value = { ...q };
+      } else {
+        selectedAddonQuantities.value = {};
+      }
+
+      // if cart has time
+      selectedTime.value = cartItem?.bookingTime ?? undefined;
     } else {
       selectedAddonQuantities.value = {};
     }
-
-    // if cart has time
-    selectedTime.value = cartItem?.bookingTime ?? undefined;
-  } else {
-    selectedAddonQuantities.value = {};
   }
 };
 
@@ -604,28 +750,16 @@ const initializeModalState = () => {
 //   }
 // );
 
-watch(selectedDate, () => {
-  selectedTime.value = undefined;
-  selectedSlot.value = null;
-});
+// Removed: watch(selectedDate) - we now preserve time/slot selections across date changes
 
 const onTimeSelect = (slot: DecoratedTimeSlot) => {
   selectedSlot.value = slot;
   selectedTime.value = slot.time;
 
-  // reset guests per selected slot (feature behavior)
-  const defaultAdults = props.adults ?? 1;
-  const remaining = slot.remaining ?? Infinity;
-  const safeAdults = Math.min(defaultAdults, remaining);
-
-  localAdults.value = allowsAdults.value ? safeAdults || 1 : 0;
-  localChildren.value = allowsChildren.value ? 0 : 0;
-  localSeniors.value = allowsSeniors.value ? 0 : 0;
-
-  if (totalGuests.value > maxGuestsForSelection.value) {
-    const overflow = totalGuests.value - maxGuestsForSelection.value;
-    localAdults.value = Math.max(0, localAdults.value - overflow);
-  }
+  // Auto-expand guests+addons section and collapse others (accordion behavior)
+  calendarExpanded.value = false;
+  timeSlotsExpanded.value = false;
+  guestAndAddonsExpanded.value = true;
 };
 
 const formatDate = (dateString: string) => {
@@ -707,7 +841,7 @@ const handleConfirm = () => {
   background: white;
   border-radius: 20px;
   padding: 2rem;
-  max-width: 500px;
+  max-width: 550px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
@@ -763,24 +897,117 @@ const handleConfirm = () => {
   font-size: 1rem;
 }
 
+/* Collapsible Section Styles */
+.collapsible-section {
+  margin-bottom: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  background: #f9fafb;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.section-header:hover {
+  background: #f3f4f6;
+}
+
+.section-header:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+}
+
+.section-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #1a1a1a;
+}
+
+.section-header-left svg {
+  flex-shrink: 0;
+  color: #6b7280;
+}
+
+.section-title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.section-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.section-preview {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.section-header-right svg {
+  flex-shrink: 0;
+  color: #9ca3af;
+  transition: transform 0.3s;
+}
+
+.section-content {
+  padding: 1.25rem;
+  background: white;
+}
+
+/* Collapse Transition */
+.collapse-enter-active,
+.collapse-leave-active {
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+.collapse-enter-from,
+.collapse-leave-to {
+  opacity: 0;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.collapse-enter-to,
+.collapse-leave-from {
+  opacity: 1;
+  max-height: 1000px;
+}
+
 /* Guest Editor Styles */
 .guest-editor {
   background: #f9fafb;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 1.25rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
-.guest-editor__title {
-  font-size: 1rem;
+.subsection-title {
+  font-size: 0.9375rem;
   font-weight: 600;
   color: #1a1a1a;
   margin: 0 0 1rem 0;
 }
 
 .addon-editor {
-  margin-top: 1.5rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem;
 }
 
 .guest-row {
@@ -853,128 +1080,72 @@ const handleConfirm = () => {
   color: #1a1a1a;
 }
 
-.guest-total-section {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+.guest-total-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid #e5e7eb;
+  font-weight: 600;
 }
 
-.guest-total {
-  margin: 0;
+.guest-total-label {
   font-size: 0.9375rem;
-  font-weight: 600;
+  color: #374151;
+}
+
+.guest-total-value {
+  font-size: 1.125rem;
   color: #1a1a1a;
 }
 
-.slot-capacity-hint {
-  margin: 0.25rem 0;
-  font-size: 0.8rem;
-  color: #6b7280;
+/* Footer Styles */
+.modal-footer {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e5e7eb;
 }
 
-.price-breakdown {
-  margin: 0.25rem 0 0.35rem;
-  font-size: 0.85rem;
-  color: #6b7280;
-  line-height: 1.4;
+.validation-error-footer {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
 }
 
-.price-total {
-  margin: 0;
-  font-size: 1.125rem;
+.slot-capacity-hint-footer {
+  font-size: 0.875rem;
+  color: #6b7280;
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.price-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: #f9fafb;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.price-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.price-value {
+  font-size: 1.5rem;
   font-weight: 700;
   color: #1a1a1a;
-}
-
-.calendar-container {
-  margin-bottom: 2rem;
-}
-
-.date-picker-wrapper {
-  display: block;
-  width: 100%;
-  cursor: pointer;
-  position: relative;
-  padding: 1rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
-  transition: all 0.2s;
-  background: white;
-  box-sizing: border-box;
-}
-
-.date-picker-wrapper:hover {
-  border-color: #d1d5db;
-  background: #f9fafb;
-}
-
-.date-picker-wrapper:active {
-  transform: scale(0.99);
-}
-
-.date-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 0.5rem;
-}
-
-.date-label :deep(svg) {
-  color: #6b7280;
-  flex-shrink: 0;
-}
-
-.date-display {
-  padding: 0.5rem;
-  background: #f9fafb;
-  border-radius: 8px;
-  min-height: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.placeholder {
-  color: #9ca3af;
-  font-size: 0.9375rem;
-}
-
-.selected-date {
-  color: #1a1a1a;
-  font-weight: 600;
-  font-size: 0.9375rem;
-}
-
-.date-picker-hidden {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-  width: 0;
-  height: 0;
-}
-
-/* Time Slot Styles */
-.timeslot-section {
-  margin-bottom: 1.5rem;
-}
-
-.timeslot-title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #111827;
-}
-
-.selected-time-label {
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-  color: #374151;
 }
 
 .modal-actions {
@@ -1026,5 +1197,35 @@ const handleConfirm = () => {
 .btn--primary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+  .modal-content {
+    padding: 1.5rem;
+    max-width: 100%;
+    border-radius: 16px;
+  }
+
+  .section-header {
+    padding: 0.875rem 1rem;
+  }
+
+  .section-content {
+    padding: 1rem;
+  }
+
+  .section-preview {
+    display: none;
+  }
+
+  .guest-editor,
+  .addon-editor {
+    padding: 1rem;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
 }
 </style>

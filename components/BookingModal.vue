@@ -15,7 +15,7 @@
 
         <div class="modal-body">
         <!-- SECTION 1: Calendar (Date Picker) -->
-        <div class="collapsible-section">
+        <div class="collapsible-section" :class="{ 'section-expanded': calendarExpanded }">
           <div 
             class="section-header"
             @click="toggleCalendar"
@@ -60,7 +60,7 @@
         </div>
 
         <!-- SECTION 2: Time Slots - Always shown but disabled if no date -->
-        <div class="collapsible-section" :class="{ 'section-disabled': !selectedDate }">
+        <div class="collapsible-section" :class="{ 'section-disabled': !selectedDate, 'section-expanded': timeSlotsExpanded }">
           <div 
             class="section-header"
             @click="toggleTimeSlots"
@@ -99,7 +99,7 @@
         </div>
 
         <!-- SECTION 3: Guests & Addons (Combined) -->
-        <div class="collapsible-section">
+        <div class="collapsible-section" :class="{ 'section-expanded': guestAndAddonsExpanded }">
           <div 
             class="section-header"
             @click="toggleGuestAndAddons"
@@ -986,6 +986,12 @@ const handleConfirm = () => {
   border-radius: 12px;
   overflow: hidden;
   background: white;
+  transition: all 0.2s ease;
+}
+
+.collapsible-section.section-expanded {
+  border: 2px solid #3b82f6;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
 }
 
 .collapsible-section.section-disabled {
@@ -1009,8 +1015,8 @@ const handleConfirm = () => {
 }
 
 .section-header:focus {
-  outline: 2px solid #3b82f6;
-  outline-offset: -2px;
+  outline: none;
+  box-shadow: 0 0 0 2px #3b82f6;
 }
 
 .section-header-left {

@@ -27,8 +27,4 @@ body {
   font-family: Arial, sans-serif;
   color: var(--text-color);
 }
-
-main {
-  min-height: calc(100vh - 80px);
-}
 </style>

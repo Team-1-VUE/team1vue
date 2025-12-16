@@ -103,6 +103,7 @@ const handleClick = (slot: DecoratedTimeSlot) => {
             :class="{
               'time-slot-list__button--full': slot.isFull,
               'time-slot-list__button--few': slot.status === 'few',
+              'time-slot-list__button--too-small': slot.cannotFitGroup,
             }"
             :disabled="slot.isFull || slot.cannotFitGroup"
             @click="handleClick(slot)">
@@ -168,8 +169,15 @@ const handleClick = (slot: DecoratedTimeSlot) => {
 
 .time-slot-list__button--full,
 .time-slot-list__button--too-small {
-  opacity: 0.6;
+  opacity: 0.4;
   cursor: not-allowed;
+  background: #f3f4f6;
+  color: #9ca3af;
+}
+
+.time-slot-list__button--too-small .time-slot-list__time,
+.time-slot-list__button--full .time-slot-list__time {
+  color: #9ca3af;
 }
 
 .time-slot-list__button--few {

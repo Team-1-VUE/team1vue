@@ -782,7 +782,7 @@
         "seniors": 270
       },
       "image": "/images/experiences/smink-med-simon.webp",
-      "addons": [],
+      "addons": [{ "title": "sminkmaterial", "price": 60 }],
       "minGuests": 1,
       "maxGuests": 6,
       "allowedCategories": {
@@ -879,7 +879,7 @@
         "seniors": 250
       },
       "image": "/images/antonio_horizontal/antonio_workout_squat.png",
-      "addons": [],
+      "addons": [{ "title": "handduk", "price": 30 }],
       "minGuests": 1,
       "maxGuests": 6,
       "allowedCategories": {
@@ -1142,11 +1142,6 @@
         ]
       }
     }
-  ],
-  "addons": [
-    { "slug": "te-fika", "title": "Te och fika", "price": 50 },
-    { "slug": "meditationsguide", "title": "Meditationsguide", "price": 75 },
-    { "slug": "livsstilscoach", "title": "Livsstilscoach", "price": 100 }
   ],
   "articles": []
 }

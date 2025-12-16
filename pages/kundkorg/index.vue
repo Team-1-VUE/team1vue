@@ -366,11 +366,10 @@ const handleCheckout = () => {
 }
 
 .cart-item__container {
-  display: flex;
+  display: grid;
+  grid-template-columns: 166px 1fr auto;
   gap: 1.5rem;
-  flex: 1;
-  align-items: stretch;
-  cursor: pointer;
+  align-items: start;
 }
 
 .cart-item__image-container {
@@ -393,10 +392,12 @@ const handleCheckout = () => {
 }
 
 .cart-item__details {
-  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  min-height: 166px;
+  height: 166px;
+  justify-content: space-between;
 }
 
 .details-header {
@@ -475,9 +476,9 @@ const handleCheckout = () => {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 1rem;
   justify-content: space-between;
   min-width: 200px;
+  height: 166px;
 }
 
 .price-breakdown {
@@ -677,6 +678,8 @@ const handleCheckout = () => {
 
   .cart-item__details {
     grid-column: 2;
+    min-height: 120px;
+    height: 120px;
   }
 
   .cart-item__actions {
@@ -685,6 +688,7 @@ const handleCheckout = () => {
     align-items: center;
     justify-content: space-between;
     min-width: 100%;
+    height: auto;
   }
 
   .price-breakdown {
@@ -724,12 +728,15 @@ const handleCheckout = () => {
 
   .cart-item__details {
     grid-column: 1;
+    height: auto;
+    min-height: auto;
   }
 
   .cart-item__actions {
     width: 100%;
     flex-direction: column;
     align-items: stretch;
+    height: auto;
   }
 
   .price-breakdown {
@@ -768,8 +775,14 @@ const handleCheckout = () => {
     height: 180px;
   }
 
+  .cart-item__details {
+    height: 180px;
+    min-height: 180px;
+  }
+
   .cart-item__actions {
     min-width: 240px;
+    height: 180px;
   }
 }
 </style>

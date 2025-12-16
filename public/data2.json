@@ -52,6 +52,7 @@
       "owner": "kristoffer",
       "title": "Klättra med Kristoffer",
       "description": "Följ med Kristoffer på ett klätteräventyr.",
+      "about": "Att klättra med Kristoffer är mer äventyr än prestation. Det handlar om att ta sig uppåt med skratt, pepp och en känsla av att allt löser sig, även när greppet är tveksamt. Kristoffer guidar med nyfikenhet och charm, och oavsett om du är nybörjare eller van klättrare blir det en upplevelse där glädjen alltid väger tyngre än tekniken.",
       "duration": "2h",
       "price": 350,
       "categoryPrices": {
@@ -146,6 +147,7 @@
       "owner": "kristoffer",
       "title": "Bänka med Benckert",
       "description": "Styrketräning och teknik med Benckert.",
+      "about": "Här är fokus på styrka, teknik och ett lugnt tempo som bygger självförtroende. Benckert guidar dig genom bänkpress och grundläggande styrketräning med tydliga tips och en trygg närvaro. Det är en session som passar dig som vill bli starkare utan stress, med en coach som hellre ser framsteg än maxvikter.",
       "duration": "1.5h",
       "price": 300,
       "categoryPrices": {
@@ -233,6 +235,7 @@
       "owner": "kristoffer",
       "title": "Konspirationer med Kristoffer",
       "description": "En underhållande genomgång av vilda teorier.",
+      "about": "En kväll där teorierna är vildare än fakta och samtalet är viktigare än svaren. Kristoffer leder dig genom klassiska och helt nya konspirationer med humor, nyfikenhet och ett öppet sinne. Du behöver inte tro på allt, det räcker att du gillar att ifrågasätta och ha kul på vägen.",
       "duration": "2h",
       "price": 200,
       "categoryPrices": {
@@ -327,6 +330,7 @@
       "owner": "pencheff",
       "title": "Pasta med Pencheff",
       "description": "Koka, knåda och njut av pasta från grunden.",
+      "about": "Att laga pasta med Pencheff är lika delar matlagning och magi. Du får lära dig grunderna från deg till färdig rätt, samtidigt som stämningen är avslappnad och full av personlighet. Det här är en upplevelse för dig som vill äta gott, skratta mycket och gå hem med både ny kunskap och mätt mage.",
       "duration": "2h",
       "price": 350,
       "categoryPrices": {
@@ -418,6 +422,7 @@
       "slug": "poetry-slam-med-pencheff",
       "owner": "pencheff",
       "title": "Poetry slam med Pencheff",
+      "about": "En kreativ upplevelse där ord, känslor och uttryck står i centrum. Pencheff skapar en trygg och inspirerande miljö där du får testa poetry slam oavsett tidigare erfarenhet. Fokus ligger på att våga ta plats, leka med språket och hitta sitt eget sätt att uttrycka sig.",
       "description": "Kreativt uttryck och spoken word.",
       "duration": "1.5h",
       "price": 280,
@@ -503,6 +508,7 @@
       "owner": "pencheff",
       "title": "Pilates med Pencheff",
       "description": "Smidig, lugn och effektiv träning.",
+      "about": "Ett lugnt och fokuserat pass där kroppskontroll och närvaro står i centrum. Pencheff guidar dig genom pilates på ett avslappnat och personligt sätt, där rörelserna får ta tid och varje deltagare möts på sin nivå. Perfekt för dig som vill träna smidighet och styrka utan prestation.",
       "duration": "1h",
       "price": 250,
       "categoryPrices": {
@@ -595,6 +601,7 @@
       "owner": "simon",
       "title": "Sportbil med Simon",
       "description": "Följ med Simon ut med sportbilen.",
+      "about": "En exklusiv upplevelse där tempo, stil och självklarhet möts. Simon tar dig med på en tur där sportbilen får glänsa, men där tryggheten alltid finns i förarsätet. Det är en upplevelse för dig som vill känna fartens lugn och njuta av ögonblicket.",
       "duration": "1h",
       "price": 500,
       "categoryPrices": {
@@ -682,6 +689,7 @@
       "owner": "simon",
       "title": "Sitt med Simon",
       "description": "En meditativ sittning med ro och fokus.",
+      "about": "En oväntat kraftfull upplevelse i sin enkelhet. Att sitta med Simon handlar om stillhet, fokus och närvaro. Med sin lugna aura skapar han en meditativ stund där du får landa i nuet, utan krav och utan mål. Bara du, stolen och total världsklass i sittande.",
       "duration": "45min",
       "price": 150,
       "categoryPrices": {
@@ -774,6 +782,7 @@
       "owner": "simon",
       "title": "Smink med Simon",
       "description": "Lär dig sminktekniker och kreativa looks.",
+      "about": "En kreativ och inspirerande session där teknik möter känsla. Simon guidar dig genom sminkning med ett öga för detaljer och ett sinne för helhet. Oavsett om du vill lära dig grunderna eller testa något nytt blir det en upplevelse där uttryck och självsäkerhet står i fokus.",
       "duration": "2h",
       "price": 300,
       "categoryPrices": {
@@ -871,6 +880,7 @@
       "owner": "antonio",
       "title": "Workout med Antonio",
       "description": "Svettig men rolig träningssession med fokus på styrka, rörlighet och pepp.",
+      "about": "Ett energifyllt träningspass där svett och skratt går hand i hand. Antonio bjuder på pepp, tydliga övningar och en stämning som gör att du orkar lite till. Fokus ligger på att känna sig stark, rörlig och motiverad, snarare än perfekt.",
       "duration": "1.5h",
       "price": 350,
       "categoryPrices": {
@@ -975,6 +985,7 @@
       "owner": "antonio",
       "title": "Dansa med Antonio",
       "description": "Lär dig enkla men snygga dansmoves – fokus på glädje, rytm och självkänsla.",
+      "about": "En glädjefylld dansupplevelse där rytm och självkänsla får ta plats. Antonio lär ut enkla men snygga moves och ser till att alla känner sig bekväma på golvet. Det handlar inte om att kunna, utan om att våga och ha kul tillsammans.",
       "duration": "1.5h",
       "price": 320,
       "categoryPrices": {
@@ -1063,6 +1074,7 @@
       "owner": "antonio",
       "title": "Cocktails med Antonio",
       "description": "Mixa färgglada mocktails eller cocktails och lär dig bartricks på vägen.",
+      "about": "En social och färgstark upplevelse där smak, teknik och show möts. Antonio lär dig blanda cocktails eller mocktails med både stil och lekfullhet. Perfekt för dig som vill lära dig något nytt, umgås och känna dig lite mer som hemma bakom baren.",
       "duration": "2h",
       "price": 380,
       "categoryPrices": {

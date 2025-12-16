@@ -207,24 +207,9 @@
                   <span class="guest-total-value">{{ totalGuests }}</span>
                 </div>
 
-                <!-- Capacity warnings -->
-                <div v-if="selectedSlot" class="capacity-info">
-                  <div 
-                    v-if="totalGuests >= maxGuestsForSelection" 
-                    class="capacity-warning capacity-warning--full"
-                  >
-                    ⚠️ Maximal kapacitet nådd för denna tid
-                  </div>
-                  <div 
-                    v-else-if="maxGuestsForSelection - totalGuests <= 3" 
-                    class="capacity-warning capacity-warning--low"
-                  >
-                    ⚠️ Endast {{ maxGuestsForSelection - totalGuests }} platser kvar
-                  </div>
-                  <div v-else class="slot-capacity-hint-inline">
-                    Platser kvar:
-                    {{ maxGuestsForSelection - totalGuests }}
-                  </div>
+                <!-- Capacity indicator -->
+                <div v-if="selectedSlot" class="slot-capacity-hint-inline">
+                  Platser kvar: {{ Math.max(maxGuestsForSelection - totalGuests, 0) }}
                 </div>
               </div>
 
@@ -1181,48 +1166,13 @@ const handleConfirm = () => {
   color: #1a1a1a;
 }
 
-.capacity-info {
+.slot-capacity-hint-inline {
   margin-top: 0.75rem;
   padding-top: 0.75rem;
   border-top: 1px solid #e5e7eb;
-}
-
-.slot-capacity-hint-inline {
   font-size: 0.875rem;
   color: #6b7280;
   text-align: center;
-}
-
-.capacity-warning {
-  font-size: 0.875rem;
-  font-weight: 600;
-  padding: 0.75rem;
-  border-radius: 8px;
-  text-align: center;
-  animation: fadeIn 0.3s ease-out;
-}
-
-.capacity-warning--full {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #dc2626;
-}
-
-.capacity-warning--low {
-  background: #fef9e7;
-  border: 1px solid #fde68a;
-  color: #d97706;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* Footer Styles */

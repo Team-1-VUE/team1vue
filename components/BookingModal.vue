@@ -3,7 +3,8 @@
     <div
       v-if="show && experience"
       class="modal-overlay"
-      @click="$emit('close')">
+      @click="$emit('close')"
+    >
       <div class="modal-content" @click.stop>
         <button class="modal-close" @click="$emit('close')">×</button>
 
@@ -24,7 +25,8 @@
                 @click="updateGuests('adults', -1)"
                 :disabled="localAdults <= 0"
                 type="button"
-                class="guest-btn">
+                class="guest-btn"
+              >
                 −
               </button>
               <span class="guest-count">{{ localAdults }}</span>
@@ -32,7 +34,8 @@
                 @click="updateGuests('adults', 1)"
                 type="button"
                 class="guest-btn"
-                :disabled="totalGuests >= maxGuestsForSelection">
+                :disabled="totalGuests >= maxGuestsForSelection"
+              >
                 +
               </button>
             </div>
@@ -48,7 +51,8 @@
                 @click="updateGuests('children', -1)"
                 :disabled="localChildren <= 0"
                 type="button"
-                class="guest-btn">
+                class="guest-btn"
+              >
                 −
               </button>
               <span class="guest-count">{{ localChildren }}</span>
@@ -56,7 +60,8 @@
                 @click="updateGuests('children', 1)"
                 type="button"
                 class="guest-btn"
-                :disabled="totalGuests >= maxGuestsForSelection">
+                :disabled="totalGuests >= maxGuestsForSelection"
+              >
                 +
               </button>
             </div>
@@ -72,7 +77,8 @@
                 @click="updateGuests('seniors', -1)"
                 :disabled="localSeniors <= 0"
                 type="button"
-                class="guest-btn">
+                class="guest-btn"
+              >
                 −
               </button>
               <span class="guest-count">{{ localSeniors }}</span>
@@ -80,7 +86,8 @@
                 @click="updateGuests('seniors', 1)"
                 type="button"
                 class="guest-btn"
-                :disabled="totalGuests >= maxGuestsForSelection">
+                :disabled="totalGuests >= maxGuestsForSelection"
+              >
                 +
               </button>
             </div>
@@ -128,13 +135,15 @@
         <!-- Addon Editor -->
         <div
           v-if="experience?.addons?.length"
-          class="guest-editor addon-editor">
+          class="guest-editor addon-editor"
+        >
           <h3 class="guest-editor__title">Tillval (valfritt)</h3>
 
           <div
             v-for="(addon, index) in experience.addons"
             :key="index"
-            class="guest-row">
+            class="guest-row"
+          >
             <div class="guest-row__info">
               <span class="guest-row__label">{{
                 capitalize(addon.title)
@@ -149,7 +158,8 @@
                   selectedAddonQuantities[addon.title] === 0
                 "
                 type="button"
-                class="guest-btn">
+                class="guest-btn"
+              >
                 −
               </button>
               <span class="guest-count">{{
@@ -162,34 +172,11 @@
                   totalGuests === 0
                 "
                 type="button"
-                class="guest-btn">
+                class="guest-btn"
+              >
                 +
               </button>
             </div>
-          </div>
-        </div>
-
-        <!-- Date picker -->
-        <div class="calendar-container">
-          <div class="date-picker-wrapper" @click="dateInput?.showPicker()">
-            <div class="date-label">
-              <Calendar :size="18" />
-              Välj datum för bokning
-            </div>
-            <div class="date-display">
-              <span v-if="!selectedDate" class="placeholder"
-                >Klicka för att välja datum</span
-              >
-              <span v-else class="selected-date">{{
-                formatDate(selectedDate)
-              }}</span>
-            </div>
-            <input
-              ref="dateInput"
-              type="date"
-              v-model="selectedDate"
-              :min="minDate"
-              class="date-picker-hidden" />
           </div>
         </div>
 
@@ -197,25 +184,20 @@
         <div class="calendar-container">
           <h3 class="timeslot-title">Välj datum</h3>
 
-          <!-- <VDatePicker
-            v-model.string="selectedDate"
-            :min-date="minDateObj"
-            :available-dates="availableDateObjects"
-            :attributes="calendarAttrs"
-            is-required
-            expanded /> -->
           <VDatePicker
             v-model="selectedDateObj"
             :min-date="minDateObj"
             :available-dates="availableDateObjects"
             :attributes="calendarAttrs"
             is-required
-            expanded />
+            expanded
+          />
 
           <p
             v-if="!availableDates.length"
             class="validation-error"
-            style="margin-top: 0.75rem">
+            style="margin-top: 0.75rem"
+          >
             Inga tillgängliga datum för denna upplevelse.
           </p>
         </div>
@@ -228,7 +210,8 @@
             :experience="experience"
             :selectedDate="selectedDate"
             :guestCount="totalGuests"
-            @select="onTimeSelect" />
+            @select="onTimeSelect"
+          />
 
           <p v-if="selectedTime" class="selected-time-label">
             Vald tid: <strong>{{ selectedTime }}</strong>
@@ -243,7 +226,8 @@
           <button
             @click="handleConfirm"
             :disabled="!selectedDate || totalGuests === 0 || !selectedTime"
-            class="btn btn--primary">
+            class="btn btn--primary"
+          >
             {{ editMode ? "Uppdatera bokning" : "Bekräfta bokning" }}
           </button>
         </div>
@@ -256,10 +240,7 @@
 import { useCartStore } from "~/stores/useCartStore";
 import { useExperiences } from "~/composables/useExperiences";
 import TimeSlotList from "~/components/TimeSlotList.vue";
-import {
-  getSlotsForDate,
-  type DecoratedTimeSlot,
-} from "~/utils/scheduleHelpers";
+import { type DecoratedTimeSlot } from "~/utils/scheduleHelpers";
 
 interface Props {
   show: boolean;

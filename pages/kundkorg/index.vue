@@ -1,13 +1,15 @@
 <template>
   <div class="cart-page">
     <h1>Kundkorg</h1>
-    
+
     <div v-if="cartStore.cartItemCount === 0" class="empty-cart">
       <div class="empty-cart__icon">
         <ShoppingCart :size="64" :stroke-width="1.5" />
       </div>
       <h2 class="empty-cart__title">Din kundkorg är tom</h2>
-      <p class="empty-cart__text">Utforska våra upplevelser och hitta något spännande att boka!</p>
+      <p class="empty-cart__text">
+        Utforska våra upplevelser och hitta något spännande att boka!
+      </p>
       <NuxtLink to="/" class="btn btn--primary">
         <Compass :size="18" />
         Utforska upplevelser
@@ -16,94 +18,114 @@
 
     <div v-else>
       <div class="cart-items">
-        <div v-for="(item, index) in cartStore.items" :key="`${item.id}-${index}`" class="cart-item">
-          <!-- container for all -->
+        <div
+          v-for="(item, index) in cartStore.items"
+          :key="`${item.id}-${index}`"
+          class="cart-item">
           <div @click="handleEditItem(index)" class="cart-item__container">
             <!-- container for img -->
             <div class="cart-item__image-container">
-              <img :src="item.image" :alt="item.title" class="cart-item__image" />
+              <img
+                :src="item.image"
+                :alt="item.title"
+                class="cart-item__image" />
             </div>
             <!-- /container for img -->
-            
+
             <!-- container for event details -->
             <div class="cart-item__details">
               <h3>{{ item.title }}</h3>
-              <p class="description">{{ item.description || 'Ingen beskrivning tillgänglig' }}</p>
+              <p class="description">
+                {{ item.description || "Ingen beskrivning tillgänglig" }}
+              </p>
               <p class="duration">{{ item.duration }}</p>
-              
+
               <!-- addons included here -->
               <div class="addons">
                 <span class="addons-label">Tillval:</span>
                 <span v-if="item.selectedAddons.length" class="addons-list">
-                  <span v-for="addon in item.selectedAddons" :key="addon.slug" class="addon-item">
-                    {{ capitalize(addon.title) }}{{ addon.quantity > 1 ? ` ×${addon.quantity}` : '' }} (+{{ addon.price * addon.quantity }} kr)
+                  <span
+                    v-for="addon in item.selectedAddons"
+                    :key="addon.slug"
+                    class="addon-item">
+                    {{ capitalize(addon.title)
+                    }}{{ addon.quantity > 1 ? ` ×${addon.quantity}` : "" }} (+{{
+                      addon.price * addon.quantity
+                    }}
+                    kr)
                   </span>
                 </span>
                 <span v-else class="no-addons">Inga tillval</span>
               </div>
-              
+
               <p v-if="item.bookingDate" class="booking-date">
                 <Calendar :size="16" />
                 {{ formatDate(item.bookingDate) }}
               </p>
             </div>
-            <!-- /container for event details -->
-            
-            <!-- container for guest details -->
-            <div v-if="item.guestCounts" class="guest-details">
-              <p class="guest-counts-label">Antal gäster:</p>
-              <ul class="guest-list">
-                <li>
-                  Vuxna: {{ item.guestCounts.adults || 0 }}
-                </li>
-                <li>
-                  Barn: {{ item.guestCounts.children || 0 }}
-                </li>
-                <li>
-                  Pensionärer: {{ item.guestCounts.seniors || 0 }}
-                </li>
-              </ul>
-              <p class="total-guests">Totalt: {{ getTotalGuests(item) }} gäster</p>
-            </div>
-            <!-- /container for guest details -->
-          </div>
-          <!-- /container for all -->
 
-          <div class="cart-item__actions">
-            <p class="item-price">
-              {{ itemTotal(item) }} kr
-            </p>
-            
-            <div class="action-buttons">
-              <button @click="handleEditItem(index)" class="btn-edit" title="Redigera">
-                <Edit :size="20" />
-              </button>
-              <button @click="cartStore.removeFromCart(index)" class="btn-remove" title="Ta bort">
-                <Trash2 :size="20" />
-              </button>
+            <div class="cart-item__details">
+              <h3>{{ item.title }}</h3>
+              <p class="owner">med {{ capitalize(item.owner) }}</p>
+              <p class="duration">{{ item.duration }}</p>
+              <p v-if="item.bookingDate" class="booking-date">
+                <Calendar :size="16" />
+                {{ formatDate(item.bookingDate) }}
+              </p>
+
+              <div v-if="item.selectedAddons.length" class="addons">
+                <p class="addons-label">Tillval:</p>
+                <ul>
+                  <li v-for="addon in item.selectedAddons" :key="addon.slug">
+                    {{ addon.title }} (+{{ addon.price }} kr)
+                  </li>
+                </ul>
+                <p class="total-guests">
+                  Totalt: {{ getTotalGuests(item) }} gäster
+                </p>
+              </div>
+              <!-- /container for guest details -->
+            </div>
+            <!-- /container for all -->
+            <div class="cart-item__actions">
+              <p class="item-price">{{ itemTotal(item) }} kr</p>
+
+              <div class="action-buttons">
+                <button
+                  @click="handleEditItem(index)"
+                  class="btn-edit"
+                  title="Redigera">
+                  <Edit :size="20" />
+                </button>
+                <button
+                  @click="cartStore.removeFromCart(index)"
+                  class="btn-remove"
+                  title="Ta bort">
+                  <Trash2 :size="20" />
+                </button>
+              </div>
             </div>
           </div>
+        </div>
+
+        <div class="cart-summary">
+          <div class="summary-row">
+            <span>Antal bokningar:</span>
+            <span>{{ cartStore.cartItemCount }}</span>
+          </div>
+          <div class="summary-row total">
+            <span>Totalt:</span>
+            <span class="total-price">{{ cartStore.totalPrice }} kr</span>
+          </div>
+
+          <button class="btn btn--primary" @click="handleCheckout">
+            Gå till betalning
+          </button>
         </div>
       </div>
 
-      <div class="cart-summary">
-        <div class="summary-row">
-          <span>Antal bokningar:</span>
-          <span>{{ cartStore.cartItemCount }}</span>
-        </div>
-        <div class="summary-row total">
-          <span>Totalt:</span>
-          <span class="total-price">{{ cartStore.totalPrice }} kr</span>
-        </div>
-        
-        <button class="btn btn--primary" @click="handleCheckout">
-          Gå till betalning
-        </button>
-      </div>
-    </div>
-    
-    <!-- Edit Booking Modal -->
-    <BookingModal
+      <!-- Edit Booking Modal -->
+      <!-- <BookingModal
       v-if="editingExperience && editingItemIndex !== null"
       :show="showEditModal"
       :experience="editingExperience"
@@ -114,77 +136,179 @@
       :editMode="true"
       :cartItemIndex="editingItemIndex"
       @update="handleUpdateBooking"
-      @close="handleCloseEditModal" />
+      @close="handleCloseEditModal" /> -->
+
+      <EditBookingModal
+        v-if="editingExperience && editingItemIndex !== null"
+        :show="showEditModal"
+        :experience="editingExperience"
+        :cartItem="cartStore.items[editingItemIndex]"
+        :cartItemIndex="editingItemIndex"
+        :slot="editingSlot"
+        @update="handleUpdateBooking"
+        @close="handleCloseEditModal" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Calendar, ShoppingCart, Compass, Trash2, Edit } from 'lucide-vue-next'
-import { useCartStore } from '~/stores/useCartStore'
-import { useExperiences } from '~/composables/useExperiences'
-import BookingModal from '~/components/BookingModal.vue'
+import { toRaw } from "vue";
 
-const cartStore = useCartStore()
-const { getExperienceById } = useExperiences()
+import { Calendar, ShoppingCart, Compass, Trash2, Edit } from "lucide-vue-next";
+import { useCartStore } from "~/stores/useCartStore";
+import { useExperiences } from "~/composables/useExperiences";
+// import BookingModal from "~/components/BookingModal.vue";
+import EditBookingModal from "~/components/EditBookingModal.vue";
+
+const cartStore = useCartStore();
+const { getExperienceById } = useExperiences();
 
 // Edit state
-const editingItemIndex = ref<number | null>(null)
-const editingExperience = ref<any>(null)
-const showEditModal = ref(false)
+const editingItemIndex = ref<number | null>(null);
+const editingExperience = ref<any>(null);
+const showEditModal = ref(false);
+const editingSlot = ref<{
+  time: string;
+  capacity: number;
+  booked: number;
+} | null>(null);
 
 const handleEditItem = (index: number) => {
-  const item = cartStore.items[index]
-  if (!item) return
-  
-  const experience = getExperienceById(item.id)
-  if (!experience) return
-  
-  editingItemIndex.value = index
-  editingExperience.value = experience
-  showEditModal.value = true
-}
+  const item = cartStore.items[index];
+  if (!item) return;
 
-const handleUpdateBooking = (payload: { index: number; date: string; adults: number; children: number; seniors: number; addons: Array<{ slug: string; title: string; price: number; quantity: number }> }) => {
+  const experience = getExperienceById(item.id);
+  if (!experience) return;
+
+  editingItemIndex.value = index;
+  editingExperience.value = experience;
+
+  const date = item.bookingDate;
+  const time = item.bookingTime;
+
+  const scheduleForDate = date
+    ? (experience.schedule?.[date] as any[] | undefined)
+    : undefined;
+  editingSlot.value = scheduleForDate?.find((s) => s.time === time) ?? null;
+
+  showEditModal.value = true;
+};
+
+// const handleUpdateBooking = (payload: {
+//   index: number;
+//   date: string;
+//   adults: number;
+//   children: number;
+//   seniors: number;
+//   bookingTime?: string;
+//   addons: Array<{
+//     slug: string;
+//     title: string;
+//     price: number;
+//     quantity: number;
+//   }>;
+// }) => {
+//   cartStore.updateCartItem(
+//     payload.index,
+//     payload.date,
+//     payload.adults,
+//     payload.children,
+//     payload.seniors,
+//     payload.addons,
+//     payload.bookingTime
+//   );
+//   handleCloseEditModal();
+// };
+
+const handleUpdateBooking = (payload: {
+  index: number;
+  guests: { adults: number; children: number; seniors: number };
+}) => {
+  const item = cartStore.items[payload.index];
+  if (!item || !item.bookingDate) return;
+
   cartStore.updateCartItem(
     payload.index,
-    payload.date,
-    payload.adults,
-    payload.children,
-    payload.seniors,
-    payload.addons
-  )
-  handleCloseEditModal()
-}
+    item.bookingDate,
+    payload.guests.adults,
+    payload.guests.children,
+    payload.guests.seniors,
+    item.selectedAddons || [],
+    item.bookingTime
+  );
+
+  handleCloseEditModal();
+};
 
 const handleCloseEditModal = () => {
-  showEditModal.value = false
-  editingItemIndex.value = null
-  editingExperience.value = null
-}
+  showEditModal.value = false;
+  editingItemIndex.value = null;
+  editingExperience.value = null;
+  editingSlot.value = null;
+};
 
+// ✅ merged pricing logic (from feature branch) + supports addon.quantity
 const itemTotal = (item: any) => {
-  const addonsPrice = item.selectedAddons.reduce((sum: number, addon: any) => sum + (addon.price * addon.quantity), 0)
-  return (item.price * item.quantity) + addonsPrice
-}
+  const guestCounts = item.guestCounts || {
+    adults: item.quantity ?? 1,
+    children: 0,
+    seniors: 0,
+  };
+
+  const cp = item.categoryPrices;
+  const adultPrice = cp?.adults ?? item.price;
+  const childPrice = cp?.children ?? item.price;
+  const seniorPrice = cp?.seniors ?? item.price;
+
+  const adultsTotal = (guestCounts.adults || 0) * adultPrice;
+  const childrenTotal = (guestCounts.children || 0) * childPrice;
+  const seniorsTotal = (guestCounts.seniors || 0) * seniorPrice;
+
+  const guestsTotal = adultsTotal + childrenTotal + seniorsTotal;
+
+  const totalGuests =
+    (guestCounts.adults || 0) +
+    (guestCounts.children || 0) +
+    (guestCounts.seniors || 0);
+
+  const addonsPerGuest = (item.selectedAddons || []).reduce(
+    (sum: number, addon: any) => sum + addon.price * (addon.quantity || 1),
+    0
+  );
+  const addonsTotal = addonsPerGuest * totalGuests;
+
+  return guestsTotal + addonsTotal;
+};
 
 const getTotalGuests = (item: any) => {
-  if (!item.guestCounts) return 0
-  return item.guestCounts.adults + item.guestCounts.children + item.guestCounts.seniors
-}
+  if (!item.guestCounts) return 0;
+  return (
+    (item.guestCounts.adults || 0) +
+    (item.guestCounts.children || 0) +
+    (item.guestCounts.seniors || 0)
+  );
+};
 
 const formatDate = (dateString: string) => {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('sv-SE', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-  })
-}
+  const date = new Date(dateString);
+  return date.toLocaleDateString("sv-SE", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+const capitalize = (value: string) => {
+  if (!value) return "";
+  return value.charAt(0).toUpperCase() + value.slice(1);
+};
 
 const handleCheckout = () => {
-  alert(`Tack! Du har blivit debiterad ${cartStore.totalPrice} SEK för din bokning.`)
-  cartStore.clearCart()
-}
+  alert(
+    `Tack! Du har blivit debiterad ${cartStore.totalPrice} SEK för din bokning.`
+  );
+  cartStore.clearCart();
+};
 </script>
 
 <style scoped>
@@ -220,7 +344,8 @@ const handleCheckout = () => {
 }
 
 @keyframes floatIcon {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -313,7 +438,10 @@ const handleCheckout = () => {
   font-size: 1.25rem;
 }
 
-.duration, .booking-date, .description {
+.duration,
+.booking-date,
+.description,
+.owner {
   margin: 0.25rem 0 0;
   color: #6b7280;
   font-size: 0.875rem;
@@ -512,5 +640,168 @@ const handleCheckout = () => {
 .btn--primary:hover {
   background: #000;
   transform: translateY(-2px);
+}
+
+/* ✅ Responsive cart layout overrides */
+.cart-page {
+  padding: 1.25rem;
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 166px 1fr 220px 120px; /* image | details | guests | actions */
+  gap: 1rem;
+  align-items: start;
+}
+
+.cart-item__container {
+  display: contents; /* let children participate in grid */
+  cursor: default; /* avoid whole row feeling clickable on mobile */
+}
+
+.cart-item__image-container {
+  grid-column: 1;
+  width: 166px;
+  height: 166px;
+}
+
+.cart-item__details {
+  grid-column: 2;
+  min-width: 0; /* prevents overflow */
+}
+
+.guest-details {
+  grid-column: 3;
+  min-width: 0;
+}
+
+.cart-item__actions {
+  grid-column: 4;
+  align-items: flex-end;
+  padding-top: 0;
+  min-width: 0;
+}
+
+/* Price + buttons align nicely */
+.item-price {
+  white-space: nowrap;
+}
+
+/* Keep long titles from breaking layout */
+.cart-item__details h3 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .cart-item {
+    grid-template-columns: 120px 1fr;
+    grid-template-areas:
+      "img details"
+      "guests guests"
+      "actions actions";
+  }
+
+  .cart-item__image-container {
+    grid-area: img;
+    width: 120px;
+    height: 120px;
+  }
+
+  .cart-item__details {
+    grid-area: details;
+  }
+
+  .guest-details {
+    grid-area: guests;
+    min-width: 100%;
+  }
+
+  .cart-item__actions {
+    grid-area: actions;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 100%;
+    padding-top: 0.5rem;
+  }
+
+  .action-buttons {
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .cart-page {
+    padding: 1rem;
+  }
+
+  .cart-item {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "img"
+      "details"
+      "guests"
+      "actions";
+    padding: 1rem;
+  }
+
+  .cart-item__image-container {
+    grid-area: img;
+    width: 100%;
+    height: 180px;
+  }
+
+  .cart-item__image {
+    border-radius: 10px;
+  }
+
+  .cart-item__details {
+    grid-area: details;
+    padding: 0.9rem;
+  }
+
+  .guest-details {
+    grid-area: guests;
+    width: 100%;
+  }
+
+  .cart-item__actions {
+    grid-area: actions;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .btn-edit,
+  .btn-remove {
+    padding: 0.6rem;
+    border-radius: 10px;
+  }
+
+  .item-price {
+    font-size: 1.1rem;
+  }
+
+  /* Summary goes full width on mobile */
+  .cart-summary {
+    max-width: 100%;
+    margin-left: 0;
+    padding: 1.25rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .cart-item {
+    grid-template-columns: 180px 1fr 240px 140px;
+    gap: 1.25rem;
+  }
+
+  .cart-item__image-container {
+    width: 180px;
+    height: 180px;
+  }
 }
 </style>

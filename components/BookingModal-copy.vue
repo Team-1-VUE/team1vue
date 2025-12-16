@@ -1,10 +1,6 @@
 <template>
   <Teleport to="body">
-    <div
-      v-if="show && experience"
-      class="modal-overlay"
-      @click="$emit('close')"
-    >
+    <div v-if="show" class="modal-overlay" @click="$emit('close')">
       <div class="modal-content" @click.stop>
         <button class="modal-close" @click="$emit('close')">×</button>
 
@@ -25,8 +21,7 @@
                 @click="updateGuests('adults', -1)"
                 :disabled="localAdults <= 0"
                 type="button"
-                class="guest-btn"
-              >
+                class="guest-btn">
                 −
               </button>
               <span class="guest-count">{{ localAdults }}</span>
@@ -34,8 +29,7 @@
                 @click="updateGuests('adults', 1)"
                 type="button"
                 class="guest-btn"
-                :disabled="totalGuests >= maxGuestsForSelection"
-              >
+                :disabled="totalGuests >= maxGuestsForSelection">
                 +
               </button>
             </div>
@@ -51,8 +45,7 @@
                 @click="updateGuests('children', -1)"
                 :disabled="localChildren <= 0"
                 type="button"
-                class="guest-btn"
-              >
+                class="guest-btn">
                 −
               </button>
               <span class="guest-count">{{ localChildren }}</span>
@@ -60,8 +53,7 @@
                 @click="updateGuests('children', 1)"
                 type="button"
                 class="guest-btn"
-                :disabled="totalGuests >= maxGuestsForSelection"
-              >
+                :disabled="totalGuests >= maxGuestsForSelection">
                 +
               </button>
             </div>
@@ -77,8 +69,7 @@
                 @click="updateGuests('seniors', -1)"
                 :disabled="localSeniors <= 0"
                 type="button"
-                class="guest-btn"
-              >
+                class="guest-btn">
                 −
               </button>
               <span class="guest-count">{{ localSeniors }}</span>
@@ -86,8 +77,7 @@
                 @click="updateGuests('seniors', 1)"
                 type="button"
                 class="guest-btn"
-                :disabled="totalGuests >= maxGuestsForSelection"
-              >
+                :disabled="totalGuests >= maxGuestsForSelection">
                 +
               </button>
             </div>
@@ -126,92 +116,39 @@
 
             <p class="price-total">{{ totalPrice }} kr</p>
           </div>
-
-          <div v-if="validationError" class="validation-error">
-            {{ validationError }}
-          </div>
         </div>
 
-        <!-- Addon Editor -->
-        <div
-          v-if="experience?.addons?.length"
-          class="guest-editor addon-editor"
-        >
-          <h3 class="guest-editor__title">Tillval (valfritt)</h3>
-
-          <div
-            v-for="(addon, index) in experience.addons"
-            :key="index"
-            class="guest-row"
-          >
-            <div class="guest-row__info">
-              <span class="guest-row__label">{{
-                capitalize(addon.title)
-              }}</span>
-              <span class="guest-row__desc">+{{ addon.price }} kr/gäst</span>
-            </div>
-            <div class="guest-row__controls">
-              <button
-                @click="updateAddonQuantity(addon.title, -1)"
-                :disabled="
-                  !selectedAddonQuantities[addon.title] ||
-                  selectedAddonQuantities[addon.title] === 0
-                "
-                type="button"
-                class="guest-btn"
-              >
-                −
-              </button>
-              <span class="guest-count">{{
-                selectedAddonQuantities[addon.title] || 0
-              }}</span>
-              <button
-                @click="updateAddonQuantity(addon.title, 1)"
-                :disabled="
-                  (selectedAddonQuantities[addon.title] || 0) >= totalGuests ||
-                  totalGuests === 0
-                "
-                type="button"
-                class="guest-btn"
-              >
-                +
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Date picker (V-Calendar) -->
         <div class="calendar-container">
-          <h3 class="timeslot-title">Välj datum</h3>
-
-          <VDatePicker
-            v-model="selectedDateObj"
-            :min-date="minDateObj"
-            :available-dates="availableDateObjects"
-            :attributes="calendarAttrs"
-            is-required
-            expanded
-          />
-
-          <p
-            v-if="!availableDates.length"
-            class="validation-error"
-            style="margin-top: 0.75rem"
-          >
-            Inga tillgängliga datum för denna upplevelse.
-          </p>
+          <div class="date-picker-wrapper" @click="dateInput?.showPicker()">
+            <div class="date-label">
+              <Calendar :size="18" />
+              Välj datum för bokning
+            </div>
+            <div class="date-display">
+              <span v-if="!selectedDate" class="placeholder"
+                >Klicka för att välja datum</span
+              >
+              <span v-else class="selected-date">{{
+                formatDate(selectedDate)
+              }}</span>
+            </div>
+            <input
+              ref="dateInput"
+              type="date"
+              v-model="selectedDate"
+              :min="minDate"
+              class="date-picker-hidden" />
+          </div>
         </div>
 
         <!-- Time slots -->
         <div v-if="selectedDate" class="timeslot-section">
           <h3 class="timeslot-title">Välj tid</h3>
-
           <TimeSlotList
             :experience="experience"
             :selectedDate="selectedDate"
             :guestCount="totalGuests"
-            @select="onTimeSelect"
-          />
+            @select="onTimeSelect" />
 
           <p v-if="selectedTime" class="selected-time-label">
             Vald tid: <strong>{{ selectedTime }}</strong>
@@ -222,13 +159,11 @@
           <button @click="$emit('close')" class="btn btn--secondary">
             Avbryt
           </button>
-
           <button
             @click="handleConfirm"
             :disabled="!selectedDate || totalGuests === 0 || !selectedTime"
-            class="btn btn--primary"
-          >
-            {{ editMode ? "Uppdatera bokning" : "Bekräfta bokning" }}
+            class="btn btn--primary">
+            Bekräfta bokning
           </button>
         </div>
       </div>
@@ -237,10 +172,14 @@
 </template>
 
 <script setup lang="ts">
+import { Calendar } from "lucide-vue-next";
 import { useCartStore } from "~/stores/useCartStore";
 import { useExperiences } from "~/composables/useExperiences";
 import TimeSlotList from "~/components/TimeSlotList.vue";
-import { type DecoratedTimeSlot } from "~/utils/scheduleHelpers";
+import {
+  getSlotsForDate,
+  type DecoratedTimeSlot,
+} from "~/utils/scheduleHelpers";
 
 interface Props {
   show: boolean;
@@ -249,8 +188,6 @@ interface Props {
   adults?: number;
   children?: number;
   seniors?: number;
-  editMode?: boolean;
-  cartItemIndex?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -258,74 +195,20 @@ const props = withDefaults(defineProps<Props>(), {
   adults: 1,
   children: 0,
   seniors: 0,
-  editMode: false,
-  cartItemIndex: undefined,
 });
 const emit = defineEmits<{
   close: [];
-  update: [
-    payload: {
-      index: number;
-      date: string;
-      time?: string;
-      adults: number;
-      children: number;
-      seniors: number;
-      addons: Array<{
-        slug: string;
-        title: string;
-        price: number;
-        quantity: number;
-      }>;
-    }
-  ];
 }>();
 
 const cartStore = useCartStore();
 const { getAddon } = useExperiences();
 
-const selectedDateObj = ref<Date | null>(
-  props.initialDate ? new Date(`${props.initialDate}T12:00:00`) : null
-);
-
-const pad2 = (n: number) => String(n).padStart(2, "0");
-const toYMDLocal = (d: Date) =>
-  `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
-
-const selectedDate = computed(() =>
-  selectedDateObj.value ? toYMDLocal(selectedDateObj.value) : ""
-);
-
+const selectedDate = ref("");
 const dateInput = ref<HTMLInputElement | null>(null);
-const selectedTime = ref<string | undefined>(undefined);
+const selectedTime = ref<string | null>(null);
 
 // vi sparar hela slot-objektet här
 const selectedSlot = ref<DecoratedTimeSlot | null>(null);
-
-// Local guest counts that can be edited
-const localAdults = ref(props.adults);
-const localChildren = ref(props.children);
-const localSeniors = ref(props.seniors);
-
-// Addon quantities management
-const selectedAddonQuantities = ref<Record<string, number>>({});
-
-// Computed total guests
-const totalGuests = computed(
-  () => localAdults.value + localChildren.value + localSeniors.value
-);
-
-const allowsAdults = computed(() => {
-  return props.experience?.allowedCategories?.adults ?? true;
-});
-
-const allowsChildren = computed(() => {
-  return props.experience?.allowedCategories?.children ?? true;
-});
-
-const allowsSeniors = computed(() => {
-  return props.experience?.allowedCategories?.seniors ?? true;
-});
 
 const maxGuestsForSelection = computed(() => {
   if (!props.experience) return Infinity;
@@ -342,80 +225,17 @@ const maxGuestsForSelection = computed(() => {
   return slotLimit;
 });
 
-// normalize addons so it works whether experience.addons is ["slug"] or [{title,price}]
-const normalizedAddons = computed(() => {
-  const raw = props.experience?.addons ?? [];
-  // slugs
-  if (raw.length && typeof raw[0] === "string") {
-    return raw
-      .map((slug: string) => getAddon(slug))
-      .filter(Boolean)
-      .map((a: any) => ({
-        slug: a.slug ?? a.title,
-        title: a.title,
-        price: a.price,
-      })) as Array<{ slug: string; title: string; price: number }>;
-  }
-  // objects
-  if (raw.length && typeof raw[0] === "object") {
-    return raw.map((a: any) => ({
-      slug: a.slug ?? a.title,
-      title: a.title,
-      price: a.price,
-    })) as Array<{ slug: string; title: string; price: number }>;
-  }
-  return [];
-});
+// Local guest counts that can be edited
+const localAdults = ref(props.adults);
+const localChildren = ref(props.children);
+const localSeniors = ref(props.seniors);
 
-// Unit prices for categories
-const unitPrices = computed(() => {
-  const cp = props.experience?.categoryPrices;
-  const base = props.experience?.price ?? 0;
-  return {
-    adults: cp?.adults ?? base,
-    children: cp?.children ?? base,
-    seniors: cp?.seniors ?? base,
-  };
-});
+// Computed total guests
+const totalGuests = computed(
+  () => localAdults.value + localChildren.value + localSeniors.value
+);
 
-// Validation based on experience constraints
-const validationError = computed(() => {
-  if (!props.experience) return null;
-
-  const total = totalGuests.value;
-
-  // slot capacity check (only meaningful after selecting a time)
-  if (selectedTime.value && total > maxGuestsForSelection.value) {
-    return `För många gäster för vald tid (max ${maxGuestsForSelection.value})`;
-  }
-
-  // Check total guest count
-  if (total < props.experience.minGuests) {
-    return `Minst ${props.experience.minGuests} gäst${
-      props.experience.minGuests > 1 ? "er" : ""
-    } krävs`;
-  }
-  if (total > props.experience.maxGuests) {
-    return `Maximalt ${props.experience.maxGuests} gäster tillåtna`;
-  }
-
-  // Check category restrictions
-  if (
-    localChildren.value > 0 &&
-    !props.experience.allowedCategories?.children
-  ) {
-    return "Barn inte tillåtna för denna upplevelse";
-  }
-  if (localAdults.value > 0 && !props.experience.allowedCategories?.adults) {
-    return "Vuxna inte tillåtna för denna upplevelse";
-  }
-  if (localSeniors.value > 0 && !props.experience.allowedCategories?.seniors) {
-    return "Seniorer inte tillåtna för denna upplevelse";
-  }
-
-  return null;
-});
-
+// Computed total price
 const totalPrice = computed(() => {
   if (!props.experience) return 0;
 
@@ -445,6 +265,34 @@ const totalPrice = computed(() => {
   const addonsTotal = perGuestAddons * totalGuests;
 
   return guestsTotal + addonsTotal;
+});
+
+// Unit prices for each category (vuxen, barn, senior)
+const unitPrices = computed(() => {
+  if (!props.experience) {
+    return { adults: 0, children: 0, seniors: 0 };
+  }
+
+  const cp = props.experience.categoryPrices;
+  const base = props.experience.price;
+
+  return {
+    adults: cp?.adults ?? base,
+    children: cp?.children ?? base,
+    seniors: cp?.seniors ?? base,
+  };
+});
+
+const allowsAdults = computed(() => {
+  return props.experience?.allowedCategories?.adults ?? true;
+});
+
+const allowsChildren = computed(() => {
+  return props.experience?.allowedCategories?.children ?? true;
+});
+
+const allowsSeniors = computed(() => {
+  return props.experience?.allowedCategories?.seniors ?? true;
 });
 
 const updateGuests = (
@@ -477,156 +325,71 @@ const updateGuests = (
   }
 };
 
-// Update addon quantities with zero-cleanup
-const updateAddonQuantity = (title: string, delta: number) => {
-  const currentQuantity = selectedAddonQuantities.value[title] || 0;
-  const newQuantity = Math.max(
-    0,
-    Math.min(totalGuests.value, currentQuantity + delta)
-  );
-
-  if (newQuantity === 0) {
-    // Zero-cleanup: remove from object
-    const { [title]: _, ...rest } = selectedAddonQuantities.value;
-    selectedAddonQuantities.value = rest;
-  } else {
-    selectedAddonQuantities.value[title] = newQuantity;
-  }
-};
-
 // Set minimum date to today, autoimports from utils/date.ts
 const minDate = getTodayString();
 
-// --- AVAILABLE DATES FOR CALENDAR ---
-const minDateObj = computed(() => new Date(`${minDate}T12:00:00`));
-
-// Available dates from experience (your JSON)
-const availableDates = computed<string[]>(() => {
-  const schedule = props.experience?.schedule ?? {};
-
-  return Object.entries(schedule)
-    .filter(
-      ([_, slots]: any) =>
-        Array.isArray(slots) &&
-        slots.some((s) => (s.capacity ?? 0) > (s.booked ?? 0))
-    )
-    .map(([date]) => date)
-    .sort(); // "YYYY-MM-DD" sorts correctly
-});
-
-// const availableDates = computed<string[]>(
-//   () => props.experience?.availableDates ?? []
-// );
-
-const availableDateObjects = computed(() =>
-  availableDates.value.map((d) => new Date(`${d}T12:00:00`))
-);
-
-// Highlight available dates
-const calendarAttrs = computed(() => [
-  {
-    key: "available",
-    dates: availableDateObjects.value,
-    highlight: true,
-  },
-]);
-
-// Optional: auto-pick first available date when opening modal
+// Initialize selectedDate and guest counts when modal opens
 watch(
   () => props.show,
-  (open) => {
-    if (!open) return;
+  (isOpen) => {
+    if (isOpen) {
+      selectedDate.value = props.initialDate || "";
+      localAdults.value = props.adults;
+      localChildren.value = props.children;
+      localSeniors.value = props.seniors;
+      selectedTime.value = null;
 
-    initializeModalState();
-
-    // if (!selectedDate.value) {
-    //   const first = availableDates.value.at(0);
-    //   if (first) selectedDate.value = first;
-    // }
-    if (!selectedDateObj.value) {
-      const first = availableDates.value.at(0);
-      if (first) selectedDateObj.value = new Date(`${first}T12:00:00`);
+      // Nolla kategorier som inte är tillåtna
+      const ac = props.experience?.allowedCategories;
+      if (ac) {
+        if (!ac.children) localChildren.value = 0;
+        if (!ac.seniors) localSeniors.value = 0;
+        if (!ac.adults) localAdults.value = 0;
+      }
+    } else {
+      selectedDate.value = "";
+      selectedTime.value = null;
     }
   }
 );
 
-const initializeModalState = () => {
-  // selectedDate.value = props.initialDate ?? "";
-  selectedDateObj.value = props.initialDate
-    ? new Date(`${props.initialDate}T12:00:00`)
-    : null;
-  selectedTime.value = undefined;
-  selectedSlot.value = null;
-
-  localAdults.value = props.adults;
-  localChildren.value = props.children;
-  localSeniors.value = props.seniors;
-
-  // zero categories not allowed
-  if (!allowsAdults.value) localAdults.value = 0;
-  if (!allowsChildren.value) localChildren.value = 0;
-  if (!allowsSeniors.value) localSeniors.value = 0;
-
-  // init addon quantities in edit mode
-  if (props.editMode && props.cartItemIndex !== undefined) {
-    const cartItem = cartStore.items[props.cartItemIndex];
-    if (cartItem?.selectedAddons?.length) {
-      const q = cartItem.selectedAddons.reduce(
-        (acc: Record<string, number>, a: any) => {
-          const key = a.slug ?? a.title;
-          acc[key] = a.quantity ?? 0;
-          return acc;
-        },
-        {}
-      );
-      selectedAddonQuantities.value = { ...q };
-    } else {
-      selectedAddonQuantities.value = {};
-    }
-
-    // if cart has time
-    selectedTime.value = cartItem?.bookingTime ?? undefined;
-  } else {
-    selectedAddonQuantities.value = {};
-  }
-};
-
-// watch(
-//   () => props.show,
-//   (open) => {
-//     if (open) initializeModalState();
-//   }
-// );
-// watch(
-//   () => props.show,
-//   (open) => {
-//     if (open) initializeModalState();
-//   }
-// );
-
 watch(selectedDate, () => {
-  selectedTime.value = undefined;
+  selectedTime.value = null;
   selectedSlot.value = null;
 });
 
 const onTimeSelect = (slot: DecoratedTimeSlot) => {
-  selectedSlot.value = slot;
+  selectedSlot.value = slot; // spara hela slotten
   selectedTime.value = slot.time;
 
-  // reset guests per selected slot (feature behavior)
+  // 🔁 Nollställ gäster när man byter tid
+  // starta om från “standard”
   const defaultAdults = props.adults ?? 1;
-  const remaining = slot.remaining ?? Infinity;
-  const safeAdults = Math.min(defaultAdults, remaining);
+  const safeAdults = Math.min(defaultAdults, slot.remaining ?? defaultAdults);
 
-  localAdults.value = allowsAdults.value ? safeAdults || 1 : 0;
-  localChildren.value = allowsChildren.value ? 0 : 0;
-  localSeniors.value = allowsSeniors.value ? 0 : 0;
+  localAdults.value = slot.remaining ? safeAdults || 1 : 0;
+  localChildren.value = 0;
+  localSeniors.value = 0;
 
+  // Safety: om nuvarande gästantal råkar vara större än den här slotens max → klampa ner
   if (totalGuests.value > maxGuestsForSelection.value) {
     const overflow = totalGuests.value - maxGuestsForSelection.value;
+    // enklast: dra av overflow från vuxna först
     localAdults.value = Math.max(0, localAdults.value - overflow);
   }
 };
+
+// Sync with props when they change
+watch(
+  () => [props.adults, props.children, props.seniors],
+  () => {
+    if (props.show) {
+      localAdults.value = props.adults;
+      localChildren.value = props.children;
+      localSeniors.value = props.seniors;
+    }
+  }
+);
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -639,49 +402,43 @@ const formatDate = (dateString: string) => {
 };
 
 const handleConfirm = () => {
-  if (!selectedDate.value || !props.experience || totalGuests.value === 0)
+  if (
+    !selectedDate.value ||
+    !selectedTime.value ||
+    !props.experience ||
+    totalGuests.value === 0
+  )
     return;
 
-  // map addons with quantities
-  const addons = Object.entries(selectedAddonQuantities.value)
-    .map(([slug, quantity]) => {
-      const addon = normalizedAddons.value.find((a) => a.slug === slug);
-      return addon
-        ? { slug: addon.slug, title: addon.title, price: addon.price, quantity }
-        : null;
-    })
-    .filter(Boolean) as Array<{
-    slug: string;
-    title: string;
-    price: number;
-    quantity: number;
-  }>;
+  // Get all addons for this experience
+  const selectedAddons =
+    (props.experience.addons
+      ?.map((slug: string) => {
+        const addon = getAddon(slug);
+        return addon
+          ? { slug: addon.slug, title: addon.title, price: addon.price }
+          : null;
+      })
+      .filter(Boolean) as Array<{
+      slug: string;
+      title: string;
+      price: number;
+    }>) || [];
 
-  if (props.editMode && props.cartItemIndex !== undefined) {
-    emit("update", {
-      index: props.cartItemIndex,
-      date: selectedDate.value,
-      time: selectedTime.value,
-      adults: localAdults.value,
-      children: localChildren.value,
-      seniors: localSeniors.value,
-      addons,
-    });
-  } else {
-    // NOTE: this assumes addToCart supports bookingTime as last arg (your feature does).
-    cartStore.addToCart(
-      props.experience,
-      addons,
-      selectedDate.value,
-      localAdults.value,
-      localChildren.value,
-      localSeniors.value,
-      selectedTime.value
-    );
-  }
+  // Add to cart with quantities for each category
+  cartStore.addToCart(
+    props.experience,
+    selectedAddons,
+    selectedDate.value,
+    localAdults.value,
+    localChildren.value,
+    localSeniors.value,
+    selectedTime.value
+  );
+
   // Reset and close
-  // selectedDate.value = "";
-  // selectedTime.value = null;
+  selectedDate.value = "";
+  selectedTime.value = null;
   emit("close");
 };
 </script>
@@ -777,10 +534,6 @@ const handleConfirm = () => {
   font-weight: 600;
   color: #1a1a1a;
   margin: 0 0 1rem 0;
-}
-
-.addon-editor {
-  margin-top: 1.5rem;
 }
 
 .guest-row {

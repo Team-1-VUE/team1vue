@@ -343,10 +343,13 @@ const { getAddon } = useExperiences();
 
 // Track if modal has been initialized with query params
 const hasInitialized = ref(false);
+// Track if we're setting date from query params (to prevent auto-expand)
+const isSettingFromQueryParams = ref(false);
 
-// Accordion collapse state
-const calendarExpanded = ref(true);
-const timeSlotsExpanded = ref(false);
+// Accordion collapse state - initialize based on whether we have query params
+const hasQueryParams = !!props.initialDate;
+const calendarExpanded = ref(!hasQueryParams); // Collapsed if query params exist
+const timeSlotsExpanded = ref(hasQueryParams);  // Expanded if query params exist
 const guestAndAddonsExpanded = ref(false);
 
 const selectedDateObj = ref<Date | null>(
@@ -698,15 +701,7 @@ watch(
   (open) => {
     if (!open) return;
 
-    initializeModalState();
-
-    // Auto-select first available date if none selected
-    if (!selectedDateObj.value) {
-      const first = availableDates.value.at(0);
-      if (first) selectedDateObj.value = new Date(`${first}T12:00:00`);
-    }
-
-    // Smart initial expand state
+    // Smart initial expand state - SET BEFORE initializeModalState to prevent watch conflicts
     const hasDateParam = !!props.initialDate;
     
     if (props.editMode) {
@@ -714,8 +709,9 @@ watch(
       calendarExpanded.value = true;
       timeSlotsExpanded.value = true;
       guestAndAddonsExpanded.value = true;
-    } else if (!hasInitialized.value && hasDateParam) {
+    } else if (hasDateParam) {
       // Query params with date: close calendar, open time slots
+      isSettingFromQueryParams.value = true; // Set flag to prevent auto-expand
       calendarExpanded.value = false;
       timeSlotsExpanded.value = true;
       guestAndAddonsExpanded.value = false;
@@ -726,17 +722,35 @@ watch(
       guestAndAddonsExpanded.value = false;
     }
 
+    // Initialize modal state after setting expand states
+    initializeModalState();
+
+    // Reset flag after initialization
+    nextTick(() => {
+      isSettingFromQueryParams.value = false;
+    });
+
+    // Auto-select first available date if none selected (only for non-param opens)
+    if (!hasDateParam && !selectedDateObj.value) {
+      const first = availableDates.value.at(0);
+      if (first) selectedDateObj.value = new Date(`${first}T12:00:00`);
+    }
+
     // Mark as initialized after first open
     hasInitialized.value = true;
   }
 );
 
 const initializeModalState = () => {
-  // Only apply props on first initialization
+  // Always set date from props.initialDate if provided
+  if (props.initialDate) {
+    selectedDateObj.value = new Date(`${props.initialDate}T12:00:00`);
+  } else if (!hasInitialized.value) {
+    selectedDateObj.value = null;
+  }
+
+  // Only apply other props on first initialization
   if (!hasInitialized.value) {
-    selectedDateObj.value = props.initialDate
-      ? new Date(`${props.initialDate}T12:00:00`)
-      : null;
     selectedTime.value = undefined;
     selectedSlot.value = null;
 
@@ -787,6 +801,9 @@ const initializeModalState = () => {
 
 // Auto-collapse calendar and open time slots when date is selected
 watch(selectedDate, (newDate) => {
+  // Don't auto-expand if we're setting from query params
+  if (isSettingFromQueryParams.value) return;
+  
   if (newDate && calendarExpanded.value) {
     // Date was just selected, auto-progress to time slots
     calendarExpanded.value = false;

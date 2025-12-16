@@ -312,6 +312,7 @@ interface Props {
   seniors?: number;
   editMode?: boolean;
   cartItemIndex?: number;
+  initialAddons?: Array<{ slug: string; quantity: number }>;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -321,6 +322,7 @@ const props = withDefaults(defineProps<Props>(), {
   seniors: 0,
   editMode: false,
   cartItemIndex: undefined,
+  initialAddons: () => [],
 });
 const emit = defineEmits<{
   close: [];
@@ -767,23 +769,15 @@ const initializeModalState = () => {
     if (!allowsChildren.value) localChildren.value = 0;
     if (!allowsSeniors.value) localSeniors.value = 0;
 
-    // init addon quantities in edit mode
-    if (props.editMode && props.cartItemIndex !== undefined) {
-      const cartItem = cartStore.items[props.cartItemIndex];
-      if (cartItem?.selectedAddons?.length) {
-        const q: Record<string, number> = {};
-        cartItem.selectedAddons.forEach((a: any) => {
-          // Use title as key to match normalizedAddons
-          const key = a.title;
-          q[key] = a.quantity ?? 1;
-        });
-        selectedAddonQuantities.value = q;
-      } else {
-        selectedAddonQuantities.value = {};
-      }
-
-      // if cart has time
-      selectedTime.value = cartItem?.bookingTime ?? undefined;
+    // init addon quantities from initialAddons prop
+    if (props.initialAddons && props.initialAddons.length > 0) {
+      const q: Record<string, number> = {};
+      props.initialAddons.forEach((addon) => {
+        // Use slug as key to match normalizedAddons
+        const key = addon.slug;
+        q[key] = addon.quantity ?? 1;
+      });
+      selectedAddonQuantities.value = q;
     } else {
       selectedAddonQuantities.value = {};
     }

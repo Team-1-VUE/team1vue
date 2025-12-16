@@ -207,16 +207,24 @@
                   <span class="guest-total-value">{{ totalGuests }}</span>
                 </div>
 
-                <!-- Capacity hint inside guest section -->
-                <div v-if="selectedSlot" class="slot-capacity-hint-inline">
-                  Platser kvar:
-                  {{
-                    Math.max(
-                      (selectedSlot.remaining ?? maxGuestsForSelection) -
-                        totalGuests,
-                      0
-                    )
-                  }}
+                <!-- Capacity warnings -->
+                <div v-if="selectedSlot" class="capacity-info">
+                  <div 
+                    v-if="totalGuests >= maxGuestsForSelection" 
+                    class="capacity-warning capacity-warning--full"
+                  >
+                    ⚠️ Maximal kapacitet nådd för denna tid
+                  </div>
+                  <div 
+                    v-else-if="maxGuestsForSelection - totalGuests <= 3" 
+                    class="capacity-warning capacity-warning--low"
+                  >
+                    ⚠️ Endast {{ maxGuestsForSelection - totalGuests }} platser kvar
+                  </div>
+                  <div v-else class="slot-capacity-hint-inline">
+                    Platser kvar:
+                    {{ maxGuestsForSelection - totalGuests }}
+                  </div>
                 </div>
               </div>
 
@@ -226,6 +234,7 @@
                 class="addon-editor"
               >
                 <h4 class="subsection-title">Tillval (valfritt)</h4>
+                <p class="addon-hint">Du kan välja upp till {{ totalGuests }} av varje tillval</p>
 
                 <div
                   v-for="(addon, index) in experience.addons"
@@ -253,8 +262,8 @@
                     <button
                       @click="updateAddonQuantity(addon.title, 1)"
                       :disabled="
-                        (selectedAddonQuantities[addon.title] || 0) >= totalGuests ||
-                        totalGuests === 0
+                        totalGuests === 0 ||
+                        (selectedAddonQuantities[addon.title] || 0) >= totalGuests
                       "
                       type="button"
                       class="guest-btn"
@@ -581,17 +590,16 @@ const totalPrice = computed(() => {
 
   const guestsTotal = adultsTotal + childrenTotal + seniorsTotal;
 
-  // addons: vi räknar dem per person (vill du ha per bokning kan vi ändra sen)
-  const perGuestAddons =
-    props.experience.addons?.reduce((sum: number, slug: string) => {
-      const addon = getAddon(slug);
-      return sum + (addon?.price || 0);
-    }, 0) || 0;
-
-  const totalGuests =
-    localAdults.value + localChildren.value + localSeniors.value;
-
-  const addonsTotal = perGuestAddons * totalGuests;
+  // Calculate addons based on actual selected quantities
+  const addonsTotal = Object.entries(selectedAddonQuantities.value).reduce(
+    (sum, [addonTitle, quantity]) => {
+      const addon = normalizedAddons.value.find(
+        (a) => a.slug === addonTitle || a.title === addonTitle
+      );
+      return sum + (addon?.price || 0) * quantity;
+    },
+    0
+  );
 
   return guestsTotal + addonsTotal;
 });
@@ -624,11 +632,30 @@ const updateGuests = (
     // enklast: dra av overflow från vuxna
     localAdults.value = Math.max(0, localAdults.value - overflow);
   }
+
+  // Auto-adjust addon quantities if guests decreased - clamp each to new guest count
+  if (delta < 0 && totalGuests.value > 0) {
+    const newQuantities: Record<string, number> = {};
+    Object.entries(selectedAddonQuantities.value).forEach(([title, qty]) => {
+      const adjusted = Math.min(qty, totalGuests.value);
+      if (adjusted > 0) {
+        newQuantities[title] = adjusted;
+      }
+    });
+    selectedAddonQuantities.value = newQuantities;
+  } else if (totalGuests.value === 0) {
+    // No guests = no addons
+    selectedAddonQuantities.value = {};
+  }
 };
 
-// Update addon quantities with zero-cleanup
+// Update addon quantities - each addon can have up to numberOfGuests independently
 const updateAddonQuantity = (title: string, delta: number) => {
+  if (totalGuests.value === 0) return; // No guests, no addons
+
   const currentQuantity = selectedAddonQuantities.value[title] || 0;
+  
+  // Each addon can have up to totalGuests quantity independently
   const newQuantity = Math.max(
     0,
     Math.min(totalGuests.value, currentQuantity + delta)
@@ -741,15 +768,13 @@ const initializeModalState = () => {
     if (props.editMode && props.cartItemIndex !== undefined) {
       const cartItem = cartStore.items[props.cartItemIndex];
       if (cartItem?.selectedAddons?.length) {
-        const q = cartItem.selectedAddons.reduce(
-          (acc: Record<string, number>, a: any) => {
-            const key = a.slug ?? a.title;
-            acc[key] = a.quantity ?? 0;
-            return acc;
-          },
-          {}
-        );
-        selectedAddonQuantities.value = { ...q };
+        const q: Record<string, number> = {};
+        cartItem.selectedAddons.forEach((a: any) => {
+          // Use title as key to match normalizedAddons
+          const key = a.title;
+          q[key] = a.quantity ?? 1;
+        });
+        selectedAddonQuantities.value = q;
       } else {
         selectedAddonQuantities.value = {};
       }
@@ -812,10 +837,12 @@ const handleConfirm = () => {
   if (!selectedDate.value || !props.experience || totalGuests.value === 0)
     return;
 
-  // map addons with quantities
+  // map addons with quantities (using title as key)
   const addons = Object.entries(selectedAddonQuantities.value)
-    .map(([slug, quantity]) => {
-      const addon = normalizedAddons.value.find((a) => a.slug === slug);
+    .map(([title, quantity]) => {
+      const addon = normalizedAddons.value.find(
+        (a) => a.title === title || a.slug === title
+      );
       return addon
         ? { slug: addon.slug, title: addon.title, price: addon.price, quantity }
         : null;
@@ -1058,6 +1085,12 @@ const handleConfirm = () => {
   padding: 1.25rem;
 }
 
+.addon-hint {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0 0 1rem 0;
+}
+
 .guest-row {
   display: flex;
   justify-content: space-between;
@@ -1148,13 +1181,48 @@ const handleConfirm = () => {
   color: #1a1a1a;
 }
 
-.slot-capacity-hint-inline {
+.capacity-info {
   margin-top: 0.75rem;
   padding-top: 0.75rem;
   border-top: 1px solid #e5e7eb;
+}
+
+.slot-capacity-hint-inline {
   font-size: 0.875rem;
   color: #6b7280;
   text-align: center;
+}
+
+.capacity-warning {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.75rem;
+  border-radius: 8px;
+  text-align: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.capacity-warning--full {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}
+
+.capacity-warning--low {
+  background: #fef9e7;
+  border: 1px solid #fde68a;
+  color: #d97706;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Footer Styles */

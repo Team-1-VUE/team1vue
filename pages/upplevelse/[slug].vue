@@ -40,6 +40,10 @@
             {{ experience.description }}
           </p>
 
+          <p class="experience-main__about">
+            {{ experience.about }}
+          </p>
+
           <div v-if="experience.addons?.length" class="experience-main__addons">
             <h3>Tillval</h3>
             <ul>

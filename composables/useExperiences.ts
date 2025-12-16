@@ -20,6 +20,7 @@ export interface Experience {
   owner: string;
   title: string;
   description: string;
+  about: string;
   duration: string;
   price: number;
   categoryPrices?: {

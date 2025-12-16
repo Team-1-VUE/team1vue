@@ -4,12 +4,13 @@
       <NuxtLink to="/" class="navbar-logo">Team uno</NuxtLink>
       <ul class="navbar-menu">
         <li v-for="link in navLinks" :key="link.path">
-          <NuxtLink
-            :to="link.path"
-            exact-active-class="active"
-          >
-            {{ link.name }}
-            <span v-if="link.path === '/kundkorg' && cartStore.cartItemCount > 0" class="cart-badge">
+          <NuxtLink :to="link.path" exact-active-class="active">
+            <template v-if="link.name !== 'Kundkorg'">{{ link.name }}</template>
+            <ShoppingCart v-else :size="24" :stroke-width="1.5" />
+            <span
+              v-if="link.path === '/kundkorg' && cartStore.cartItemCount > 0"
+              class="cart-badge"
+            >
               {{ cartStore.cartItemCount }}
             </span>
           </NuxtLink>
@@ -20,31 +21,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { useCartStore } from '~/stores/useCartStore'
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { useCartStore } from "~/stores/useCartStore";
+import { ShoppingCart } from "lucide-vue-next";
 
-type Profile = { slug: string; name: string }
+type Profile = { slug: string; name: string };
 
-const route = useRoute()
-const profiles = ref<Profile[]>([])
-const cartStore = useCartStore()
+const route = useRoute();
+const profiles = ref<Profile[]>([]);
+const cartStore = useCartStore();
 
 const navLinks = computed(() => [
-  { name: 'Home', path: '/' },
-  ...profiles.value.map(p => ({ name: p.name, path: `/profil/${p.slug}` })),
-  { name: 'Kundkorg', path: '/kundkorg' }
-])
+  { name: "Home", path: "/" },
+  ...profiles.value.map((p) => ({ name: p.name, path: `/profil/${p.slug}` })),
+  { name: "Kundkorg", path: "/kundkorg" },
+]);
 
 onMounted(async () => {
-  const res = await fetch('/data.json')
-  const json = await res.json()
+  const res = await fetch("/data.json");
+  const json = await res.json();
 
-  profiles.value = Object.keys(json.profiles).map(slug => ({
+  profiles.value = Object.keys(json.profiles).map((slug) => ({
     slug,
-    name: capitalize(slug)
-  }))
-})
+    name: capitalize(slug),
+  }));
+});
 </script>
 
 <style scoped>
@@ -85,6 +87,7 @@ onMounted(async () => {
 }
 
 .navbar-menu li a {
+  position: relative;
   display: inline-block;
   padding: 5px;
   border-radius: 5px;
@@ -92,6 +95,7 @@ onMounted(async () => {
   color: var(--text-color);
   font-style: normal;
   font-weight: 600;
+  transition: all 0.3s ease;
 }
 .navbar-menu li a:hover,
 .navbar-menu li a.active {
@@ -99,9 +103,13 @@ onMounted(async () => {
   cursor: pointer;
   color: white;
   background-color: var(--secondary-color);
+  scale: 1.05;
 }
 
 .cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -10px;
   display: inline-block;
   background: #ef4444;
   color: white;
@@ -111,7 +119,7 @@ onMounted(async () => {
   font-size: 0.75rem;
   text-align: center;
   line-height: 20px;
-  margin-left: 0.5rem;
   font-weight: 700;
+  transition: all 0.3s ease;
 }
 </style>

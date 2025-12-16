@@ -35,7 +35,7 @@
 
         <div class="action-buttons">
           <NuxtLink
-            :to="`/upplevelse/${experience.id}`"
+            :to="`/upplevelse/${experience.slug}`"
             class="btn btn--secondary"
           >
             Läs mer

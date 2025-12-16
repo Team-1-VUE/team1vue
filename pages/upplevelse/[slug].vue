@@ -121,11 +121,11 @@ import { capitalize } from "~/utils/string";
 import BookingModal from "~/components/BookingModal.vue";
 
 const route = useRoute();
-const id = route.params.id as string;
+const slug = route.params.slug as string;
 
-const { loading, getExperienceById, totalAddonsPrice } = useExperiences();
+const { loading, getExperienceBySlug, totalAddonsPrice } = useExperiences();
 
-const experience = computed(() => getExperienceById(id));
+const experience = computed(() => getExperienceBySlug(slug));
 
 const ownerProfile = computed(() =>
   experience.value ? capitalize(experience.value.owner) : ""

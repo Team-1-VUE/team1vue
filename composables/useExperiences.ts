@@ -84,6 +84,9 @@ export function useExperiences() {
   const getExperienceById = (id: string) =>
     data.value?.experiences.find((exp) => exp.id === id) || null;
 
+  const getExperienceBySlug = (slug: string) =>
+    data.value?.experiences.find((exp) => exp.slug === slug) || null;
+
   const totalAddonsPrice = (exp: Experience) =>
     exp.addons.reduce((sum, addon) => sum + addon.price, 0);
 
@@ -103,5 +106,6 @@ export function useExperiences() {
     getExperienceById,
     totalAddonsPrice,
     getAddon,
+    getExperienceBySlug,
   };
 }

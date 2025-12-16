@@ -56,8 +56,8 @@
           </Transition>
         </div>
 
-        <!-- SECTION 2: Time Slots -->
-        <div v-if="selectedDate" class="collapsible-section">
+        <!-- SECTION 2: Time Slots - Always shown but disabled if no date -->
+        <div class="collapsible-section" :class="{ 'section-disabled': !selectedDate }">
           <div 
             class="section-header"
             @click="toggleTimeSlots"
@@ -82,11 +82,15 @@
           <Transition name="collapse">
             <div v-show="timeSlotsExpanded" id="timeslots-content" class="section-content">
               <TimeSlotList
+                v-if="selectedDate"
                 :experience="experience"
                 :selectedDate="selectedDate"
                 :guestCount="totalGuests"
                 @select="onTimeSelect"
               />
+              <p v-else class="no-date-message">
+                Välj ett datum först för att se tillgängliga tider
+              </p>
             </div>
           </Transition>
         </div>
@@ -202,6 +206,18 @@
                   <span class="guest-total-label">Totalt antal gäster:</span>
                   <span class="guest-total-value">{{ totalGuests }}</span>
                 </div>
+
+                <!-- Capacity hint inside guest section -->
+                <div v-if="selectedSlot" class="slot-capacity-hint-inline">
+                  Platser kvar:
+                  {{
+                    Math.max(
+                      (selectedSlot.remaining ?? maxGuestsForSelection) -
+                        totalGuests,
+                      0
+                    )
+                  }}
+                </div>
               </div>
 
               <!-- Addon Editor -->
@@ -256,17 +272,6 @@
         <div class="modal-footer">
           <div v-if="validationError" class="validation-error-footer">
             {{ validationError }}
-          </div>
-
-          <div v-if="selectedSlot" class="slot-capacity-hint-footer">
-            Platser kvar:
-            {{
-              Math.max(
-                (selectedSlot.remaining ?? maxGuestsForSelection) -
-                  totalGuests,
-                0
-              )
-            }}
           </div>
 
           <div class="price-footer">
@@ -368,20 +373,34 @@ const selectedTime = ref<string | undefined>(undefined);
 // vi sparar hela slot-objektet här
 const selectedSlot = ref<DecoratedTimeSlot | null>(null);
 
-// Toggle functions with accordion behavior (only one section open at a time)
+// Toggle functions with accordion behavior and staggered animations
 const toggleCalendar = () => {
-  calendarExpanded.value = !calendarExpanded.value;
   if (calendarExpanded.value) {
+    // Just close
+    calendarExpanded.value = false;
+  } else {
+    // Close others first, then open after animation
     timeSlotsExpanded.value = false;
     guestAndAddonsExpanded.value = false;
+    setTimeout(() => {
+      calendarExpanded.value = true;
+    }, 300);
   }
 };
 
 const toggleTimeSlots = () => {
-  timeSlotsExpanded.value = !timeSlotsExpanded.value;
+  if (!selectedDate.value) return; // Prevent opening if no date selected
+  
   if (timeSlotsExpanded.value) {
+    // Just close
+    timeSlotsExpanded.value = false;
+  } else {
+    // Close others first, then open after animation
     calendarExpanded.value = false;
     guestAndAddonsExpanded.value = false;
+    setTimeout(() => {
+      timeSlotsExpanded.value = true;
+    }, 300);
   }
 };
 
@@ -391,10 +410,16 @@ const toggleGuestAndAddons = () => {
     return; // Don't allow collapse when there's an error
   }
   
-  guestAndAddonsExpanded.value = !guestAndAddonsExpanded.value;
   if (guestAndAddonsExpanded.value) {
+    // Just close
+    guestAndAddonsExpanded.value = false;
+  } else {
+    // Close others first, then open after animation
     calendarExpanded.value = false;
     timeSlotsExpanded.value = false;
+    setTimeout(() => {
+      guestAndAddonsExpanded.value = true;
+    }, 300);
   }
 };
 
@@ -670,15 +695,15 @@ watch(
     }
 
     // Smart initial expand state
-    const hasQueryParams = props.initialDate && (props.adults > 0 || props.children > 0 || props.seniors > 0);
+    const hasDateParam = !!props.initialDate;
     
     if (props.editMode) {
       // Edit mode: start with all sections expanded
       calendarExpanded.value = true;
       timeSlotsExpanded.value = true;
       guestAndAddonsExpanded.value = true;
-    } else if (!hasInitialized.value && hasQueryParams) {
-      // Query params provided: skip to time slots
+    } else if (!hasInitialized.value && hasDateParam) {
+      // Query params with date: close calendar, open time slots
       calendarExpanded.value = false;
       timeSlotsExpanded.value = true;
       guestAndAddonsExpanded.value = false;
@@ -750,16 +775,27 @@ const initializeModalState = () => {
 //   }
 // );
 
-// Removed: watch(selectedDate) - we now preserve time/slot selections across date changes
+// Auto-collapse calendar and open time slots when date is selected
+watch(selectedDate, (newDate) => {
+  if (newDate && calendarExpanded.value) {
+    // Date was just selected, auto-progress to time slots
+    calendarExpanded.value = false;
+    setTimeout(() => {
+      timeSlotsExpanded.value = true;
+    }, 300);
+  }
+});
 
 const onTimeSelect = (slot: DecoratedTimeSlot) => {
   selectedSlot.value = slot;
   selectedTime.value = slot.time;
 
-  // Auto-expand guests+addons section and collapse others (accordion behavior)
+  // Auto-collapse time slots and open guests+addons with stagger
   calendarExpanded.value = false;
   timeSlotsExpanded.value = false;
-  guestAndAddonsExpanded.value = true;
+  setTimeout(() => {
+    guestAndAddonsExpanded.value = true;
+  }, 300);
 };
 
 const formatDate = (dateString: string) => {
@@ -906,6 +942,11 @@ const handleConfirm = () => {
   background: white;
 }
 
+.collapsible-section.section-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -964,6 +1005,13 @@ const handleConfirm = () => {
 .section-content {
   padding: 1.25rem;
   background: white;
+}
+
+.no-date-message {
+  text-align: center;
+  color: #6b7280;
+  padding: 1rem;
+  font-size: 0.875rem;
 }
 
 /* Collapse Transition */
@@ -1100,6 +1148,15 @@ const handleConfirm = () => {
   color: #1a1a1a;
 }
 
+.slot-capacity-hint-inline {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e5e7eb;
+  font-size: 0.875rem;
+  color: #6b7280;
+  text-align: center;
+}
+
 /* Footer Styles */
 .modal-footer {
   margin-top: 1.5rem;
@@ -1117,13 +1174,6 @@ const handleConfirm = () => {
   font-size: 0.875rem;
   font-weight: 500;
   text-align: center;
-}
-
-.slot-capacity-hint-footer {
-  font-size: 0.875rem;
-  color: #6b7280;
-  text-align: center;
-  margin-bottom: 0.75rem;
 }
 
 .price-footer {

@@ -12,7 +12,8 @@
         <img
           class="experience-hero__image"
           :src="experience.image"
-          :alt="experience.title" />
+          :alt="experience.title"
+        />
 
         <div class="experience-hero__overlay"></div>
 
@@ -63,7 +64,8 @@
 
             <p
               v-if="experience.categoryPrices"
-              class="booking-card__per-category">
+              class="booking-card__per-category"
+            >
               Pris per person:
               <br />
               <span>Vuxen: {{ experience.categoryPrices.adults }} kr</span>
@@ -79,7 +81,8 @@
               v-if="
                 experience.addons?.length && totalAddonsPrice(experience) > 0
               "
-              class="booking-card__total">
+              class="booking-card__total"
+            >
               {{ experience.price + totalAddonsPrice(experience) }} kr med
               tillval
             </p>
@@ -103,7 +106,8 @@
         :adults="Number(route.query.adults ?? 1)"
         :children="Number(route.query.children ?? 0)"
         :seniors="Number(route.query.seniors ?? 0)"
-        @close="showModal = false" />
+        @close="showModal = false"
+      />
     </template>
 
     <!-- Not found -->
@@ -121,11 +125,11 @@ import { capitalize } from "~/utils/string";
 import BookingModal from "~/components/BookingModal.vue";
 
 const route = useRoute();
-const id = route.params.id as string;
+const slug = route.params.slug as string;
 
-const { loading, getExperienceById, totalAddonsPrice } = useExperiences();
+const { loading, getExperienceBySlug, totalAddonsPrice } = useExperiences();
 
-const experience = computed(() => getExperienceById(id));
+const experience = computed(() => getExperienceBySlug(slug));
 
 const ownerProfile = computed(() =>
   experience.value ? capitalize(experience.value.owner) : ""

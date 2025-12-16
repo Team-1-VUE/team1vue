@@ -18,24 +18,27 @@
           <p class="addons-label">Tillval inkluderar:</p>
           <div class="addons__tags">
             <span
-            v-for="(addon, index) in experience.addons"
-            :key="index"
-            class="addon-tag">
-            {{ capitalize(addon.title) }}
-          </span>
+              v-for="(addon, index) in experience.addons"
+              :key="index"
+              class="addon-tag"
+            >
+              {{ capitalize(addon.title) }}
+            </span>
           </div>
         </div>
       </template>
 
       <template #footer>
         <div class="price-section">
-          <span class="price-label">{{ experience.addons?.length ? 'PRIS FRÅN' : 'PRIS' }}</span>
+          <span class="price-label">{{
+            experience.addons?.length ? "PRIS FRÅN" : "PRIS"
+          }}</span>
           <span class="price-value">{{ experience.price }} kr</span>
         </div>
 
         <div class="action-buttons">
           <NuxtLink
-            :to="`/upplevelse/${experience.id}`"
+            :to="`/upplevelse/${experience.slug}`"
             class="btn btn--secondary"
           >
             Läs mer
@@ -65,24 +68,26 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-import { useExperiences, type Experience } from '~/composables/useExperiences'
-import Card from '~/components/Card.vue'
-import BookingModal from '~/components/BookingModal.vue'
+import { useRoute } from "vue-router";
+import { useExperiences, type Experience } from "~/composables/useExperiences";
+import Card from "~/components/Card.vue";
+import BookingModal from "~/components/BookingModal.vue";
 
 const props = defineProps<{
-  experiences?: Experience[]
-}>()
+  experiences?: Experience[];
+}>();
 
-const route = useRoute()
-const name = route.params.name as string
+const route = useRoute();
+const name = route.params.name as string;
 
-const { getProfileExperiences } = useExperiences()
+const { getProfileExperiences } = useExperiences();
 
-const experiencesFromProfile = computed(() => getProfileExperiences(name))
-const list = computed(() => props.experiences ?? experiencesFromProfile.value ?? [])
+const experiencesFromProfile = computed(() => getProfileExperiences(name));
+const list = computed(
+  () => props.experiences ?? experiencesFromProfile.value ?? []
+);
 
-const showModal = ref<null | typeof list.value[0]>(null)
+const showModal = ref<null | (typeof list.value)[0]>(null);
 </script>
 
 <style scoped>

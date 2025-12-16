@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ExperienceCard from "~/components/ExperienceCard.vue";
 import { useExperiences, type Experience } from "~/composables/useExperiences";
 import SearchBar, { type SearchFilters } from "~/components/SearchBar.vue";
 import { ref, computed, watch } from "vue";
@@ -147,7 +146,8 @@ const filteredExperiences = computed(() => {
     <SearchBar
       v-model="filters"
       :show-search-button="false"
-      class="page-search" />
+      class="page-search"
+    />
 
     <section v-if="loading">
       <p>Laddar upplevelser...</p>
@@ -162,7 +162,8 @@ const filteredExperiences = computed(() => {
 
       <ExperienceCardList
         :experiences="filteredExperiences"
-        class="experience-grid" />
+        class="experience-grid"
+      />
 
       <p v-if="!filteredExperiences.length">
         Inga upplevelser matchar din sökning. Testa att ändra datum eller antal

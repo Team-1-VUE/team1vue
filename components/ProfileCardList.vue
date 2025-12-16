@@ -4,6 +4,7 @@
       v-for="(profile) in profiles"
       :key="profile.name"
       :image="profile.profileImage"
+      :imgHref="`/profil/${profile.name}`"
       :alt-text="capitalize(String(profile.name))"
     >
       <template #header>

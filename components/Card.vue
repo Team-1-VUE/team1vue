@@ -1,8 +1,8 @@
 <template>
   <div class="card">
-    <div v-if="image" class="card__image">
+    <component v-if="image" class="card__image" :is="imgHref ? 'a' : 'div'" :href="imgHref">
       <img :src="image" :alt="altText" />
-    </div>
+    </component>
 
     <div class="card__content">
       <header v-if="$slots.header" class="card__header">
@@ -24,6 +24,7 @@
 defineProps<{
   image?: string
   altText?: string
+  imgHref?: string
 }>()
 </script>
 

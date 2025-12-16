@@ -4,6 +4,7 @@
       v-for="experience in list"
       :key="experience.slug"
       :image="experience.image"
+      :imgHref="`/upplevelse/${experience.slug}`"
       :altText="experience.title"
     >
       <template #header>

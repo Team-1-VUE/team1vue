@@ -64,14 +64,17 @@
                 </span>
               </div>
 
-              <!-- Addon Badges -->
-              <div v-if="item.selectedAddons && item.selectedAddons.length > 0" class="addon-badges">
-                <span
-                  v-for="addon in item.selectedAddons"
-                  :key="addon.slug"
-                  class="badge badge-addon">
-                  {{ capitalize(addon.title) }} × {{ addon.quantity }}
-                </span>
+              <!-- Addon Badges (always rendered for consistent spacing) -->
+              <div class="addon-badges">
+                <template v-if="item.selectedAddons && item.selectedAddons.length > 0">
+                  <span
+                    v-for="addon in item.selectedAddons"
+                    :key="addon.slug"
+                    class="badge badge-addon">
+                    {{ capitalize(addon.title) }} × {{ addon.quantity }}
+                  </span>
+                </template>
+                <span v-else class="badge badge-addon badge-placeholder">&nbsp;</span>
               </div>
             </div>
 
@@ -470,6 +473,12 @@ const handleCheckout = () => {
   background: transparent;
   border: 1px solid #10b981;
   color: #10b981;
+}
+
+.badge-placeholder {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .cart-item__actions {

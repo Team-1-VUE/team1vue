@@ -138,6 +138,7 @@ export const useCartStore = defineStore("cart", () => {
         existingItem.guestCounts.adults +
         existingItem.guestCounts.children +
         existingItem.guestCounts.seniors;
+      existingItem.bookingTime = bookingTime;
     } else {
       // Create new cart item with guest counts
       items.value.push({
@@ -150,6 +151,7 @@ export const useCartStore = defineStore("cart", () => {
         selectedAddons,
         quantity: totalGuests,
         bookingDate,
+        bookingTime,
         guestCounts: { adults, children, seniors },
       });
     }

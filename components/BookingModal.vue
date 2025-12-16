@@ -8,9 +8,12 @@
       <div class="modal-content" @click.stop>
         <button class="modal-close" @click="$emit('close')">×</button>
 
-        <h2>Boka upplevelse</h2>
-        <p class="modal-subtitle">{{ experience?.title }}</p>
+        <div class="modal-header">
+          <h2>Boka upplevelse</h2>
+          <p class="modal-subtitle">{{ experience?.title }}</p>
+        </div>
 
+        <div class="modal-body">
         <!-- SECTION 1: Calendar (Date Picker) -->
         <div class="collapsible-section">
           <div 
@@ -260,6 +263,7 @@
               </div>
             </div>
           </Transition>
+        </div>
         </div>
 
         <!-- Footer with validation, price, and actions -->
@@ -905,14 +909,15 @@ const handleConfirm = () => {
 .modal-content {
   background: white;
   border-radius: 20px;
-  padding: 2rem;
   max-width: 550px;
   width: 100%;
   max-height: 90vh;
-  overflow-y: auto;
   position: relative;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   animation: modalSlideIn 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 @keyframes modalSlideIn {
@@ -947,6 +952,18 @@ const handleConfirm = () => {
 .modal-close:hover {
   background: #f3f4f6;
   color: #1a1a1a;
+}
+
+.modal-header {
+  padding: 2rem 2rem 0 2rem;
+  flex-shrink: 0;
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 2rem;
+  margin: 1rem 0;
 }
 
 .modal-content h2 {
@@ -1168,8 +1185,8 @@ const handleConfirm = () => {
   justify-content: space-between;
   align-items: center;
   margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 2px solid #e5e7eb;
+  /* padding-top: 1rem; */
+  /* border-top: 2px solid #e5e7eb; */
   font-weight: 600;
 }
 
@@ -1194,9 +1211,11 @@ const handleConfirm = () => {
 
 /* Footer Styles */
 .modal-footer {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
+  flex-shrink: 0;
+  padding: 1.5rem 2rem 2rem 2rem;
   border-top: 2px solid #e5e7eb;
+  background: white;
+  border-radius: 0 0 20px 20px;
 }
 
 .validation-error-footer {

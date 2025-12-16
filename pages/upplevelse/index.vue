@@ -19,17 +19,21 @@ const filters = ref<SearchFilters>({
 });
 
 // Watch filters and update URL automatically
-watch(filters, (value) => {
-  router.push({
-    path: "/upplevelse",
-    query: {
-      date: value.date,
-      adults: String(value.adults),
-      children: String(value.children),
-      seniors: String(value.seniors),
-    },
-  });
-}, { deep: true });
+watch(
+  filters,
+  (value) => {
+    router.push({
+      path: "/upplevelse",
+      query: {
+        date: value.date,
+        adults: String(value.adults),
+        children: String(value.children),
+        seniors: String(value.seniors),
+      },
+    });
+  },
+  { deep: true }
+);
 
 const filteredExperiences = computed(() => {
   if (!experiences.value) return [];
@@ -69,7 +73,11 @@ const filteredExperiences = computed(() => {
       <p>Browse all the adventures you can book with our team.</p>
     </header>
 
-    <SearchBar v-model="filters" :show-search-button="false" class="page-search" />
+    <SearchBar
+      v-model="filters"
+      :show-search-button="false"
+      class="page-search"
+    />
 
     <section v-if="loading">
       <p>Laddar upplevelser...</p>
@@ -88,7 +96,10 @@ const filteredExperiences = computed(() => {
         <span v-else>inget specifikt datum</span>
       </p>
 
-      <ExperienceCardList :experiences="filteredExperiences" class="experience-grid" />
+      <ExperienceCardList
+        :experiences="filteredExperiences"
+        class="experience-grid"
+      />
 
       <p v-if="!filteredExperiences.length">
         Inga upplevelser matchar din sökning. Testa att ändra datum eller antal

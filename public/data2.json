@@ -702,7 +702,7 @@
       "minGuests": 1,
       "maxGuests": 12,
       "allowedCategories": {
-        "children": true,
+        "children": false,
         "adults": true,
         "seniors": true
       },

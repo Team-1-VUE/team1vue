@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, watch } from "vue";
+import { reactive, watch, computed, ref } from "vue";
 
 export interface SearchFilters {
   date: string;
@@ -10,6 +10,12 @@ export interface SearchFilters {
 
 // Set minimum date to today, autoimports from utils/date.ts
 const minDate = getTodayString();
+
+const pad2 = (n: number) => String(n).padStart(2, "0");
+const toYMDLocal = (d: Date) =>
+  `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+
+const minDateObj = computed(() => new Date(`${minDate}T12:00:00`));
 
 // Vi använder v-model på komponenten (modelValue in, update:modelValue ut)
 const props = withDefaults(
@@ -35,6 +41,15 @@ const filters = reactive<SearchFilters>({
   seniors: props.modelValue?.seniors ?? 0,
 });
 
+const selectedDateObj = ref<Date | null>(
+  filters.date ? new Date(`${filters.date}T12:00:00`) : null
+);
+
+// When user picks in calendar -> update filters.date (YYYY-MM-DD)
+watch(selectedDateObj, (d) => {
+  filters.date = d ? toYMDLocal(d) : "";
+});
+
 // Håll v-model i synk med föräldern
 watch(
   filters,
@@ -52,6 +67,10 @@ watch(
     filters.adults = value.adults;
     filters.children = value.children;
     filters.seniors = value.seniors;
+
+    selectedDateObj.value = value.date
+      ? new Date(`${value.date}T12:00:00`)
+      : null;
   },
   { deep: true }
 );
@@ -65,9 +84,35 @@ const onSubmit = (event: Event) => {
 <template>
   <form class="search-bar" @submit="onSubmit">
     <div class="search-row">
-      <div class="field">
+      <!-- <div class="field">
         <label for="date">Datum</label>
         <input id="date" v-model="filters.date" type="date" :min="minDate" />
+      </div> -->
+
+      <div class="field">
+        <label>Datum</label>
+
+        <ClientOnly>
+          <VDatePicker
+            v-model="selectedDateObj"
+            :min-date="minDateObj"
+            :popover="{ visibility: 'click' }"
+            is-required="false">
+            <template #default="{ inputValue, inputEvents }">
+              <input
+                class="date-input"
+                :value="inputValue"
+                v-on="inputEvents"
+                placeholder="Välj datum (valfritt)"
+                readonly />
+            </template>
+          </VDatePicker>
+        </ClientOnly>
+
+        <!-- fallback (optional) if you want something during SSR) -->
+        <noscript>
+          <input class="date-input" type="date" :min="minDate" />
+        </noscript>
       </div>
 
       <div class="field">
@@ -146,6 +191,17 @@ input {
   font-size: 0.85rem;
   width: 100%;
   box-sizing: border-box;
+}
+
+.date-input {
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  font-size: 0.85rem;
+  width: 100%;
+  box-sizing: border-box;
+  background: #fff;
+  cursor: pointer;
 }
 
 /* Knapp kompakt på mobil och fyller raden */

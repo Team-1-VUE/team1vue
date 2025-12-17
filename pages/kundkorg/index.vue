@@ -109,13 +109,13 @@
               <!-- Action Buttons -->
               <div class="action-buttons">
                 <button
-                  @click="handleEditItem(index)"
+                  @click.stop="handleEditItem(index)"
                   class="btn-edit"
                   title="Redigera">
                   <Edit :size="20" />
                 </button>
                 <button
-                  @click="cartStore.removeFromCart(index)"
+                  @click.stop="cartStore.removeFromCart(index)"
                   class="btn-remove"
                   title="Ta bort">
                   <Trash2 :size="20" />

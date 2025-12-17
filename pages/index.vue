@@ -49,14 +49,16 @@ const handleSearch = (filters: SearchFilters) => {
         <SearchBar
           v-model="searchFilters"
           @search="handleSearch"
-          class="hero-search" />
+          class="hero-search"
+        />
 
         <div class="hero-actions">
           <!-- "Sök upplevelser" triggers the same search flow -->
           <button
             type="button"
             class="btn btn-primary"
-            @click="handleSearch(searchFilters)">
+            @click="handleSearch(searchFilters)"
+          >
             <span>Sök upplevelser</span>
             <ArrowRight :size="20" />
           </button>
@@ -110,12 +112,16 @@ const handleSearch = (filters: SearchFilters) => {
     </section>
     <section class="cta">
       <div class="cta-inner">
-        <h2 class="cta-title">Redo att Skapa Minnen??</h2>
+        <h2 class="cta-title">Redo att Skapa Minnen?</h2>
         <p class="cta-text">
           Vänta inte på det perfekta tillfället. Varje upplevelse är skapad för
           att bli oförglömlig. Boka din tid med oss redan idag!
         </p>
-        <NuxtLink to="/upplevelse" class="btn btn-primary">
+        <NuxtLink
+          style="text-decoration: none"
+          to="/upplevelse"
+          class="btn btn-primary"
+        >
           Utforska Alla Upplevelser
         </NuxtLink>
       </div>
@@ -128,8 +134,8 @@ const handleSearch = (filters: SearchFilters) => {
   min-height: 100vh;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
-  background-color: #ffffff;
-  color: #111827;
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 .hero {
   position: relative;
@@ -140,7 +146,7 @@ const handleSearch = (filters: SearchFilters) => {
 .hero-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #fef2f2, #ffffff, #fef2f2);
+  background: var(--background-color);
   z-index: 0;
 }
 
@@ -162,7 +168,7 @@ const handleSearch = (filters: SearchFilters) => {
   left: 2.5rem;
   width: 18rem;
   height: 18rem;
-  background-color: #ef4444;
+  background-color: var(--primary-color);
 }
 
 .hero-blur-circle--bottom {
@@ -170,7 +176,7 @@ const handleSearch = (filters: SearchFilters) => {
   right: 2.5rem;
   width: 24rem;
   height: 24rem;
-  background-color: #b91c1c;
+  background-color: blue;
 }
 
 .hero-content {
@@ -186,7 +192,7 @@ const handleSearch = (filters: SearchFilters) => {
   font-weight: 800;
   font-size: 3rem;
   line-height: 1.05;
-  background-image: linear-gradient(to right, #dc2626, #b91c1c, #7f1d1d);
+  background-image: var(--gradient-bg);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -196,7 +202,7 @@ const handleSearch = (filters: SearchFilters) => {
   margin: 0 auto 1.75rem;
   max-width: 48rem;
   font-size: 1.125rem;
-  color: #4b5563;
+  color: var(--text-color);
 }
 
 .hero-search {
@@ -227,30 +233,31 @@ const handleSearch = (filters: SearchFilters) => {
 }
 
 .btn-primary {
-  background-image: linear-gradient(to right, #ef4444, #b91c1c);
+  background-image: var(--gradient-bg);
   color: #ffffff;
-  box-shadow: 0 15px 30px rgba(220, 38, 38, 0.3);
+  box-shadow: 0 5px 30px var(--primary-color);
   transform: translateY(0);
 }
 
 .btn-primary:hover {
-  box-shadow: 0 20px 40px rgba(185, 28, 28, 0.4);
+  box-shadow: 0 20px 40px var(--primary-color);
   transform: scale(1.05);
 }
 
 .btn-secondary {
   background-color: #ffffff;
-  color: #dc2626;
-  border: 2px solid #ef4444;
+  color: var(--text-color);
+  border: 2px solid var(--primary-color);
 }
 
 .btn-secondary:hover {
   background-color: #fef2f2;
+  transform: scale(1.05);
 }
 
 .stats {
   padding: 4rem 1rem;
-  background-image: linear-gradient(to right, #dc2626, #991b1b);
+  background-image: var(--gradient-bg);
   color: #ffffff;
 }
 
@@ -280,7 +287,7 @@ const handleSearch = (filters: SearchFilters) => {
 }
 
 .stat-label {
-  color: #fecaca;
+  color: #fff;
 }
 
 .team {
@@ -301,7 +308,7 @@ const handleSearch = (filters: SearchFilters) => {
   margin-bottom: 1rem;
   font-weight: 700;
   font-size: 2rem;
-  background-image: linear-gradient(to right, #dc2626, #991b1b);
+  background-image: var(--gradient-text);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -310,7 +317,7 @@ const handleSearch = (filters: SearchFilters) => {
 .team-text {
   max-width: 32rem;
   margin: 0 auto;
-  color: #4b5563;
+  color: var(--text-color);
 }
 
 .team-grid {
@@ -403,7 +410,7 @@ const handleSearch = (filters: SearchFilters) => {
 
 .cta {
   padding: 5rem 1rem;
-  background: linear-gradient(135deg, #fef2f2, #ffffff);
+  background: var(--background-color);
 }
 
 .cta-inner {
@@ -416,7 +423,7 @@ const handleSearch = (filters: SearchFilters) => {
   margin-bottom: 1.5rem;
   font-size: 2rem;
   font-weight: 700;
-  background-image: linear-gradient(to right, #dc2626, #991b1b);
+  background-image: var(--gradient-text);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -425,7 +432,7 @@ const handleSearch = (filters: SearchFilters) => {
 .cta-text {
   margin-bottom: 2rem;
   font-size: 1.125rem;
-  color: #4b5563;
+  color: var(--text-color);
 }
 
 @media (max-width: 480px) {

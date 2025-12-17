@@ -22,74 +22,91 @@
           v-for="(item, index) in cartStore.items"
           :key="`${item.id}-${index}`"
           class="cart-item">
-          <div @click="handleEditItem(index)" class="cart-item__container">
-            <!-- container for img -->
+          <div class="cart-item__container">
+            <!-- Image -->
             <div class="cart-item__image-container">
               <img
                 :src="item.image"
                 :alt="item.title"
                 class="cart-item__image" />
             </div>
-            <!-- /container for img -->
 
-            <!-- container for event details -->
+            <!-- Details -->
             <div class="cart-item__details">
-              <h3>{{ item.title }}</h3>
-              <p class="description">
-                {{ item.description || "Ingen beskrivning tillgänglig" }}
-              </p>
-              <p class="duration">{{ item.duration }}</p>
+              <!-- Title & Owner -->
+              <div class="details-header">
+                <h3 class="item-title">{{ item.title }}</h3>
+                <span class="badge-owner">med {{ capitalize(item.owner) }}</span>
+              </div>
 
-              <!-- addons included here -->
-              <div class="addons">
-                <span class="addons-label">Tillval:</span>
-                <span v-if="item.selectedAddons.length" class="addons-list">
+              <!-- Date & Time -->
+              <div v-if="item.bookingDate" class="booking-info">
+                <span class="booking-info__item">
+                  <Calendar :size="16" />
+                  {{ formatDate(item.bookingDate) }}
+                </span>
+                <span v-if="item.bookingTime" class="booking-info__item">
+                  <Clock :size="16" />
+                  {{ item.bookingTime }}
+                </span>
+              </div>
+
+              <!-- Guest Badges -->
+              <div v-if="item.guestCounts" class="guest-badges">
+                <span v-if="item.guestCounts.adults > 0" class="badge badge-guest">
+                  {{ item.guestCounts.adults }} × vuxna
+                </span>
+                <span v-if="item.guestCounts.children > 0" class="badge badge-guest">
+                  {{ item.guestCounts.children }} × barn
+                </span>
+                <span v-if="item.guestCounts.seniors > 0" class="badge badge-guest">
+                  {{ item.guestCounts.seniors }} × senior
+                </span>
+              </div>
+
+              <!-- Addon Badges (always rendered for consistent spacing) -->
+              <div class="addon-badges">
+                <template v-if="item.selectedAddons && item.selectedAddons.length > 0">
                   <span
                     v-for="addon in item.selectedAddons"
                     :key="addon.slug"
-                    class="addon-item">
-                    {{ capitalize(addon.title)
-                    }}{{ addon.quantity > 1 ? ` ×${addon.quantity}` : "" }} (+{{
-                      addon.price * addon.quantity
-                    }}
-                    kr)
+                    class="badge badge-addon">
+                    {{ capitalize(addon.title) }} × {{ addon.quantity }}
                   </span>
-                </span>
-                <span v-else class="no-addons">Inga tillval</span>
+                </template>
+                <span v-else class="badge badge-addon badge-placeholder">&nbsp;</span>
               </div>
-
-              <p v-if="item.bookingDate" class="booking-date">
-                <Calendar :size="16" />
-                {{ formatDate(item.bookingDate) }}
-              </p>
             </div>
 
-            <div class="cart-item__details">
-              <h3>{{ item.title }}</h3>
-              <p class="owner">med {{ capitalize(item.owner) }}</p>
-              <p class="duration">{{ item.duration }}</p>
-              <p v-if="item.bookingDate" class="booking-date">
-                <Calendar :size="16" />
-                {{ formatDate(item.bookingDate) }}
-              </p>
-
-              <div v-if="item.selectedAddons.length" class="addons">
-                <p class="addons-label">Tillval:</p>
-                <ul>
-                  <li v-for="addon in item.selectedAddons" :key="addon.slug">
-                    {{ addon.title }} (+{{ addon.price }} kr)
-                  </li>
-                </ul>
-                <p class="total-guests">
-                  Totalt: {{ getTotalGuests(item) }} gäster
-                </p>
-              </div>
-              <!-- /container for guest details -->
-            </div>
-            <!-- /container for all -->
+            <!-- Price & Actions -->
             <div class="cart-item__actions">
-              <p class="item-price">{{ itemTotal(item) }} kr</p>
+              <!-- Price Breakdown (Desktop) -->
+              <div class="price-breakdown">
+                <div v-if="item.guestCounts" class="price-details">
+                  <div v-if="item.guestCounts.adults > 0" class="price-line">
+                    <span>{{ item.guestCounts.adults }} vuxna</span>
+                    <span>{{ (item.categoryPrices?.adults ?? item.price) * item.guestCounts.adults }} kr</span>
+                  </div>
+                  <div v-if="item.guestCounts.children > 0" class="price-line">
+                    <span>{{ item.guestCounts.children }} barn</span>
+                    <span>{{ (item.categoryPrices?.children ?? item.price) * item.guestCounts.children }} kr</span>
+                  </div>
+                  <div v-if="item.guestCounts.seniors > 0" class="price-line">
+                    <span>{{ item.guestCounts.seniors }} senior</span>
+                    <span>{{ (item.categoryPrices?.seniors ?? item.price) * item.guestCounts.seniors }} kr</span>
+                  </div>
+                  <div v-if="item.selectedAddons && item.selectedAddons.length > 0" class="price-line">
+                    <span>Tillval</span>
+                    <span>{{ item.selectedAddons.reduce((sum, a) => sum + a.price * (a.quantity || 1), 0) }} kr</span>
+                  </div>
+                </div>
+                <div class="price-total">
+                  <span>Totalt</span>
+                  <span class="total-amount">{{ itemTotal(item) }} kr</span>
+                </div>
+              </div>
 
+              <!-- Action Buttons -->
               <div class="action-buttons">
                 <button
                   @click="handleEditItem(index)"
@@ -125,26 +142,18 @@
       </div>
 
       <!-- Edit Booking Modal -->
-      <!-- <BookingModal
-      v-if="editingExperience && editingItemIndex !== null"
-      :show="showEditModal"
-      :experience="editingExperience"
-      :initialDate="cartStore.items[editingItemIndex]?.bookingDate || ''"
-      :adults="cartStore.items[editingItemIndex]?.guestCounts?.adults || 1"
-      :children="cartStore.items[editingItemIndex]?.guestCounts?.children || 0"
-      :seniors="cartStore.items[editingItemIndex]?.guestCounts?.seniors || 0"
-      :editMode="true"
-      :cartItemIndex="editingItemIndex"
-      @update="handleUpdateBooking"
-      @close="handleCloseEditModal" /> -->
-
-      <EditBookingModal
+      <BookingModal
         v-if="editingExperience && editingItemIndex !== null"
         :show="showEditModal"
         :experience="editingExperience"
-        :cartItem="cartStore.items[editingItemIndex]"
+        :initialDate="cartStore.items[editingItemIndex]?.bookingDate || ''"
+        :initialTime="cartStore.items[editingItemIndex]?.bookingTime || ''"
+        :adults="cartStore.items[editingItemIndex]?.guestCounts?.adults || 1"
+        :children="cartStore.items[editingItemIndex]?.guestCounts?.children || 0"
+        :seniors="cartStore.items[editingItemIndex]?.guestCounts?.seniors || 0"
+        :initialAddons="cartStore.items[editingItemIndex]?.selectedAddons?.map(a => ({ slug: a.slug, title: a.title, quantity: a.quantity })) || []"
+        :editMode="true"
         :cartItemIndex="editingItemIndex"
-        :slot="editingSlot"
         @update="handleUpdateBooking"
         @close="handleCloseEditModal" />
     </div>
@@ -154,11 +163,10 @@
 <script setup lang="ts">
 import { toRaw } from "vue";
 
-import { Calendar, ShoppingCart, Compass, Trash2, Edit } from "lucide-vue-next";
+import { Calendar, ShoppingCart, Compass, Trash2, Edit, Clock } from "lucide-vue-next";
 import { useCartStore } from "~/stores/useCartStore";
 import { useExperiences } from "~/composables/useExperiences";
-// import BookingModal from "~/components/BookingModal.vue";
-import EditBookingModal from "~/components/EditBookingModal.vue";
+import BookingModal from "~/components/BookingModal.vue";
 
 const cartStore = useCartStore();
 const { getExperienceById } = useExperiences();
@@ -167,11 +175,6 @@ const { getExperienceById } = useExperiences();
 const editingItemIndex = ref<number | null>(null);
 const editingExperience = ref<any>(null);
 const showEditModal = ref(false);
-const editingSlot = ref<{
-  time: string;
-  capacity: number;
-  booked: number;
-} | null>(null);
 
 const handleEditItem = (index: number) => {
   const item = cartStore.items[index];
@@ -182,61 +185,32 @@ const handleEditItem = (index: number) => {
 
   editingItemIndex.value = index;
   editingExperience.value = experience;
-
-  const date = item.bookingDate;
-  const time = item.bookingTime;
-
-  const scheduleForDate = date
-    ? (experience.schedule?.[date] as any[] | undefined)
-    : undefined;
-  editingSlot.value = scheduleForDate?.find((s) => s.time === time) ?? null;
-
   showEditModal.value = true;
 };
 
-// const handleUpdateBooking = (payload: {
-//   index: number;
-//   date: string;
-//   adults: number;
-//   children: number;
-//   seniors: number;
-//   bookingTime?: string;
-//   addons: Array<{
-//     slug: string;
-//     title: string;
-//     price: number;
-//     quantity: number;
-//   }>;
-// }) => {
-//   cartStore.updateCartItem(
-//     payload.index,
-//     payload.date,
-//     payload.adults,
-//     payload.children,
-//     payload.seniors,
-//     payload.addons,
-//     payload.bookingTime
-//   );
-//   handleCloseEditModal();
-// };
-
 const handleUpdateBooking = (payload: {
   index: number;
-  guests: { adults: number; children: number; seniors: number };
+  date: string;
+  time?: string;
+  adults: number;
+  children: number;
+  seniors: number;
+  addons: Array<{
+    slug: string;
+    title: string;
+    price: number;
+    quantity: number;
+  }>;
 }) => {
-  const item = cartStore.items[payload.index];
-  if (!item || !item.bookingDate) return;
-
   cartStore.updateCartItem(
     payload.index,
-    item.bookingDate,
-    payload.guests.adults,
-    payload.guests.children,
-    payload.guests.seniors,
-    item.selectedAddons || [],
-    item.bookingTime
+    payload.date,
+    payload.adults,
+    payload.children,
+    payload.seniors,
+    payload.addons,
+    payload.time
   );
-
   handleCloseEditModal();
 };
 
@@ -244,7 +218,6 @@ const handleCloseEditModal = () => {
   showEditModal.value = false;
   editingItemIndex.value = null;
   editingExperience.value = null;
-  editingSlot.value = null;
 };
 
 // ✅ merged pricing logic (from feature branch) + supports addon.quantity
@@ -292,9 +265,9 @@ const getTotalGuests = (item: any) => {
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   return date.toLocaleDateString("sv-SE", {
-    year: "numeric",
-    month: "long",
     day: "numeric",
+    month: "short",
+    year: "numeric",
   });
 };
 
@@ -397,11 +370,10 @@ const handleCheckout = () => {
 }
 
 .cart-item__container {
-  display: flex;
+  display: grid;
+  grid-template-columns: 166px 1fr auto;
   gap: 1.5rem;
-  flex: 1;
-  align-items: stretch;
-  cursor: pointer;
+  align-items: start;
 }
 
 .cart-item__image-container {
@@ -424,122 +396,135 @@ const handleCheckout = () => {
 }
 
 .cart-item__details {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  gap: 0.75rem;
+  min-height: 166px;
+  height: 166px;
   justify-content: space-between;
-  background: #f9fafb;
-  border-radius: 8px;
-  padding: 1rem;
 }
 
-.cart-item__details h3 {
+.details-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.item-title {
   margin: 0;
   font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
 }
 
-.duration,
-.booking-date,
-.description,
-.owner {
-  margin: 0.25rem 0 0;
+.badge-owner {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: transparent;
+  border: 1px solid #9ca3af;
+  border-radius: 6px;
+  font-size: 0.813rem;
   color: #6b7280;
-  font-size: 0.875rem;
+  width: fit-content;
 }
 
-.booking-date {
+.booking-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.booking-info__item {
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 500;
   color: #1a1a1a;
 }
 
-.booking-date :deep(svg) {
+.booking-info__item :deep(svg) {
   flex-shrink: 0;
+  color: #6b7280;
 }
 
-.addons {
-  margin-top: 0.5rem;
+.guest-badges,
+.addon-badges {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.addons-label {
-  font-weight: 600;
-  font-size: 0.875rem;
-  margin: 0;
-}
-
-.addons-list {
-  display: inline-flex;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
 
-.addon-item {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  background: #f3f4f6;
+.badge {
+  padding: 0.375rem 0.75rem;
   border-radius: 6px;
-  font-size: 0.875rem;
-  color: #6b7280;
+  font-size: 0.813rem;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
-.no-addons {
-  margin: 0;
-  font-size: 0.875rem;
-  color: #9ca3af;
-  font-style: italic;
+.badge-guest {
+  background: transparent;
+  border: 1px solid #3b82f6;
+  color: #3b82f6;
 }
 
-.guest-details {
-  flex-shrink: 0;
-  min-width: 200px;
-  padding: 1rem;
-  background: #f9fafb;
-  border-radius: 8px;
-  align-self: flex-start;
+.badge-addon {
+  background: transparent;
+  border: 1px solid #10b981;
+  color: #10b981;
 }
 
-.guest-counts-label {
-  font-weight: 600;
-  font-size: 0.875rem;
-  margin: 0 0 0.5rem 0;
-  color: #1a1a1a;
-}
-
-.guest-list {
-  margin: 0;
-  padding-left: 0;
-  font-size: 0.875rem;
-  color: #6b7280;
-  list-style: none;
-}
-
-.guest-list li {
-  padding: 0.25rem 0;
-}
-
-.total-guests {
-  margin: 0.5rem 0 0 0;
-  font-weight: 600;
-  font-size: 0.875rem;
-  color: #1a1a1a;
-  padding-top: 0.5rem;
-  border-top: 1px solid #e5e7eb;
+.badge-placeholder {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .cart-item__actions {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 1rem;
   justify-content: space-between;
-  padding-top: 1rem;
-  min-width: 80px;
+  min-width: 200px;
+  height: 166px;
+}
+
+.price-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.price-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.price-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.813rem;
+  color: #6b7280;
+}
+
+.price-total {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid #e5e7eb;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.total-amount {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a1a;
 }
 
 .action-buttons {
@@ -593,8 +578,9 @@ const handleCheckout = () => {
 
 .cart-summary {
   background: #f9fafb;
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 12px;
+  min-width: 240px;
   max-width: 400px;
   margin-left: auto;
 }
@@ -648,83 +634,79 @@ const handleCheckout = () => {
 }
 
 .cart-item {
-  display: grid;
-  grid-template-columns: 166px 1fr 220px 120px; /* image | details | guests | actions */
-  gap: 1rem;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .cart-item__container {
-  display: contents; /* let children participate in grid */
-  cursor: default; /* avoid whole row feeling clickable on mobile */
+  display: grid;
+  grid-template-columns: 166px 1fr auto;
+  gap: 1.5rem;
+  align-items: start;
 }
 
 .cart-item__image-container {
-  grid-column: 1;
   width: 166px;
   height: 166px;
 }
 
 .cart-item__details {
-  grid-column: 2;
-  min-width: 0; /* prevents overflow */
-}
-
-.guest-details {
-  grid-column: 3;
   min-width: 0;
 }
 
 .cart-item__actions {
-  grid-column: 4;
-  align-items: flex-end;
-  padding-top: 0;
-  min-width: 0;
+  min-width: 200px;
 }
 
-/* Price + buttons align nicely */
-.item-price {
-  white-space: nowrap;
-}
+/* Hide price details on mobile, show only total */
+@media (max-width: 767px) {
+  .price-details {
+    display: none;
+  }
 
-/* Keep long titles from breaking layout */
-.cart-item__details h3 {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  .price-breakdown {
+    align-items: flex-end;
+  }
+
+  .price-total {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+  }
 }
 
 @media (max-width: 900px) {
-  .cart-item {
+  .cart-item__container {
     grid-template-columns: 120px 1fr;
-    grid-template-areas:
-      "img details"
-      "guests guests"
-      "actions actions";
+    gap: 1rem;
   }
 
   .cart-item__image-container {
-    grid-area: img;
     width: 120px;
     height: 120px;
   }
 
   .cart-item__details {
-    grid-area: details;
-  }
-
-  .guest-details {
-    grid-area: guests;
-    min-width: 100%;
+    grid-column: 2;
+    min-height: 120px;
+    height: 120px;
   }
 
   .cart-item__actions {
-    grid-area: actions;
+    grid-column: 1 / -1;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     min-width: 100%;
-    padding-top: 0.5rem;
+    height: auto;
+  }
+
+  .price-breakdown {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
   }
 
   .action-buttons {
@@ -738,17 +720,15 @@ const handleCheckout = () => {
   }
 
   .cart-item {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "img"
-      "details"
-      "guests"
-      "actions";
     padding: 1rem;
   }
 
+  .cart-item__container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
   .cart-item__image-container {
-    grid-area: img;
     width: 100%;
     height: 180px;
   }
@@ -758,31 +738,33 @@ const handleCheckout = () => {
   }
 
   .cart-item__details {
-    grid-area: details;
-    padding: 0.9rem;
-  }
-
-  .guest-details {
-    grid-area: guests;
-    width: 100%;
+    grid-column: 1;
+    height: auto;
+    min-height: auto;
   }
 
   .cart-item__actions {
-    grid-area: actions;
     width: 100%;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+  }
+
+  .price-breakdown {
+    order: -1;
+    margin-bottom: 0.5rem;
+  }
+
+  .action-buttons {
+    width: 100%;
+    justify-content: center;
   }
 
   .btn-edit,
   .btn-remove {
-    padding: 0.6rem;
+    flex: 1;
+    padding: 0.75rem;
     border-radius: 10px;
-  }
-
-  .item-price {
-    font-size: 1.1rem;
   }
 
   /* Summary goes full width on mobile */
@@ -794,13 +776,23 @@ const handleCheckout = () => {
 }
 
 @media (min-width: 1200px) {
-  .cart-item {
-    grid-template-columns: 180px 1fr 240px 140px;
-    gap: 1.25rem;
+  .cart-item__container {
+    grid-template-columns: 180px 1fr auto;
+    gap: 2rem;
   }
 
   .cart-item__image-container {
     width: 180px;
+    height: 180px;
+  }
+
+  .cart-item__details {
+    height: 180px;
+    min-height: 180px;
+  }
+
+  .cart-item__actions {
+    min-width: 240px;
     height: 180px;
   }
 }

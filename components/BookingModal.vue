@@ -84,11 +84,16 @@
 
           <Transition name="collapse">
             <div v-show="timeSlotsExpanded" id="timeslots-content" class="section-content">
+              <p v-if="timeSlotWarning" class="validation-error" style="margin-bottom: 1rem;">
+                {{ timeSlotWarning }}
+              </p>
               <TimeSlotList
                 v-if="selectedDate"
                 :experience="experience"
                 :selectedDate="selectedDate"
                 :guestCount="totalGuests"
+                :editMode="editMode"
+                :currentBookingGuests="editMode ? (adults + children + seniors) : 0"
                 @select="onTimeSelect"
               />
               <p v-else class="no-date-message">
@@ -297,6 +302,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from "vue";
 import { useCartStore } from "~/stores/useCartStore";
 import { useExperiences } from "~/composables/useExperiences";
 import TimeSlotList from "~/components/TimeSlotList.vue";
@@ -307,20 +313,24 @@ interface Props {
   show: boolean;
   experience: any;
   initialDate?: string;
+  initialTime?: string;
   adults?: number;
   children?: number;
   seniors?: number;
   editMode?: boolean;
   cartItemIndex?: number;
+  initialAddons?: Array<{ slug?: string; title?: string; quantity: number }>;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   initialDate: "",
+  initialTime: "",
   adults: 1,
   children: 0,
   seniors: 0,
   editMode: false,
   cartItemIndex: undefined,
+  initialAddons: () => [],
 });
 const emit = defineEmits<{
   close: [];
@@ -347,13 +357,14 @@ const { getAddon } = useExperiences();
 
 // Track if modal has been initialized with query params
 const hasInitialized = ref(false);
+// Warning when time slot no longer exists
+const timeSlotWarning = ref("");
 // Track if we're setting date from query params (to prevent auto-expand)
 const isSettingFromQueryParams = ref(false);
 
-// Accordion collapse state - initialize based on whether we have query params
-const hasQueryParams = !!props.initialDate;
-const calendarExpanded = ref(!hasQueryParams); // Collapsed if query params exist
-const timeSlotsExpanded = ref(hasQueryParams);  // Expanded if query params exist
+// Accordion collapse state
+const calendarExpanded = ref(false);
+const timeSlotsExpanded = ref(false);
 const guestAndAddonsExpanded = ref(false);
 
 const selectedDateObj = ref<Date | null>(
@@ -699,53 +710,56 @@ const calendarAttrs = computed(() => [
   },
 ]);
 
-// Modal open watcher with smart initial state
+// Modal open watcher
 watch(
   () => props.show,
   (open) => {
-    if (!open) return;
-
-    // Smart initial expand state - SET BEFORE initializeModalState to prevent watch conflicts
-    const hasDateParam = !!props.initialDate;
-    
-    if (props.editMode) {
-      // Edit mode: start with all sections expanded
-      calendarExpanded.value = true;
-      timeSlotsExpanded.value = true;
-      guestAndAddonsExpanded.value = true;
-    } else if (hasDateParam) {
-      // Query params with date: close calendar, open time slots
-      isSettingFromQueryParams.value = true; // Set flag to prevent auto-expand
-      calendarExpanded.value = false;
-      timeSlotsExpanded.value = true;
-      guestAndAddonsExpanded.value = false;
-    } else {
-      // Default: start with calendar
-      calendarExpanded.value = true;
-      timeSlotsExpanded.value = false;
-      guestAndAddonsExpanded.value = false;
-    }
-
-    // Initialize modal state after setting expand states
-    initializeModalState();
-
-    // Reset flag after initialization
-    nextTick(() => {
-      isSettingFromQueryParams.value = false;
-    });
-
-    // Auto-select first available date if none selected (only for non-param opens)
-    if (!hasDateParam && !selectedDateObj.value) {
-      const first = availableDates.value.at(0);
-      if (first) selectedDateObj.value = new Date(`${first}T12:00:00`);
-    }
-
-    // Mark as initialized after first open
-    hasInitialized.value = true;
+    if (open) handleModalOpen();
   }
 );
 
+// Handle modal opening logic (called from watch and onMounted)
+const handleModalOpen = () => {
+  const hasDateParam = !!props.initialDate;
+  
+  if (props.editMode) {
+    // Edit mode: start with all sections collapsed
+    calendarExpanded.value = false;
+    timeSlotsExpanded.value = false;
+    guestAndAddonsExpanded.value = false;
+  } else if (hasDateParam) {
+    // Query params with date: close calendar, open time slots
+    isSettingFromQueryParams.value = true;
+    calendarExpanded.value = false;
+    timeSlotsExpanded.value = true;
+    guestAndAddonsExpanded.value = false;
+  } else {
+    // Default: start with calendar
+    calendarExpanded.value = true;
+    timeSlotsExpanded.value = false;
+    guestAndAddonsExpanded.value = false;
+  }
+
+  initializeModalState();
+
+  nextTick(() => {
+    isSettingFromQueryParams.value = false;
+  });
+
+  hasInitialized.value = true;
+};
+
+// If component mounts with show=true (like in edit mode with v-if), initialize immediately
+onMounted(() => {
+  if (props.show) {
+    handleModalOpen();
+  }
+});
+
 const initializeModalState = () => {
+  // Clear warning
+  timeSlotWarning.value = "";
+  
   // Always set date from props.initialDate if provided
   if (props.initialDate) {
     selectedDateObj.value = new Date(`${props.initialDate}T12:00:00`);
@@ -753,8 +767,9 @@ const initializeModalState = () => {
     selectedDateObj.value = null;
   }
 
-  // Only apply other props on first initialization
-  if (!hasInitialized.value) {
+  // In edit mode, ALWAYS reinitialize all values
+  // In non-edit mode, only initialize on first open
+  if (props.editMode || !hasInitialized.value) {
     selectedTime.value = undefined;
     selectedSlot.value = null;
 
@@ -767,44 +782,59 @@ const initializeModalState = () => {
     if (!allowsChildren.value) localChildren.value = 0;
     if (!allowsSeniors.value) localSeniors.value = 0;
 
-    // init addon quantities in edit mode
-    if (props.editMode && props.cartItemIndex !== undefined) {
-      const cartItem = cartStore.items[props.cartItemIndex];
-      if (cartItem?.selectedAddons?.length) {
-        const q: Record<string, number> = {};
-        cartItem.selectedAddons.forEach((a: any) => {
-          // Use title as key to match normalizedAddons
-          const key = a.title;
-          q[key] = a.quantity ?? 1;
-        });
-        selectedAddonQuantities.value = q;
-      } else {
-        selectedAddonQuantities.value = {};
-      }
-
-      // if cart has time
-      selectedTime.value = cartItem?.bookingTime ?? undefined;
+    // init addon quantities from initialAddons prop
+    if (props.initialAddons && props.initialAddons.length > 0) {
+      const q: Record<string, number> = {};
+      props.initialAddons.forEach((addon) => {
+        // Use title as key to match addon structure
+        const key = addon.title || addon.slug;
+        if (key) {
+          q[key] = addon.quantity ?? 1;
+        }
+      });
+      selectedAddonQuantities.value = q;
     } else {
       selectedAddonQuantities.value = {};
+    }
+    
+    // Set initialTime if provided (for edit mode)
+    if (props.initialTime && props.initialDate) {
+      selectedTime.value = props.initialTime;
+      
+      // Find matching slot from experience schedule
+      const schedule = props.experience?.schedule?.[props.initialDate];
+      if (schedule && Array.isArray(schedule)) {
+        const matchingSlot = schedule.find((s: any) => s.time === props.initialTime);
+        if (matchingSlot) {
+          selectedSlot.value = {
+            time: matchingSlot.time,
+            capacity: matchingSlot.capacity ?? 0,
+            booked: matchingSlot.booked ?? 0,
+            remaining: (matchingSlot.capacity ?? 0) - (matchingSlot.booked ?? 0),
+            status: 'available',
+            isFull: false,
+            cannotFitGroup: false
+          };
+        } else {
+          // Time slot no longer exists in schedule
+          timeSlotWarning.value = `Varning: Den tidigare valda tiden (${props.initialTime}) finns inte längre tillgänglig i schemat. Välj en ny tid.`;
+          selectedTime.value = undefined;
+          selectedSlot.value = null;
+        }
+      }
     }
   }
 };
 
-// watch(
-//   () => props.show,
-//   (open) => {
-//     if (open) initializeModalState();
-//   }
-// );
-// watch(
-//   () => props.show,
-//   (open) => {
-//     if (open) initializeModalState();
-//   }
-// );
-
 // Auto-collapse calendar and open time slots when date is selected
-watch(selectedDate, (newDate) => {
+watch(selectedDate, (newDate, oldDate) => {
+  // Clear time selection when date changes
+  if (oldDate && newDate !== oldDate) {
+    selectedTime.value = undefined;
+    selectedSlot.value = null;
+    timeSlotWarning.value = "";
+  }
+  
   // Don't auto-expand if we're setting from query params
   if (isSettingFromQueryParams.value) return;
   
@@ -820,13 +850,16 @@ watch(selectedDate, (newDate) => {
 const onTimeSelect = (slot: DecoratedTimeSlot) => {
   selectedSlot.value = slot;
   selectedTime.value = slot.time;
+  timeSlotWarning.value = "";
 
-  // Auto-collapse time slots and open guests+addons with stagger
-  calendarExpanded.value = false;
-  timeSlotsExpanded.value = false;
-  setTimeout(() => {
-    guestAndAddonsExpanded.value = true;
-  }, 300);
+  // Auto-collapse time slots and open guests+addons with stagger (skip in edit mode)
+  if (!props.editMode) {
+    calendarExpanded.value = false;
+    timeSlotsExpanded.value = false;
+    setTimeout(() => {
+      guestAndAddonsExpanded.value = true;
+    }, 300);
+  }
 };
 
 const formatDate = (dateString: string) => {

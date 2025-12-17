@@ -11,6 +11,8 @@ const props = defineProps<{
   experience: Experience;
   selectedDate: string | null;
   guestCount?: number;
+  editMode?: boolean;
+  currentBookingGuests?: number;
 }>();
 
 const emit = defineEmits<{
@@ -50,7 +52,12 @@ const slots = computed<DecoratedTimeSlot[]>(() => {
       return sum + item.quantity;
     }, 0);
 
-    const remaining = Math.max(slot.remaining - bookedForSlot, 0);
+    // In edit mode, add back the current booking's guests since they'll be freed up
+    const adjustedBooked = props.editMode && props.currentBookingGuests
+      ? Math.max(bookedForSlot - props.currentBookingGuests, 0)
+      : bookedForSlot;
+
+    const remaining = Math.max(slot.remaining - adjustedBooked, 0);
     const cannotFitGroup = remaining < guests;
     const isFull = remaining === 0;
 

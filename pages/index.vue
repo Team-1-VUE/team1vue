@@ -38,17 +38,12 @@ const handleSearch = (filters: SearchFilters) => {
       </div>
 
       <div class="hero-content">
-        <div class="hero-badge">
-          <Sparkles :size="18" />
-          <span>Unique Team Experiences</span>
-        </div>
-
-        <h1 class="hero-title">Book Time With Our Team</h1>
+        <h1 class="hero-title">Boka Tid Med Vårt Team</h1>
 
         <p class="hero-subtitle">
-          Skip the ordinary. Choose your experience and spend quality time with
-          one of our amazing team members. Every moment is an adventure waiting
-          to happen.
+          Skippa det vanliga. Välj din upplevelse och spendera kvalitetstid med
+          någon av våra fantastiska teammedlemmar. Varje stund är ett äventyr
+          som väntar på att upplevas.
         </p>
 
         <SearchBar
@@ -68,7 +63,7 @@ const handleSearch = (filters: SearchFilters) => {
 
           <!-- "Browse All" stays, and should NOT send date -->
           <NuxtLink to="/upplevelse" class="btn btn-secondary">
-            Browse All Experiences
+            Utforska Alla Upplevelser
           </NuxtLink>
         </div>
       </div>
@@ -80,31 +75,31 @@ const handleSearch = (filters: SearchFilters) => {
             <Heart :size="32" />
           </div>
           <div class="stat-value">500+</div>
-          <div class="stat-label">Happy Experiences</div>
+          <div class="stat-label">Glada Upplevelser</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">
             <Users :size="32" />
           </div>
           <div class="stat-value">4</div>
-          <div class="stat-label">Amazing Team Members</div>
+          <div class="stat-label">Fantastiska Teammedlemmar</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">
             <Calendar :size="32" />
           </div>
           <div class="stat-value">24/7</div>
-          <div class="stat-label">Available Experiences</div>
+          <div class="stat-label">Tillgängliga Upplevelser</div>
         </div>
       </div>
     </section>
     <section class="team">
       <div class="team-inner">
         <div class="team-header">
-          <h2 class="team-title">Meet Our Team</h2>
+          <h2 class="team-title">Möt Vårt Team</h2>
           <p class="team-text">
-            Each team member offers unique experiences tailored to different
-            interests. Choose who you'd like to spend time with.
+            Varje teammedlem erbjuder unika upplevelser anpassade efter olika
+            intressen. Välj vem du vill spendera tid med.
           </p>
         </div>
 
@@ -115,13 +110,13 @@ const handleSearch = (filters: SearchFilters) => {
     </section>
     <section class="cta">
       <div class="cta-inner">
-        <h2 class="cta-title">Ready to Create Memories?</h2>
+        <h2 class="cta-title">Redo att Skapa Minnen??</h2>
         <p class="cta-text">
-          Don't wait for the perfect moment. Every experience is designed to be
-          unforgettable. Book your time with us today!
+          Vänta inte på det perfekta tillfället. Varje upplevelse är skapad för
+          att bli oförglömlig. Boka din tid med oss redan idag!
         </p>
         <NuxtLink to="/upplevelse" class="btn btn-primary">
-          Browse All Experiences
+          Utforska Alla Upplevelser
         </NuxtLink>
       </div>
     </section>
@@ -184,19 +179,6 @@ const handleSearch = (filters: SearchFilters) => {
   margin: 0 auto;
   text-align: center;
   z-index: 1;
-}
-
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: #fee2e2;
-  color: #b91c1c;
-  padding: 0.5rem 1rem;
-  border-radius: 9999px;
-  margin-bottom: 1.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
 }
 
 .hero-title {

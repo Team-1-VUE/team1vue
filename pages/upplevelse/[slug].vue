@@ -7,96 +7,132 @@
 
     <!-- Experience found -->
     <template v-else-if="experience">
-      <!-- Hero -->
-      <section class="experience-hero">
-        <img
-          class="experience-hero__image"
-          :src="experience.image"
-          :alt="experience.title" />
+      <!-- Back link container -->
+      <div class="back-link-container">
+        <a @click="$router.back()" class="back-link">
+          <ArrowLeft :size="16" class="back-link__icon" />
+          Tillbaka
+        </a>
+      </div>
 
-        <div class="experience-hero__overlay"></div>
+      <!-- Main content layout -->
+      <main class="experience-container">
+        <!-- Left column: Image -->
+        <section class="experience-image-section">
+          <div class="image-wrapper">
+            <img
+              class="experience-image"
+              :src="experience.image"
+              :alt="experience.title" />
 
-        <div class="experience-hero__content">
-          <p class="experience-hero__label">Upplevelse</p>
-          <h1 class="experience-hero__title">{{ experience.title }}</h1>
-          <p class="experience-hero__subtitle">
-            {{ experience.duration }} • {{ experience.price }} kr
-          </p>
-        </div>
-      </section>
+            <!-- Capacity and category badges -->
+            <div class="capacity-section">
+              <Tooltip :content="`För grupper mellan ${experience.minGuests} och ${experience.maxGuests} personer`">
+                <div class="capacity-badge">
+                  <Users :size="20" class="badge-icon" />
+                  <span class="capacity-text">
+                    {{ experience.minGuests }}{{ experience.maxGuests !== experience.minGuests ? `-${experience.maxGuests}` : '' }} pers
+                  </span>
+                </div>
+              </Tooltip>
 
-      <!-- Main content -->
-      <main class="experience-layout">
-        <!-- Left column -->
-        <section class="experience-main">
-          <p v-if="experience.owner" class="experience-main__owner">
-            Med
-            <NuxtLink :to="`/profil/${experience.owner}`">
-              {{ ownerProfile }} →
-            </NuxtLink>
-          </p>
+              <Tooltip v-if="experience.allowedCategories?.children" content="Prisvärt för de små">
+                <div v-if="experience.allowedCategories?.children" class="category-badge category-badge--children">
+                  <Baby :size="20" class="badge-icon" />
+                </div>
+              </Tooltip>
 
-          <p class="experience-main__description">
-            {{ experience.description }}
-          </p>
+              <Tooltip v-if="experience.allowedCategories?.seniors" content="Prisvärt för seniorerna">
+                <div v-if="experience.allowedCategories?.seniors" class="category-badge category-badge--seniors">
+                  <HatGlasses :size="20" class="badge-icon" />
+                </div>
+              </Tooltip>
+            </div>
+          </div>
 
-          <p class="experience-main__about">
-            {{ experience.about }}
-          </p>
-
-          <div v-if="experience.addons?.length" class="experience-main__addons">
-            <h3>Tillval</h3>
-            <ul>
-              <li v-for="(addon, index) in experience.addons" :key="index">
-                <span class="addon-title">
-                  {{ capitalize(addon.title) }}
-                </span>
-                <span class="addon-price"> +{{ addon.price }} kr/gäst </span>
-              </li>
-            </ul>
+          <!-- Description section || Desktop -->
+          <div class="description-section desktop-only">
+            <p class="description-text">{{ experience.about }}</p>
           </div>
         </section>
 
-        <!-- Right column (booking card) -->
-        <aside class="experience-sidebar">
-          <div class="booking-card">
-            <p class="booking-card__label">
-              {{ experience.addons?.length ? "Från" : "Pris" }}
-            </p>
-            <p class="booking-card__price">{{ experience.price }} kr</p>
-
-            <p
-              v-if="experience.categoryPrices"
-              class="booking-card__per-category">
-              Pris per person:
-              <br />
-              <span>Vuxen: {{ experience.categoryPrices.adults }} kr</span>
-              <span v-if="experience.allowedCategories.children">
-                • Barn: {{ experience.categoryPrices.children }} kr
-              </span>
-              <span v-if="experience.allowedCategories.seniors">
-                • Senior: {{ experience.categoryPrices.seniors }} kr
-              </span>
-            </p>
-
-            <p
-              v-if="
-                experience.addons?.length && totalAddonsPrice(experience) > 0
-              "
-              class="booking-card__total">
-              {{ experience.price + totalAddonsPrice(experience) }} kr med
-              tillval
-            </p>
-
-            <button @click="showModal = true" class="booking-card__button">
-              Boka upplevelse
-            </button>
-
-            <p class="booking-card__small">
-              Du slutför bokningen i nästa steg.
-            </p>
+        <!-- Right column: Details -->
+        <section class="experience-details-section">
+          <!-- Title || Mobile -->
+          <div class="experience-header">
+            <h1 class="experience-title">{{ experience.title }}</h1>
           </div>
-        </aside>
+
+          <!-- Description section || Mobile -->
+          <div class="description-section mobile-only">
+            <p class="description-text">{{ experience.about }}</p>
+          </div>
+
+          <!-- Features list -->
+          <ul class="features-list">
+            <li v-if="experience.description" class="feature-item">
+              {{ experience.description }}
+            </li>
+            <li v-if="experience.duration" class="feature-item">
+              Varaktighet: {{ experience.duration }}
+            </li>
+            <li v-if="experience.addons?.length" class="feature-item">
+              Tillval tillgängliga
+            </li>
+          </ul>
+
+          <!-- Price section -->
+          <div class="price-section">
+            <p class="price-label">{{ experience.addons?.length ? "Från" : "Pris" }}</p>
+            <div class="price-display">
+              <span class="price-current">{{ experience.price }} kr</span>
+            </div>
+            <div
+              v-if="experience.categoryPrices"
+              class="price-per-category">
+              <span class="price-pill price-pill--adult">
+                Vuxen: {{ experience.categoryPrices.adults }} kr
+              </span>
+              <span
+                v-if="experience.allowedCategories.children"
+                class="price-pill price-pill--children">
+                Barn: {{ experience.categoryPrices.children }} kr
+              </span>
+              <span
+                v-if="experience.allowedCategories.seniors"
+                class="price-pill price-pill--seniors">
+                Senior: {{ experience.categoryPrices.seniors }} kr
+              </span>
+            </div>
+          </div>
+
+          <!-- Location -->
+          <div class="location-section">
+            <MapPin :size="18" class="location-icon" />
+            <span class="location-text">Stockholm</span>
+          </div>
+
+          <!-- Addons section -->
+          <div v-if="experience.addons?.length" class="addons-section">
+            <h3 class="addons-title">Tillval</h3>
+            <ul class="addons-list">
+              <li v-for="(addon, index) in experience.addons" :key="index" class="addon-item">
+                <span class="addon-title">{{ capitalize(addon.title) }}</span>
+                <span class="addon-price">+{{ addon.price }} kr/gäst</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Booking button -->
+          <button @click="showModal = true" class="booking-button">
+            <span>Köp upplevelsen</span>
+            <ShoppingBag :size="20" class="button-icon" />
+          </button>
+
+          <p class="booking-note">
+            Du slutför bokningen i nästa steg.
+          </p>
+        </section>
       </main>
 
       <!-- Booking modal -->
@@ -123,11 +159,12 @@ import { useRoute } from "vue-router";
 import { useExperiences } from "~/composables/useExperiences";
 import { capitalize } from "~/utils/string";
 import BookingModal from "~/components/BookingModal.vue";
+import { ArrowLeft, Users, MapPin, ShoppingBag, Baby, HatGlasses } from "lucide-vue-next";
 
 const route = useRoute();
 const slug = route.params.slug as string;
 
-const { loading, getExperienceBySlug, totalAddonsPrice } = useExperiences();
+const { loading, getExperienceBySlug } = useExperiences();
 
 const experience = computed(() => getExperienceBySlug(slug));
 
@@ -139,229 +176,476 @@ const showModal = ref(false);
 </script>
 
 <style scoped>
-/* Page shell */
-.experience-page {
-  min-height: 100vh;
-  background-color: #f9fafb;
-}
-
 /* Loading / not found */
 .experience-page__loading,
 .experience-page__not-found {
-  max-width: 960px;
+  max-width: 1200px;
   margin: 4rem auto;
   padding: 0 1.5rem;
   text-align: center;
   color: #4b5563;
 }
 
-/* Hero */
-.experience-hero {
+/* Back link container */
+.back-link-container {
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 1rem;
+}
+
+/* Back link */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.back-link:hover {
+  color: #374151;
+}
+
+.back-link__icon {
+  flex-shrink: 0;
+}
+
+/* Breadcrumb navigation */
+.breadcrumb {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.breadcrumb__back {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: #4b5563;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb__back:hover {
+  color: var(--primary-color, #ef4444);
+}
+
+.breadcrumb__icon {
+  flex-shrink: 0;
+}
+
+.breadcrumb__separator {
+  color: #9ca3af;
+}
+
+.breadcrumb__link {
+  color: #6b7280;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb__link:hover {
+  color: var(--primary-color, #ef4444);
+}
+
+/* Main container - two column layout */
+.experience-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem 3rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+/* Image section (left column on desktop) */
+.experience-image-section {
+  width: 100%;
+}
+
+.image-wrapper {
   position: relative;
   width: 100%;
+  background-color: #f3f4f6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.experience-hero__image {
+.experience-image {
   width: 100%;
-  max-width: 440px;
   height: auto;
   display: block;
-  margin: 0 auto;
+  object-fit: cover;
+  aspect-ratio: 4 / 3;
+  border-radius: 20px;
 }
 
-.experience-hero__overlay {
+.image-badges {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(15, 23, 42, 0.2),
-    rgba(15, 23, 42, 0.65)
-  );
-  pointer-events: none;
-}
-
-.experience-hero__content {
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 800px;
-  padding: 0 1rem;
-  color: #ffffff;
-  text-align: center;
-  pointer-events: none;
-}
-
-.experience-hero__label {
-  font-size: 0.75rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  opacity: 0.9;
-  margin-bottom: 0.5rem;
-}
-
-.experience-hero__title {
-  margin: 0;
-  padding: 0;
-  font-size: 1.75rem;
-  font-weight: 800;
-  /* margin-bottom: 0.3rem; */
-}
-
-.experience-hero__subtitle {
-  font-size: 0.95rem;
-  opacity: 0.9;
-}
-
-/* Layout below hero */
-.experience-layout {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem 3rem;
+  top: 1rem;
+  right: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 0.5rem;
+  z-index: 10;
 }
 
-/* Left column */
-.experience-main__owner {
-  margin-bottom: 1rem;
-  color: #6b7280;
-  font-size: 0.95rem;
+.badge {
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
 }
 
-.experience-main__owner a {
-  color: #ef4444;
-  font-weight: 600;
-  text-decoration: none;
+.badge--discount {
+  background-color: #dc2626;
 }
 
-.experience-main__owner a:hover {
-  text-decoration: underline;
+.badge--new {
+  background-color: #000000;
 }
 
-.experience-main__description {
-  font-size: 1rem;
-  line-height: 1.7;
+/* Details section (right column on desktop) */
+.experience-details-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Header */
+.experience-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.experience-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.2;
   color: #111827;
-  margin-bottom: 1.5rem;
 }
 
-.experience-main__addons {
-  margin-top: 1.5rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid #e5e7eb;
-}
-
-.experience-main__addons h3 {
-  margin-bottom: 0.75rem;
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.experience-main__addons ul {
+/* Features list */
+.features-list {
   list-style: none;
   padding: 0;
   margin: 0;
-  display: grid;
-  gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
-.experience-main__addons li {
+.feature-item {
+  position: relative;
+  padding-left: 1.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: #6b7280;
+}
+
+.feature-item::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Capacity section */
+.capacity-section {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 10;
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.capacity-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background-color: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.capacity-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.category-badge {
+  height: 42px;
+  width: 42px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+.category-badge--children {
+  background-color: #fee844;
+  color: #814d00;
+}
+
+.category-badge--seniors {
+  background-color: #b7eaff;
+  color: #024d6b;
+}
+
+.badge-icon {
+  color: currentColor;
+  flex-shrink: 0;
+}
+
+/* Price section */
+.price-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.price-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #9ca3af;
+  font-weight: 700;
+  margin: 0;
+}
+
+.price-display {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.price-current {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #dc2626;
+  line-height: 1;
+}
+
+.price-original {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+
+.price-per-category {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.price-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.price-pill--adult {
+  background-color: rgba(0, 0, 0, 0.08);
+  color: #374151;
+}
+
+.price-pill--children {
+  background-color: #fee844;
+  color: #814d00;
+}
+
+.price-pill--seniors {
+  background-color: #b7eaff;
+  color: #024d6b;
+}
+
+/* Location section */
+.location-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  color: #4b5563;
+}
+
+.location-icon {
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.location-text {
+  font-weight: 500;
+}
+
+/* Booking button */
+.booking-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background-color: #000000;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.booking-button:hover {
+  background-color: #1a1a1a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.booking-button:active {
+  transform: translateY(0);
+}
+
+.button-icon {
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.booking-note {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: #6b7280;
+  text-align: center;
+}
+
+/* Description section */
+.description-section {
+  margin-top: 0;
+}
+
+.description-text {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: #4b5563;
+  margin: 0;
+}
+
+.addons-section {
+  margin-top: 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.addons-title {
+  margin: 0 0 1rem 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.addons-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.addon-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0.875rem 1rem;
   background-color: #f9fafb;
-  border-radius: 0.75rem;
-  padding: 0.6rem 0.9rem;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
 }
 
 .addon-title {
-  font-size: 0.95rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
   color: #111827;
 }
 
 .addon-price {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   color: #6b7280;
+  font-weight: 500;
 }
 
-/* Right column / booking card */
-.experience-sidebar {
-  width: 100%;
+.desktop-only {
+  display: none;
 }
 
-.booking-card {
-  background-color: #ffffff;
-  border-radius: 1.25rem;
-  padding: 1.5rem;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
-  border: 1px solid #e5e7eb;
+/* Standard: visa mobile-element på små skärmar */
+.mobile-only {
+  display: block;
 }
 
-.booking-card__label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: #9ca3af;
-  margin-bottom: 0.25rem;
-}
-
-.booking-card__price {
-  font-size: 1.8rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-}
-
-.booking-card__per-category {
-  font-size: 0.9rem;
-  color: #4b5563;
-  margin-bottom: 0.75rem;
-  line-height: 1.4;
-}
-
-.booking-card__total {
-  font-size: 0.95rem;
-  color: #4b5563;
-  margin-bottom: 1rem;
-}
-
-.booking-card__button {
-  width: 100%;
-  padding: 0.85rem 1.25rem;
-  border-radius: 0.9rem;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  background-image: linear-gradient(to right, #ef4444, #b91c1c);
-  color: #ffffff;
-  box-shadow: 0 12px 25px rgba(185, 28, 28, 0.35);
-  transition: all 0.2s ease;
-}
-
-.booking-card__button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 35px rgba(185, 28, 28, 0.45);
-}
-
-.booking-card__small {
-  margin-top: 0.75rem;
-  font-size: 0.8rem;
-  color: #6b7280;
-}
-
-/* Optional: tweak for larger screens */
-@media (min-width: 768px) {
-  .experience-hero__title {
-    font-size: 2.2rem;
+/* Desktop: Two column layout */
+@media (min-width: 960px) {
+  .back-link-container {
+    max-width: 1200px;
+    padding: 2rem 2rem 0;
   }
-}
 
-/* Desktop */
-@media (min-width: 1024px) {
-  .experience-hero__title {
-    font-size: 2.6rem;
+  .experience-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    padding-top: 2rem;
+  }
+
+  .experience-image-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .experience-title {
+    font-size: 2.5rem;
+  }
+
+  .price-current {
+    font-size: 2.5rem;
+  }
+
+  .desktop-only {
+    display: block;
+  }
+
+  .mobile-only {
+    display: none;
   }
 }
 </style>

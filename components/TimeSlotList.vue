@@ -3,6 +3,7 @@ import { computed } from "vue";
 import type { Experience } from "~/composables/useExperiences";
 import {
   getSlotsForDate,
+  checkSlotAvailability,
   type DecoratedTimeSlot,
 } from "~/utils/scheduleHelpers";
 import { useCartStore } from "~/stores/useCartStore";
@@ -13,7 +14,7 @@ const props = defineProps<{
   selectedTime?: string;
   guestCount?: number;
   editMode?: boolean;
-  currentBookingGuests?: number;
+  cartItemIndex?: number;
 }>();
 
 const emit = defineEmits<{
@@ -27,7 +28,7 @@ const slots = computed<DecoratedTimeSlot[]>(() => {
 
   const guests = props.guestCount ?? 1;
 
-  // Bas-slots från schemat (utan hänsyn till kundkorg)
+  // Get base slots from schedule
   const baseSlots = getSlotsForDate(
     props.experience,
     props.selectedDate,
@@ -35,43 +36,32 @@ const slots = computed<DecoratedTimeSlot[]>(() => {
   );
 
   return baseSlots.map((slot) => {
-    // 🔹 Räkna hur många gäster som redan är bokade för just denna experience + datum + tid
-    const bookedForSlot = cartStore.items.reduce((sum, item) => {
-      if (
-        item.id !== props.experience.id ||
-        item.bookingDate !== props.selectedDate ||
-        item.bookingTime !== slot.time
-      ) {
-        return sum;
-      }
+    // Use centralized availability checking
+    const availability = checkSlotAvailability(
+      props.experience,
+      props.selectedDate!,
+      slot.time,
+      guests,
+      cartStore.items,
+      props.editMode ? props.cartItemIndex : undefined
+    );
 
-      if (item.guestCounts) {
-        const g = item.guestCounts;
-        return sum + g.adults + g.children + g.seniors;
-      }
+    const { remaining, isFull, hasEnoughSpace } = availability;
 
-      return sum + item.quantity;
-    }, 0);
-
-    // In edit mode, add back the current booking's guests since they'll be freed up
-    const adjustedBooked = props.editMode && props.currentBookingGuests
-      ? Math.max(bookedForSlot - props.currentBookingGuests, 0)
-      : bookedForSlot;
-
-    const remaining = Math.max(slot.remaining - adjustedBooked, 0);
-    const cannotFitGroup = remaining < guests;
-    const isFull = remaining === 0;
-
-    let status = slot.status;
-    if (isFull) status = "full";
-    else if (cannotFitGroup) status = "tooSmall";
-    else if (remaining <= 2) status = "few";
+    let status: DecoratedTimeSlot["status"] = "available";
+    if (isFull) {
+      status = "full";
+    } else if (!hasEnoughSpace) {
+      status = "tooSmall";
+    } else if (remaining <= 2) {
+      status = "few";
+    }
 
     return {
       ...slot,
       remaining,
       isFull,
-      cannotFitGroup,
+      cannotFitGroup: !hasEnoughSpace,
       status,
     };
   });
@@ -122,6 +112,9 @@ const handleClick = (slot: DecoratedTimeSlot) => {
 
             <span class="time-slot-list__status" v-if="slot.isFull">
               Fullbokat
+            </span>
+            <span class="time-slot-list__status" v-else-if="slot.cannotFitGroup">
+              Inte tillräckligt med platser
             </span>
             <span class="time-slot-list__status" v-else>
               {{ slot.remaining }} platser kvar

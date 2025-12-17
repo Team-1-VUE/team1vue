@@ -71,3 +71,86 @@ export function getTotalGuestsFromFilters(filters: {
     (filters.adults || 0) + (filters.children || 0) + (filters.seniors || 0)
   );
 }
+
+/**
+ * Check slot availability considering cart bookings
+ * @param experience - The experience to check
+ * @param date - The date to check (YYYY-MM-DD)
+ * @param time - The time slot to check (HH:MM)
+ * @param requestedGuests - Number of guests to book
+ * @param cartItems - Current cart items
+ * @param excludeCartIndex - Cart item index to exclude (for edit mode)
+ * @returns Object with remaining capacity and availability status
+ */
+export function checkSlotAvailability(
+  experience: Experience,
+  date: string,
+  time: string,
+  requestedGuests: number,
+  cartItems: Array<{
+    id: string;
+    bookingDate?: string;
+    bookingTime?: string;
+    quantity: number;
+    guestCounts?: {
+      adults: number;
+      children: number;
+      seniors: number;
+    };
+  }>,
+  excludeCartIndex?: number
+): {
+  remaining: number;
+  isFull: boolean;
+  hasEnoughSpace: boolean;
+} {
+  // Find the slot in the experience schedule
+  const schedule = experience.schedule;
+  if (!schedule || !schedule[date]) {
+    return { remaining: 0, isFull: true, hasEnoughSpace: false };
+  }
+
+  const slot = schedule[date].find((s) => s.time === time);
+  if (!slot) {
+    return { remaining: 0, isFull: true, hasEnoughSpace: false };
+  }
+
+  // Calculate total booked from cart for this specific experience/date/time
+  const totalBookedInCart = cartItems.reduce((sum, item, index) => {
+    // Skip this item if it's being excluded (edit mode)
+    if (excludeCartIndex !== undefined && index === excludeCartIndex) {
+      return sum;
+    }
+
+    // Only count items matching this experience, date, and time
+    if (
+      item.id !== experience.id ||
+      item.bookingDate !== date ||
+      item.bookingTime !== time
+    ) {
+      return sum;
+    }
+
+    // Sum up guests from guestCounts or fallback to quantity
+    if (item.guestCounts) {
+      return (
+        sum +
+        item.guestCounts.adults +
+        item.guestCounts.children +
+        item.guestCounts.seniors
+      );
+    }
+
+    return sum + item.quantity;
+  }, 0);
+
+  const remaining = Math.max(slot.capacity - slot.booked - totalBookedInCart, 0);
+  const isFull = remaining === 0;
+  const hasEnoughSpace = remaining >= requestedGuests;
+
+  return {
+    remaining,
+    isFull,
+    hasEnoughSpace,
+  };
+}

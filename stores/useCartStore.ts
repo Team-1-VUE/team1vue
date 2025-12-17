@@ -9,7 +9,6 @@ export type CartItem = {
   owner: string;
   description?: string;
   selectedAddons: Array<{
-    slug: string;
     title: string;
     price: number;
     quantity: number;
@@ -101,7 +100,6 @@ export const useCartStore = defineStore("cart", () => {
   function addToCart(
     experience: any,
     selectedAddons: Array<{
-      slug: string;
       title: string;
       price: number;
       quantity: number;
@@ -116,14 +114,27 @@ export const useCartStore = defineStore("cart", () => {
 
     if (totalGuests === 0) return;
 
-    // Find existing item with same experience, addons, and booking date
-    const existingItem = items.value.find(
-      (item) =>
-        item.id === experience.id &&
-        JSON.stringify(item.selectedAddons) ===
-          JSON.stringify(selectedAddons) &&
-        item.bookingDate === bookingDate
-    );
+    // Compare addon sets by title only (not quantities)
+    const addonTitles = new Set(selectedAddons.map((a) => a.title));
+    const existingItem = items.value.find((item) => {
+      if (
+        item.id !== experience.id ||
+        item.bookingDate !== bookingDate ||
+        item.bookingTime !== bookingTime
+      ) {
+        return false;
+      }
+      
+      // Compare addon titles only
+      const itemAddonTitles = new Set(item.selectedAddons.map((a) => a.title));
+      if (addonTitles.size !== itemAddonTitles.size) return false;
+      
+      for (const title of addonTitles) {
+        if (!itemAddonTitles.has(title)) return false;
+      }
+      
+      return true;
+    });
 
     if (existingItem) {
       // Update existing item's guest counts
@@ -139,6 +150,27 @@ export const useCartStore = defineStore("cart", () => {
         existingItem.guestCounts.children +
         existingItem.guestCounts.seniors;
       existingItem.bookingTime = bookingTime;
+      
+      // Merge addon quantities by title
+      const addonMap = new Map<string, { title: string; price: number; quantity: number }>();
+      
+      // Add existing addons to map
+      existingItem.selectedAddons.forEach((addon) => {
+        addonMap.set(addon.title, { ...addon });
+      });
+      
+      // Merge new addons (add quantities for matching titles)
+      selectedAddons.forEach((addon) => {
+        const existing = addonMap.get(addon.title);
+        if (existing) {
+          existing.quantity += addon.quantity;
+        } else {
+          addonMap.set(addon.title, { ...addon });
+        }
+      });
+      
+      // Convert map back to array
+      existingItem.selectedAddons = Array.from(addonMap.values());
     } else {
       // Create new cart item with guest counts
       items.value.push({
@@ -158,13 +190,13 @@ export const useCartStore = defineStore("cart", () => {
   }
 
   function updateCartItem(
+    experience: any,
     index: number,
     bookingDate: string,
     adults: number,
     children: number,
     seniors: number,
     selectedAddons: Array<{
-      slug: string;
       title: string;
       price: number;
       quantity?: number;
@@ -174,18 +206,26 @@ export const useCartStore = defineStore("cart", () => {
     const item = items.value[index];
     if (!item) return;
 
-    item.bookingDate = bookingDate;
-    item.bookingTime = bookingTime ?? item.bookingTime;
+    // Remove the item at this index
+    items.value.splice(index, 1);
 
-    item.guestCounts = { adults, children, seniors };
-    item.quantity = adults + children + seniors;
-
-    item.selectedAddons = selectedAddons.map((addon) => ({
-      slug: addon.slug,
+    // Normalize addon quantities
+    const normalizedAddons = selectedAddons.map((addon) => ({
       title: addon.title,
       price: addon.price,
       quantity: addon.quantity ?? 1,
     }));
+
+    // Add it back using addToCart which handles merging automatically
+    addToCart(
+      experience,
+      normalizedAddons,
+      bookingDate,
+      adults,
+      children,
+      seniors,
+      bookingTime
+    );
   }
 
   function removeFromCart(index: number) {

@@ -68,8 +68,8 @@
               <div class="addon-badges">
                 <template v-if="item.selectedAddons && item.selectedAddons.length > 0">
                   <span
-                    v-for="addon in item.selectedAddons"
-                    :key="addon.slug"
+                    v-for="(addon, addonIndex) in item.selectedAddons"
+                    :key="`addon-${addonIndex}-${addon.title}`"
                     class="badge badge-addon">
                     {{ capitalize(addon.title) }} × {{ addon.quantity }}
                   </span>
@@ -109,13 +109,13 @@
               <!-- Action Buttons -->
               <div class="action-buttons">
                 <button
-                  @click="handleEditItem(index)"
+                  @click.stop="handleEditItem(index)"
                   class="btn-edit"
                   title="Redigera">
                   <Edit :size="20" />
                 </button>
                 <button
-                  @click="cartStore.removeFromCart(index)"
+                  @click.stop="cartStore.removeFromCart(index)"
                   class="btn-remove"
                   title="Ta bort">
                   <Trash2 :size="20" />
@@ -151,7 +151,7 @@
         :adults="cartStore.items[editingItemIndex]?.guestCounts?.adults || 1"
         :children="cartStore.items[editingItemIndex]?.guestCounts?.children || 0"
         :seniors="cartStore.items[editingItemIndex]?.guestCounts?.seniors || 0"
-        :initialAddons="cartStore.items[editingItemIndex]?.selectedAddons?.map(a => ({ slug: a.slug, title: a.title, quantity: a.quantity })) || []"
+        :initialAddons="cartStore.items[editingItemIndex]?.selectedAddons?.map(a => ({ title: a.title, quantity: a.quantity })) || []"
         :editMode="true"
         :cartItemIndex="editingItemIndex"
         @update="handleUpdateBooking"
@@ -196,13 +196,28 @@ const handleUpdateBooking = (payload: {
   children: number;
   seniors: number;
   addons: Array<{
-    slug: string;
     title: string;
     price: number;
     quantity: number;
   }>;
 }) => {
+  const item = cartStore.items[payload.index];
+  if (!item) return;
+
+  // Find the experience by ID
+  const experience = getExperienceById(item.id);
+  
+  if (!experience) {
+    // Experience not found - remove invalid cart item
+    console.warn(`Experience with id ${item.id} not found, removing from cart`);
+    cartStore.removeFromCart(payload.index);
+    handleCloseEditModal();
+    return;
+  }
+
+  // Update with experience object
   cartStore.updateCartItem(
+    experience,
     payload.index,
     payload.date,
     payload.adults,

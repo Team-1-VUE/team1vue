@@ -681,51 +681,46 @@ const minDate = getTodayString();
 // --- AVAILABLE DATES FOR CALENDAR ---
 const minDateObj = computed(() => new Date(`${minDate}T12:00:00`));
 
-// Available dates from experience (your JSON)
-const availableDates = computed<string[]>(() => {
-  const schedule = props.experience?.schedule ?? {};
+// Available dates from experience availableDates array in JSON
+const availableDates = computed<string[]>(
+  () => props.experience?.availableDates ?? []
+);
 
-  return Object.entries(schedule)
-    .filter(
-      ([_, slots]: any) =>
-        Array.isArray(slots) &&
-        slots.some((s) => (s.capacity ?? 0) > (s.booked ?? 0))
-    )
-    .map(([date]) => date)
-    .sort(); // "YYYY-MM-DD" sorts correctly
-});
-
-// const availableDates = computed<string[]>(
-//   () => props.experience?.availableDates ?? []
-// );
-
+// Convert available date strings to Date objects at noon for consistent comparison
 const availableDateObjects = computed(() =>
   availableDates.value.map((d) => new Date(`${d}T12:00:00`))
 );
 
-// Get today's date object for comparison
-const todayDate = computed(() => {
+// Get today's date string in YYYY-MM-DD format for accurate comparison
+const todayString = computed(() => {
   const today = new Date();
-  today.setHours(12, 0, 0, 0);
-  return today;
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 });
 
-// Split available dates into past and future
+// Get today's date object at noon for calendar rendering
+const todayDateObj = computed(() => new Date(`${todayString.value}T12:00:00`));
+
+// Check if today is in the available dates array
+const isTodayAvailable = computed(() => 
+  availableDates.value.includes(todayString.value)
+);
+
+// Split available dates into past (before today) and future (after today, excluding today)
 const pastAvailableDates = computed(() => 
-  availableDateObjects.value.filter(d => d < todayDate.value)
+  availableDateObjects.value.filter(d => {
+    const dateStr = toYMDLocal(d);
+    return dateStr < todayString.value;
+  })
 );
 
 const futureAvailableDates = computed(() => 
-  availableDateObjects.value.filter(d => d >= todayDate.value)
-);
-
-// Check if today is an available date
-const isTodayAvailable = computed(() => 
-  availableDateObjects.value.some(d => 
-    d.getFullYear() === todayDate.value.getFullYear() &&
-    d.getMonth() === todayDate.value.getMonth() &&
-    d.getDate() === todayDate.value.getDate()
-  )
+  availableDateObjects.value.filter(d => {
+    const dateStr = toYMDLocal(d);
+    return dateStr > todayString.value;
+  })
 );
 
 // Highlight available dates with different styling
@@ -756,15 +751,28 @@ const calendarAttrs = computed(() => {
     });
   }
   
-  // Current date - circular border (applies on top of available styling if applicable)
-  attrs.push({
-    key: "today",
-    dates: todayDate.value,
-    highlight: {
-      class: "today-date",
-      contentClass: "today-content",
-    },
-  });
+  // Today's date - always show border, fill only if available
+  if (isTodayAvailable.value) {
+    // Today is available - show border + fill
+    attrs.push({
+      key: "today-available",
+      dates: todayDateObj.value,
+      highlight: {
+        class: "today-date today-available-date",
+        contentClass: "today-content today-available-content",
+      },
+    });
+  } else {
+    // Today is not available - show only border
+    attrs.push({
+      key: "today-not-available",
+      dates: todayDateObj.value,
+      highlight: {
+        class: "today-date",
+        contentClass: "today-content",
+      },
+    });
+  }
   
   // Selected date - darker blue with glow
   if (selectedDateObj.value) {
@@ -1433,17 +1441,24 @@ const handleConfirm = () => {
 }
 
 :deep(.today-date) {
+  border: 2px solid !important;
+  background-color: transparent !important;
+}
+
+:deep(.today-available-date) {
   background-color: #dbeafe !important;
-  border: 2px solid #2563eb !important;
 }
 
 :deep(.today-content) {
-  color: #1e40af !important;
   font-weight: 700 !important;
+  color: inherit !important;
+}
+
+:deep(.today-available-content) {
+  color: #1e40af !important;
 }
 
 :deep(.selected-date) {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
   transform: scale(1.15);
 }
 

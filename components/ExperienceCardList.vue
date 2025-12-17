@@ -36,7 +36,10 @@
 
         <div class="action-buttons">
           <NuxtLink
-            :to="`/upplevelse/${experience.slug}`"
+            :to="{
+              path: `/upplevelse/${experience.slug}`,
+              query: route.query
+            }"
             class="btn btn--secondary"
           >
             Läs mer
@@ -73,6 +76,7 @@ import BookingModal from '~/components/BookingModal.vue'
 
 const props = defineProps<{
   experiences?: Experience[]
+  query: Object
 }>()
 
 const route = useRoute()

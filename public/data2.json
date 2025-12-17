@@ -34,7 +34,7 @@
       "about": "Simon är en gudalik kung i allt han tar sig an, oavsett om det handlar om att styra rummet med sin närvaro eller briljera i de mest oväntade talanger. Han är otroligt bra på att sitta, på riktigt, världsklass. Kör sportbil med samma elegans som han sminkar andra till perfektion. Som multimiljardär lever han livet stort, men ändå med en värme och charm som gör att alla håller med om samma sak: Simon är en av världens skönaste snubbar. En ikon, helt enkelt."
     },
     "antonio": {
-      "profileImage": "/profileimages/antonio2.png",
+      "profileImage": "/profileimages/Antonio.webp",
       "experiences": [
         "workout-med-antonio",
         "dansa-med-antonio",
@@ -888,7 +888,7 @@
         "children": 200,
         "seniors": 250
       },
-      "image": "/images/antonio_horizontal/antonio_workout_squat.png",
+      "image": "/images/antonio_horizontal/antonio_workout_squat.webp",
       "addons": [{ "title": "handduk", "price": 30 }],
       "minGuests": 1,
       "maxGuests": 6,
@@ -993,7 +993,7 @@
         "adults": 320,
         "seniors": 280
       },
-      "image": "/images/antonio_horizontal/antonio_dancing_salsa.png",
+      "image": "/images/antonio_horizontal/antonio_dancing_salsa.webp",
       "addons": [{ "title": "danssko", "price": 50 }],
       "minGuests": 1,
       "maxGuests": 10,
@@ -1082,7 +1082,7 @@
         "adults": 380,
         "seniors": 340
       },
-      "image": "/images/antonio_horizontal/antonio_mixing_coctail.png",
+      "image": "/images/antonio_horizontal/antonio_mixing_coctail.webp",
       "addons": [],
       "minGuests": 2,
       "maxGuests": 8,

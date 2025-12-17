@@ -9,7 +9,8 @@
         <button class="modal-close" @click="$emit('close')">×</button>
 
         <div class="modal-header">
-          <h2>Boka upplevelse</h2>
+          <h2 v-if="editMode">Redigera bokning</h2>
+          <h2 v-else>Boka upplevelse</h2>
           <p class="modal-subtitle">{{ experience?.title }}</p>
         </div>
 
@@ -91,6 +92,7 @@
                 v-if="selectedDate"
                 :experience="experience"
                 :selectedDate="selectedDate"
+                :selectedTime="selectedTime"
                 :guestCount="totalGuests"
                 :editMode="editMode"
                 :currentBookingGuests="editMode ? (adults + children + seniors) : 0"
@@ -679,36 +681,113 @@ const minDate = getTodayString();
 // --- AVAILABLE DATES FOR CALENDAR ---
 const minDateObj = computed(() => new Date(`${minDate}T12:00:00`));
 
-// Available dates from experience (your JSON)
-const availableDates = computed<string[]>(() => {
-  const schedule = props.experience?.schedule ?? {};
+// Available dates from experience availableDates array in JSON
+const availableDates = computed<string[]>(
+  () => props.experience?.availableDates ?? []
+);
 
-  return Object.entries(schedule)
-    .filter(
-      ([_, slots]: any) =>
-        Array.isArray(slots) &&
-        slots.some((s) => (s.capacity ?? 0) > (s.booked ?? 0))
-    )
-    .map(([date]) => date)
-    .sort(); // "YYYY-MM-DD" sorts correctly
-});
-
-// const availableDates = computed<string[]>(
-//   () => props.experience?.availableDates ?? []
-// );
-
+// Convert available date strings to Date objects at noon for consistent comparison
 const availableDateObjects = computed(() =>
   availableDates.value.map((d) => new Date(`${d}T12:00:00`))
 );
 
-// Highlight available dates
-const calendarAttrs = computed(() => [
-  {
-    key: "available",
-    dates: availableDateObjects.value,
-    highlight: true,
-  },
-]);
+// Get today's date string in YYYY-MM-DD format for accurate comparison
+const todayString = computed(() => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+});
+
+// Get today's date object at noon for calendar rendering
+const todayDateObj = computed(() => new Date(`${todayString.value}T12:00:00`));
+
+// Check if today is in the available dates array
+const isTodayAvailable = computed(() => 
+  availableDates.value.includes(todayString.value)
+);
+
+// Split available dates into past (before today) and future (after today, excluding today)
+const pastAvailableDates = computed(() => 
+  availableDateObjects.value.filter(d => {
+    const dateStr = toYMDLocal(d);
+    return dateStr < todayString.value;
+  })
+);
+
+const futureAvailableDates = computed(() => 
+  availableDateObjects.value.filter(d => {
+    const dateStr = toYMDLocal(d);
+    return dateStr > todayString.value;
+  })
+);
+
+// Highlight available dates with different styling
+const calendarAttrs = computed(() => {
+  const attrs = [];
+  
+  // Past available dates - grayed out
+  if (pastAvailableDates.value.length > 0) {
+    attrs.push({
+      key: "past-available",
+      dates: pastAvailableDates.value,
+      highlight: {
+        class: "past-available-date",
+        contentClass: "past-available-content",
+      },
+    });
+  }
+  
+  // Future available dates - blue filled background
+  if (futureAvailableDates.value.length > 0) {
+    attrs.push({
+      key: "future-available",
+      dates: futureAvailableDates.value,
+      highlight: {
+        class: "available-date",
+        contentClass: "available-content",
+      },
+    });
+  }
+  
+  // Today's date - always show border, fill only if available
+  if (isTodayAvailable.value) {
+    // Today is available - show border + fill
+    attrs.push({
+      key: "today-available",
+      dates: todayDateObj.value,
+      highlight: {
+        class: "today-date today-available-date",
+        contentClass: "today-content today-available-content",
+      },
+    });
+  } else {
+    // Today is not available - show only border
+    attrs.push({
+      key: "today-not-available",
+      dates: todayDateObj.value,
+      highlight: {
+        class: "today-date",
+        contentClass: "today-content",
+      },
+    });
+  }
+  
+  // Selected date - darker blue with glow
+  if (selectedDateObj.value) {
+    attrs.push({
+      key: "selected",
+      dates: selectedDateObj.value,
+      highlight: {
+        class: "selected-date",
+        contentClass: "selected-content",
+      },
+    });
+  }
+  
+  return attrs;
+});
 
 // Modal open watcher
 watch(
@@ -1340,6 +1419,52 @@ const handleConfirm = () => {
 .btn--primary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Calendar Date Styling */
+:deep(.past-available-date) {
+  background-color: #e5e7eb !important;
+}
+
+:deep(.past-available-content) {
+  color: #9ca3af !important;
+  font-weight: 500;
+}
+
+:deep(.available-date) {
+  background-color: #dbeafe !important;
+}
+
+:deep(.available-content) {
+  color: #1e40af !important;
+  font-weight: 600;
+}
+
+:deep(.today-date) {
+  border: 2px solid !important;
+  background-color: transparent !important;
+}
+
+:deep(.today-available-date) {
+  background-color: #dbeafe !important;
+}
+
+:deep(.today-content) {
+  font-weight: 700 !important;
+  color: inherit !important;
+}
+
+:deep(.today-available-content) {
+  color: #1e40af !important;
+}
+
+:deep(.selected-date) {
+  transform: scale(1.15);
+}
+
+:deep(.selected-content) {
+  color: #ffffff !important;
+  font-weight: 700 !important;
 }
 
 /* Mobile Responsiveness */

@@ -364,7 +364,7 @@ const showModal = ref(false);
 .experience-title {
   margin: 0;
   font-size: 2rem;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.2;
   color: var(--text-color);
 }
@@ -478,8 +478,9 @@ const showModal = ref(false);
 
 .price-current {
   font-size: 2rem;
-  font-weight: 800;
-  color: #dc2626;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--primary-color);
   line-height: 1;
 }
 

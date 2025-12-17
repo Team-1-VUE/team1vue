@@ -19,7 +19,7 @@ export default defineNuxtConfig({
 
   googleFonts: {
     families: {
-      Poppins: [700],
+      Poppins: [600, 700],
       'Public Sans': [400, 500],
     },
     display: 'swap',

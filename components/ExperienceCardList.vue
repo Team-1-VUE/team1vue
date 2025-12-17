@@ -196,7 +196,8 @@ const showModal = ref<null | (typeof list.value)[0]>(null);
 
 .price-value {
   font-size: 1.75rem;
-  font-weight: 800;
+  font-family: var(--font-heading);
+  font-weight: 700;
   color: var(--text-color);
   letter-spacing: -0.02em;
 }

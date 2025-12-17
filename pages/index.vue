@@ -194,7 +194,7 @@ const handleSearch = (filters: SearchFilters) => {
 
 .hero-title {
   margin-bottom: 1.5rem;
-  font-weight: 800;
+  font-weight: 700;
   font-size: 3rem;
   line-height: 1.05;
   background-image: var(--gradient-bg);

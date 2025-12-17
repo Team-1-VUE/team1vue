@@ -15,7 +15,11 @@
       <div class="nav-desktop">
         <ul class="navbar-menu">
           <li v-for="link in navLinks" :key="link.path">
-            <NuxtLink :to="link.path" exact-active-class="active">
+            <NuxtLink
+              :to="link.path"
+              :class="link.name == 'Kundkorg' && 'cart'"
+              classexact-active-class="active"
+            >
               <template v-if="link.name !== 'Kundkorg'">{{
                 link.name
               }}</template>
@@ -111,7 +115,7 @@ const isOpen = ref(false);
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 const navLinks = computed(() => [
-  { name: "Home", path: "/" },
+  { name: "Upplevelser", path: "/upplevelse" },
   ...profiles.value.map((p) => ({ name: p.name, path: `/profil/${p.slug}` })),
   { name: "Kundkorg", path: "/kundkorg" },
 ]);
@@ -213,8 +217,12 @@ onMounted(async () => {
   text-decoration: none;
   color: var(--text-color);
   font-style: normal;
-  font-weight: 600;
+  font-size: 15px;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  line-height: 1;
   transition: all 0.3s ease;
+  text-transform: uppercase;
 }
 .navbar-menu li a:hover,
 .navbar-menu li a.active {
@@ -226,6 +234,11 @@ onMounted(async () => {
 .navbar-menu li a[href="/kundkorg"]:hover,
 .navbar-menu li a[href="/kundkorg"].active {
   scale: 1;
+}
+
+.cart {
+  width: 24px;
+  height: 24px;
 }
 
 .cart-badge {
@@ -417,7 +430,7 @@ onMounted(async () => {
 
   text-decoration: none;
   color: var(--text-color);
-  font-weight: 800;
+  font-weight: 700;
 
   background: rgba(0, 0, 0, 0.04);
   transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;

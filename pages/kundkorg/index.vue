@@ -417,7 +417,7 @@ const handleCheckout = () => {
   font-size: 1rem;
   color: var(--text-color);
   margin: 0 0 2rem 0;
-  max-width: 400px;
+  max-width: 480px;
   line-height: 1.6;
 }
 
@@ -682,7 +682,9 @@ const handleCheckout = () => {
 
 .total-price {
   font-size: 1.5rem;
-  color: var(--text-color);
+  color: var(--primary-color);
+  font-family: var(--font-heading);
+  
 }
 
 .btn {

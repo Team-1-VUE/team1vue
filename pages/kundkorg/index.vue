@@ -578,8 +578,9 @@ const handleCheckout = () => {
 
 .cart-summary {
   background: #f9fafb;
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 12px;
+  min-width: 240px;
   max-width: 400px;
   margin-left: auto;
 }

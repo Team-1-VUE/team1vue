@@ -17,7 +17,7 @@
     </section>
 
     <section v-else>
-      <h2>Upplevelser</h2>
+      <h2 class="experience-subtitle">Upplevelser</h2>
 
       <ExperienceCardList class="experience-grid" />
     </section>
@@ -75,6 +75,12 @@ const profile = computed(() => getProfile(name));
     flex-direction: column;
     text-align: center;
   }
+}
+
+.experience-subtitle {
+  font-family: var(--font-body);
+  color: var(--text-color2);
+  font-weight: 400;
 }
 
 .experience-grid {

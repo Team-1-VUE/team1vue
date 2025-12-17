@@ -1420,6 +1420,7 @@ const handleConfirm = () => {
 
 .price-value {
   font-size: 1.5rem;
+  font-family: var(--font-heading);
   font-weight: 700;
   color: var(--color-primary);
 }

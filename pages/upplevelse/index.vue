@@ -142,7 +142,7 @@ const filteredExperiences = computed(() => {
 <template>
   <div class="experiences-page">
     <header class="experiences-header">
-      <h1>All upplevelser</h1>
+      <h1>Alla upplevelser</h1>
       <p>Utforska alla upplevelser du kan boka med vårt team.</p>
     </header>
 

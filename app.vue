@@ -14,6 +14,7 @@
   --secondary-color: #f57c00;
   --background-color: #ecedf2;
   --text-color: #081f3d;
+  --text-color2: rgba(35, 73, 122, 0.603);
   --hover-color: #1e5fa8;
   --shadow: 0 4px 6px rgba(8, 31, 61, 0.12);
   --spacing-sm: 0.5rem;

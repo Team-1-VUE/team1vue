@@ -69,14 +69,14 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import { type LocationQueryRaw, useRoute } from 'vue-router'
 import { useExperiences, type Experience } from '~/composables/useExperiences'
 import Card from '~/components/Card.vue'
 import BookingModal from '~/components/BookingModal.vue'
 
 const props = defineProps<{
   experiences?: Experience[]
-  query: Object
+  query: LocationQueryRaw
 }>()
 
 const route = useRoute()

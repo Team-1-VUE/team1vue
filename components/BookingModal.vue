@@ -92,6 +92,7 @@
                 v-if="selectedDate"
                 :experience="experience"
                 :selectedDate="selectedDate"
+                :selectedTime="selectedTime"
                 :guestCount="totalGuests"
                 :editMode="editMode"
                 :currentBookingGuests="editMode ? (adults + children + seniors) : 0"

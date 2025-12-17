@@ -10,6 +10,7 @@ import { useCartStore } from "~/stores/useCartStore";
 const props = defineProps<{
   experience: Experience;
   selectedDate: string | null;
+  selectedTime?: string;
   guestCount?: number;
   editMode?: boolean;
   currentBookingGuests?: number;
@@ -111,6 +112,7 @@ const handleClick = (slot: DecoratedTimeSlot) => {
               'time-slot-list__button--full': slot.isFull,
               'time-slot-list__button--few': slot.status === 'few',
               'time-slot-list__button--too-small': slot.cannotFitGroup,
+              'time-slot-list__button--selected': slot.time === selectedTime,
             }"
             :disabled="slot.isFull || slot.cannotFitGroup"
             @click="handleClick(slot)">
@@ -152,9 +154,6 @@ const handleClick = (slot: DecoratedTimeSlot) => {
   gap: 0.5rem;
 }
 
-.time-slot-list__item {
-}
-
 .time-slot-list__button {
   width: 100%;
   padding: 0.6rem 0.9rem;
@@ -170,7 +169,7 @@ const handleClick = (slot: DecoratedTimeSlot) => {
 }
 
 .time-slot-list__button:hover:not(:disabled) {
-  border-color: #d97706;
+  border-color: #3b82f6;
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
 }
 
@@ -189,6 +188,25 @@ const handleClick = (slot: DecoratedTimeSlot) => {
 
 .time-slot-list__button--few {
   border-color: #f59e0b;
+}
+
+.time-slot-list__button--selected {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border-color: #2563eb;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+  transform: scale(1.02);
+}
+
+.time-slot-list__button--selected:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  border-color: #1d4ed8;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+.time-slot-list__button--selected .time-slot-list__time,
+.time-slot-list__button--selected .time-slot-list__status {
+  color: #ffffff;
+  font-weight: 600;
 }
 
 .time-slot-list__time {

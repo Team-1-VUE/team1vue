@@ -54,13 +54,13 @@
               <!-- Guest Badges -->
               <div v-if="item.guestCounts" class="guest-badges">
                 <span v-if="item.guestCounts.adults > 0" class="badge badge-guest">
-                  {{ item.guestCounts.adults }} × vuxna
+                  {{ item.guestCounts.adults }} × Vuxna
                 </span>
                 <span v-if="item.guestCounts.children > 0" class="badge badge-guest">
-                  {{ item.guestCounts.children }} × barn
+                  {{ item.guestCounts.children }} × Barn
                 </span>
                 <span v-if="item.guestCounts.seniors > 0" class="badge badge-guest">
-                  {{ item.guestCounts.seniors }} × senior
+                  {{ item.guestCounts.seniors }} × Senior
                 </span>
               </div>
 
@@ -71,7 +71,7 @@
                     v-for="(addon, addonIndex) in item.selectedAddons"
                     :key="`addon-${addonIndex}-${addon.title}`"
                     class="badge badge-addon">
-                    {{ capitalize(addon.title) }} × {{ addon.quantity }}
+                    {{ addon.quantity }} x {{ capitalize(addon.title) }}
                   </span>
                 </template>
                 <span v-else class="badge badge-addon badge-placeholder">&nbsp;</span>

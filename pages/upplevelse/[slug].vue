@@ -27,6 +27,16 @@
 
             <!-- Capacity and category badges || Max and Min guests are required hence no conditional -->
             <div class="capacity-section">
+
+              <Tooltip :content="`För grupper mellan ${experience.minGuests} och ${experience.maxGuests} personer`">
+                <div class="capacity-badge">
+                  <Users :size="20" class="badge-icon" />
+                  <span class="capacity-text">
+                    {{ experience.minGuests }}{{ experience.maxGuests !== experience.minGuests ? `-${experience.maxGuests}` : '' }} pers
+                  </span>
+                </div>
+              </Tooltip>
+
               <Tooltip v-if="experience.allowedCategories?.children" content="Prisvärt för de små">
                 <div v-if="experience.allowedCategories?.children" class="category-badge category-badge--children">
                   <Baby :size="20" class="badge-icon" />
@@ -39,14 +49,6 @@
                 </div>
               </Tooltip>
 
-              <Tooltip :content="`För grupper mellan ${experience.minGuests} och ${experience.maxGuests} personer`">
-                <div class="capacity-badge">
-                  <Users :size="20" class="badge-icon" />
-                  <span class="capacity-text">
-                    {{ experience.minGuests }}{{ experience.maxGuests !== experience.minGuests ? `-${experience.maxGuests}` : '' }} pers
-                  </span>
-                </div>
-              </Tooltip>
             </div>
           </div>
 

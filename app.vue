@@ -22,6 +22,8 @@
   --spacing-lg: 2rem;
   --gradient-text: linear-gradient(135deg, #1e5fa8, #0f3f78, #081f3d);
   --gradient-bg: linear-gradient(135deg, #1e5fa8, #0f3f78, #081f3d);
+  --font-heading: "Poppins", Helvetica, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: "Public Sans", Helvetica, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   /* Gamla variabler nedan*/
 
@@ -35,14 +37,24 @@
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 2rem;
-  --gradient-text: linear-gradient(to right, #dc2626, #991b1b); 
+  --gradient-text: linear-gradient(to right, #dc2626, #991b1b);
   */
 }
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: var(--font-body);
+  font-weight: 400;
   color: var(--text-color);
   background-color: var(--background-color);
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-heading);
+  font-weight: 800;
+}
+
+button {
+  font-size: inherit;
 }
 </style>

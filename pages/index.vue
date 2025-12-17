@@ -38,7 +38,7 @@ const handleSearch = (filters: SearchFilters) => {
       </div>
 
       <div class="hero-content">
-        <h1 class="hero-title">Boka Tid Med Vårt Team</h1>
+        <h1 class="hero-title">Unika upplevelser <br /> med vårt team</h1>
 
         <p class="hero-subtitle">
           Skippa det vanliga. Välj din upplevelse och spendera kvalitetstid med
@@ -65,7 +65,7 @@ const handleSearch = (filters: SearchFilters) => {
 
           <!-- "Browse All" stays, and should NOT send date -->
           <NuxtLink to="/upplevelse" class="btn btn-secondary">
-            Utforska Alla Upplevelser
+            Utforska alla upplevelser
           </NuxtLink>
         </div>
       </div>
@@ -77,28 +77,28 @@ const handleSearch = (filters: SearchFilters) => {
             <Heart :size="32" />
           </div>
           <div class="stat-value">500+</div>
-          <div class="stat-label">Glada Upplevelser</div>
+          <div class="stat-label">Glada upplevelser</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">
             <Users :size="32" />
           </div>
           <div class="stat-value">4</div>
-          <div class="stat-label">Fantastiska Teammedlemmar</div>
+          <div class="stat-label">Fantastiska teammedlemmar</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">
             <Calendar :size="32" />
           </div>
           <div class="stat-value">24/7</div>
-          <div class="stat-label">Tillgängliga Upplevelser</div>
+          <div class="stat-label">Tillgängliga upplevelser</div>
         </div>
       </div>
     </section>
     <section class="team">
       <div class="team-inner">
         <div class="team-header">
-          <h2 class="team-title">Möt Vårt Team</h2>
+          <h2 class="team-title">Möt vårt team</h2>
           <p class="team-text">
             Varje teammedlem erbjuder unika upplevelser anpassade efter olika
             intressen. Välj vem du vill spendera tid med.
@@ -112,7 +112,7 @@ const handleSearch = (filters: SearchFilters) => {
     </section>
     <section class="cta">
       <div class="cta-inner">
-        <h2 class="cta-title">Redo att Skapa Minnen?</h2>
+        <h2 class="cta-title">Redo att skapa minnen?</h2>
         <p class="cta-text">
           Vänta inte på det perfekta tillfället. Varje upplevelse är skapad för
           att bli oförglömlig. Boka din tid med oss redan idag!
@@ -122,7 +122,7 @@ const handleSearch = (filters: SearchFilters) => {
           to="/upplevelse"
           class="btn btn-primary"
         >
-          Utforska Alla Upplevelser
+          Utforska alla upplevelser
         </NuxtLink>
       </div>
     </section>
@@ -132,8 +132,6 @@ const handleSearch = (filters: SearchFilters) => {
 <style scoped>
 .home-page {
   min-height: 100vh;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
   background-color: var(--background-color);
   color: var(--text-color);
 }
@@ -146,7 +144,11 @@ const handleSearch = (filters: SearchFilters) => {
 .hero-bg {
   position: absolute;
   inset: 0;
-  background: var(--background-color);
+  background-image: url('/images/hero-bg.webp');
+  opacity: 0.2;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   z-index: 0;
 }
 
@@ -202,6 +204,7 @@ const handleSearch = (filters: SearchFilters) => {
   margin: 0 auto 1.75rem;
   max-width: 48rem;
   font-size: 1.125rem;
+  line-height: 1.4;
   color: var(--text-color);
 }
 
@@ -230,6 +233,7 @@ const handleSearch = (filters: SearchFilters) => {
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s ease;
+  text-decoration: none;
 }
 
 .btn-primary {
@@ -247,11 +251,11 @@ const handleSearch = (filters: SearchFilters) => {
 .btn-secondary {
   background-color: #ffffff;
   color: var(--text-color);
-  border: 2px solid var(--primary-color);
+  box-shadow: inset 0 0 0 2px var(--primary-color);
+  height: 100%;
 }
 
 .btn-secondary:hover {
-  background-color: #fef2f2;
   transform: scale(1.05);
 }
 
@@ -284,6 +288,7 @@ const handleSearch = (filters: SearchFilters) => {
   font-size: 2.25rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
+  font-family: var(--font-heading);
 }
 
 .stat-label {
@@ -318,6 +323,7 @@ const handleSearch = (filters: SearchFilters) => {
   max-width: 32rem;
   margin: 0 auto;
   color: var(--text-color);
+  font-size: 1.125rem;
 }
 
 .team-grid {

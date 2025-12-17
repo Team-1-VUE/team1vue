@@ -36,7 +36,10 @@
 
         <div class="action-buttons">
           <NuxtLink
-            :to="`/upplevelse/${experience.slug}`"
+            :to="{
+              path: `/upplevelse/${experience.slug}`,
+              query: route.query
+            }"
             class="btn btn--secondary"
           >
             Läs mer
@@ -66,13 +69,14 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import { type LocationQueryRaw, useRoute } from 'vue-router'
 import { useExperiences, type Experience } from '~/composables/useExperiences'
 import Card from '~/components/Card.vue'
 import BookingModal from '~/components/BookingModal.vue'
 
 const props = defineProps<{
   experiences?: Experience[]
+  query: LocationQueryRaw
 }>()
 
 const route = useRoute()

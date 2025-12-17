@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ExperienceCard from "~/components/ExperienceCard.vue";
 import { useExperiences, type Experience } from "~/composables/useExperiences";
 import SearchBar, { type SearchFilters } from "~/components/SearchBar.vue";
 import { ref, computed, watch } from "vue";
@@ -162,6 +161,7 @@ const filteredExperiences = computed(() => {
 
       <ExperienceCardList
         :experiences="filteredExperiences"
+        :query="route.query"
         class="experience-grid" />
 
       <p v-if="!filteredExperiences.length">

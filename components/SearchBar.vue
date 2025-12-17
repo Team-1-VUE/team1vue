@@ -29,7 +29,7 @@ const emit = defineEmits<{
 
 // Lokalt state i komponenten
 const filters = reactive<SearchFilters>({
-  date: props.modelValue?.date ?? minDate,
+  date: props.modelValue?.date ?? "",
   adults: props.modelValue?.adults ?? 1,
   children: props.modelValue?.children ?? 0,
   seniors: props.modelValue?.seniors ?? 0,
@@ -97,10 +97,6 @@ const onSubmit = (event: Event) => {
           min="0" />
       </div>
     </div>
-
-    <button v-if="showSearchButton" class="search-button" type="submit">
-      Sök upplevelser
-    </button>
   </form>
 </template>
 

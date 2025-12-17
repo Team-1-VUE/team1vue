@@ -25,26 +25,26 @@
               :src="experience.image"
               :alt="experience.title" />
 
-            <!-- Capacity and category badges -->
+            <!-- Capacity and category badges || Max and Min guests are required hence no conditional -->
             <div class="capacity-section">
-              <Tooltip :content="`För grupper mellan ${experience.minGuests} och ${experience.maxGuests} personer`">
-                <div class="capacity-badge">
-                  <Users :size="20" class="badge-icon" />
-                  <span class="capacity-text">
-                    {{ experience.minGuests }}{{ experience.maxGuests !== experience.minGuests ? `-${experience.maxGuests}` : '' }} pers
-                  </span>
-                </div>
-              </Tooltip>
-
               <Tooltip v-if="experience.allowedCategories?.children" content="Prisvärt för de små">
                 <div v-if="experience.allowedCategories?.children" class="category-badge category-badge--children">
                   <Baby :size="20" class="badge-icon" />
                 </div>
               </Tooltip>
 
-              <Tooltip v-if="experience.allowedCategories?.seniors" content="Prisvärt för seniorerna">
+              <Tooltip v-if="experience.allowedCategories?.seniors" content="Prisvärt för seniorer">
                 <div v-if="experience.allowedCategories?.seniors" class="category-badge category-badge--seniors">
                   <HatGlasses :size="20" class="badge-icon" />
+                </div>
+              </Tooltip>
+
+              <Tooltip :content="`För grupper mellan ${experience.minGuests} och ${experience.maxGuests} personer`">
+                <div class="capacity-badge">
+                  <Users :size="20" class="badge-icon" />
+                  <span class="capacity-text">
+                    {{ experience.minGuests }}{{ experience.maxGuests !== experience.minGuests ? `-${experience.maxGuests}` : '' }} pers
+                  </span>
                 </div>
               </Tooltip>
             </div>
@@ -366,7 +366,7 @@ const showModal = ref(false);
 .capacity-section {
   position: absolute;
   bottom: 1rem;
-  right: 1rem;
+  left: 1rem;
   z-index: 10;
   display: flex;
   gap: 0.5rem;
@@ -392,8 +392,8 @@ const showModal = ref(false);
 }
 
 .category-badge {
-  height: 42px;
-  width: 42px;
+  height: 38px;
+  width: 38px;
   aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;

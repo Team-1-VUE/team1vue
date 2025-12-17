@@ -1,7 +1,11 @@
 <template>
   <div class="card">
-    <component v-if="image" class="card__image" :is="imgHref ? 'a' : 'div'" :href="imgHref">
-      <img :src="image" :alt="altText" />
+    <component v-if="image" class="image__container" :is="imgHref ? 'a' : 'div'" :href="imgHref">
+      <div class="card__image">
+        <img :src="image" :alt="altText" />
+      </div>
+
+      <slot v-if="$slots.badges" name="badges"></slot>
     </component>
 
     <div class="card__content">
@@ -25,6 +29,7 @@ defineProps<{
   image?: string
   altText?: string
   imgHref?: string
+  experienceData?: Experience
 }>()
 </script>
 
@@ -32,7 +37,6 @@ defineProps<{
 .card {
   background: #fff;
   border-radius: 20px;
-  overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   height: 100%;
@@ -45,11 +49,17 @@ defineProps<{
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
 }
 
+.image__container {
+  position: relative;
+}
+
 .card__image {
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 3;
   overflow: hidden;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 

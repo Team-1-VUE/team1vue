@@ -12,12 +12,38 @@
         <span class="card__duration">{{ experience.duration }}</span>
       </template>
 
+      <template #badges>
+        <!-- Capacity and category badges || Max and Min guests are required hence no conditional -->
+        <div class="capacity-section">
+          <Tooltip v-if="experience.allowedCategories?.children" content="Prisvärt för de små">
+            <div v-if="experience.allowedCategories?.children" class="category-badge category-badge--children">
+              <Baby :size="20" class="badge-icon" />
+            </div>
+          </Tooltip>
+
+          <Tooltip v-if="experience.allowedCategories?.seniors" content="Prisvärt för seniorer">
+            <div v-if="experience.allowedCategories?.seniors" class="category-badge category-badge--seniors">
+              <HatGlasses :size="20" class="badge-icon" />
+            </div>
+          </Tooltip>
+
+          <Tooltip :content="`För grupper mellan ${experience.minGuests} och ${experience.maxGuests} personer`">
+            <div class="capacity-badge">
+              <Users :size="20" class="badge-icon" />
+              <span class="capacity-text">
+                {{ experience.minGuests }}{{ experience.maxGuests !== experience.minGuests ? `-${experience.maxGuests}` : '' }} pers
+              </span>
+            </div>
+          </Tooltip>
+        </div>
+      </template>
+
       <template #default>
         <p>{{ experience.description }}</p>
 
         <div v-if="experience.addons?.length" class="card__addons">
           <p class="addons-label">Tillval inkluderar:</p>
-          <div class="addons__tags">
+          <div class="addon-tags">
             <span
             v-for="(addon, index) in experience.addons"
             :key="index"
@@ -73,6 +99,7 @@ import { type LocationQueryRaw, useRoute } from 'vue-router'
 import { useExperiences, type Experience } from '~/composables/useExperiences'
 import Card from '~/components/Card.vue'
 import BookingModal from '~/components/BookingModal.vue'
+import { Baby, HatGlasses, Users } from 'lucide-vue-next';
 
 const props = defineProps<{
   experiences?: Experience[]
@@ -194,5 +221,62 @@ const showModal = ref<null | typeof list.value[0]>(null)
 .btn--primary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* TODO: Duplicate CSS from #pages/upplevelse/[slug].vue */
+/* Capacity section */
+.capacity-section {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 10;
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.capacity-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background-color: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.capacity-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.category-badge {
+  height: 38px;
+  width: 38px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+.category-badge--children {
+  background-color: #fee844;
+  color: #814d00;
+}
+
+.category-badge--seniors {
+  background-color: #b7eaff;
+  color: #024d6b;
+}
+
+.badge-icon {
+  color: currentColor;
+  flex-shrink: 0;
 }
 </style>

@@ -116,13 +116,14 @@ export const useCartStore = defineStore("cart", () => {
 
     if (totalGuests === 0) return;
 
-    // Find existing item with same experience, addons, and booking date
+    // Find existing item with same experience, addons, booking date, and booking time
     const existingItem = items.value.find(
       (item) =>
         item.id === experience.id &&
         JSON.stringify(item.selectedAddons) ===
           JSON.stringify(selectedAddons) &&
-        item.bookingDate === bookingDate
+        item.bookingDate === bookingDate &&
+        item.bookingTime === bookingTime
     );
 
     if (existingItem) {

@@ -4,7 +4,7 @@ import { ArrowRight, Heart, Sparkles, Users, Calendar } from "lucide-vue-next";
 import SearchBar, { type SearchFilters } from "~/components/SearchBar.vue";
 
 const router = useRouter();
-const { loading: loadingProfiles }  = useProfiles();
+const { loading: loadingProfiles } = useProfiles();
 
 const searchFilters = ref<SearchFilters>({
   date: "",
@@ -15,15 +15,16 @@ const searchFilters = ref<SearchFilters>({
 
 const handleSearch = (filters: SearchFilters) => {
   // När någon söker från startsidan → skicka till /upplevelse med query params
-  router.push({
-    path: "/upplevelse",
-    query: {
-      date: filters.date,
-      adults: String(filters.adults),
-      children: String(filters.children),
-      seniors: String(filters.seniors),
-    },
-  });
+  const query: Record<string, string> = {
+    adults: String(filters.adults),
+    children: String(filters.children),
+    seniors: String(filters.seniors),
+  };
+
+  // skicka bara date om den finns
+  if (filters.date) query.date = filters.date;
+
+  router.push({ path: "/upplevelse", query });
 };
 </script>
 
@@ -56,9 +57,18 @@ const handleSearch = (filters: SearchFilters) => {
           class="hero-search" />
 
         <div class="hero-actions">
-          <NuxtLink to="/upplevelse" class="btn btn-primary">
-            <span>Explore Experiences</span>
+          <!-- "Sök upplevelser" triggers the same search flow -->
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click="handleSearch(searchFilters)">
+            <span>Sök upplevelser</span>
             <ArrowRight :size="20" />
+          </button>
+
+          <!-- "Browse All" stays, and should NOT send date -->
+          <NuxtLink to="/upplevelse" class="btn btn-secondary">
+            Browse All Experiences
           </NuxtLink>
         </div>
       </div>
@@ -101,7 +111,6 @@ const handleSearch = (filters: SearchFilters) => {
         <p v-if="loadingProfiles">Laddar profiler...</p>
 
         <ProfileCardList v-else class="team-grid" />
-
       </div>
     </section>
     <section class="cta">

@@ -21,7 +21,7 @@ const loading = ref(true);
 
 type Profiles = { [key: string]: ProfileData };
 if (import.meta.client && !data.value) {
-  fetch("/data2.json")
+  fetch("/data.json")
     .then((res) => res.json())
     .then((json) => {
       data.value = json;

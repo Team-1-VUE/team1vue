@@ -1,167 +1,1162 @@
 {
   "profiles": {
-    "kristoffer": ["yoga", "maleri", "kajak"],
-    "pencheff": ["matlagning", "fotografi", "lopning"],
-    "simon": ["kalligrafi", "tradgardsmagi", "dans"],
-    "antonio": ["surfing", "matfotografi", "street-art"]
+    "kristoffer": {
+      "profileImage": "/profileimages/kristoffer.png",
+      "experiences": [
+        "klattra-med-kristoffer",
+        "banka-med-benckert",
+        "konspirationer-med-kristoffer"
+      ],
+      "shortText": "Klättra, Bänka & Konspirationer",
+      "summaryText": "Kristoffer erbjuder klättring, styrketräning och underhållande teorigenomgångar.",
+      "about": "Kristoffer är en varm och nyfiken själ med ett hårsvall som syns på långt håll och ett leende som smittar. Han älskar klättring, även om han mest klänger runt som en överentusiastisk koala. Konspirationsteorier fascinerar honom, han tror på dem, och han gillar märkliga idéer och oväntade vändningar. Träning försöker han sig också på, med varierande framgång, men alltid med samma charmiga envishet. Kristoffer är helt enkelt en person som gör livet roligare bara genom att inte vara så stark."
+    },
+    "pencheff": {
+      "profileImage": "/profileimages/pencheff2.png",
+      "experiences": [
+        "pasta-med-pencheff",
+        "poetry-slam-med-pencheff",
+        "pilates-med-pencheff"
+      ],
+      "shortText": "Pasta, Poetry & Pilates",
+      "summaryText": "Pencheff guidar dig genom matlagning, kreativa uttryck och lugn träning.",
+      "about": "Pencheff är en karismatisk kreatör med ett leende som gör varje studio till hans naturliga hem. Han rör sig lika tryggt mellan poetry slam-scenen och sina passionerade pastaprojekt, där han ibland kallar sig själv Magnifico – helt utan ironi. Pilates ägnar han sig också åt, om än med en stil som ofta får åskådare att undra om det är träning eller performance art. Pencheff kombinerar humor, värme och oväntad elegans på ett sätt som gör att man aldrig vet vad som väntar, men man vill alltid följa med på resan."
+    },
+    "simon": {
+      "profileImage": "/profileimages/simon.png",
+      "experiences": [
+        "sportbil-med-simon",
+        "sitt-med-simon",
+        "smink-med-simon"
+      ],
+      "shortText": "Sportbil, Sitt & Smink",
+      "summaryText": "Simon erbjuder fartfyllda upplevelser, meditativa stunder och kreativa sminklektioner.",
+      "about": "Simon är en gudalik kung i allt han tar sig an, oavsett om det handlar om att styra rummet med sin närvaro eller briljera i de mest oväntade talanger. Han är otroligt bra på att sitta, på riktigt, världsklass. Kör sportbil med samma elegans som han sminkar andra till perfektion. Som multimiljardär lever han livet stort, men ändå med en värme och charm som gör att alla håller med om samma sak: Simon är en av världens skönaste snubbar. En ikon, helt enkelt."
+    },
+    "antonio": {
+      "profileImage": "/profileimages/antonio3.webp",
+      "experiences": [
+        "workout-med-antonio",
+        "dansa-med-antonio",
+        "cocktails-med-antonio"
+      ],
+      "shortText": "Workout, Dans & Cocktails",
+      "summaryText": "Antonio lär ut styrka, rytm och drinkmixning på ett lekfullt och peppigt sätt.",
+      "about": "Antonio är en energi­spridande person som alltid rör sig genom livet med rytm och stil. Han älskar dans, träning och allt som får pulsen att gå upp både på dansgolvet och på gymmet. Cocktails är hans stora svaghet och stolthet; han blandar dem som en konstnär, med samma passion som han dansar. Älskar street fighting och pub brawl. Trots det behåller han alltid sin charm och sitt stora hjärta."
+    }
   },
   "experiences": [
     {
       "id": "1",
-      "slug": "yoga",
+      "slug": "klattra-med-kristoffer",
       "owner": "kristoffer",
-      "title": "Yoga",
-      "description": "En lugn yoga-session",
-      "duration": "1h",
-      "price": 250,
-      "image": "/images/experience-test01.webp",
-      "addons": ["te-fika", "meditationsguide"]
+      "title": "Klättra med Kristoffer",
+      "description": "Följ med Kristoffer på ett klätteräventyr.",
+      "about": "Att klättra med Kristoffer är mer äventyr än prestation. Det handlar om att ta sig uppåt med skratt, pepp och en känsla av att allt löser sig, även när greppet är tveksamt. Kristoffer guidar med nyfikenhet och charm, och oavsett om du är nybörjare eller van klättrare blir det en upplevelse där glädjen alltid väger tyngre än tekniken.",
+      "duration": "2h",
+      "price": 350,
+      "categoryPrices": {
+        "children": 250,
+        "adults": 350,
+        "seniors": 300
+      },
+      "image": "/images/benckert3.png",
+      "addons": [
+        { "title": "hjälm", "price": 75 },
+        { "title": "klätterutrustning", "price": 120 }
+      ],
+      "minGuests": 1,
+      "maxGuests": 4,
+      "allowedCategories": {
+        "children": true,
+        "adults": true,
+        "seniors": false
+      },
+      "availableDates": [
+        "2025-12-10",
+        "2025-12-12",
+        "2025-12-14",
+        "2025-12-17",
+        "2025-12-19",
+        "2025-12-21",
+        "2025-12-28",
+        "2025-12-30",
+        "2026-01-02",
+        "2026-01-04",
+        "2026-01-07",
+        "2026-01-09"
+      ],
+      "schedule": {
+        "2025-12-10": [
+          { "time": "10:00", "capacity": 4, "booked": 0 },
+          { "time": "14:00", "capacity": 4, "booked": 0 },
+          { "time": "18:00", "capacity": 4, "booked": 0 }
+        ],
+        "2025-12-12": [
+          { "time": "10:00", "capacity": 4, "booked": 2 },
+          { "time": "14:00", "capacity": 4, "booked": 1 },
+          { "time": "18:00", "capacity": 4, "booked": 4 }
+        ],
+        "2025-12-14": [
+          { "time": "11:00", "capacity": 4, "booked": 3 },
+          { "time": "15:00", "capacity": 4, "booked": 0 }
+        ],
+        "2025-12-17": [
+          { "time": "10:00", "capacity": 4, "booked": 1 },
+          { "time": "14:00", "capacity": 4, "booked": 0 },
+          { "time": "18:00", "capacity": 4, "booked": 0 }
+        ],
+        "2025-12-19": [
+          { "time": "10:00", "capacity": 4, "booked": 4 },
+          { "time": "14:00", "capacity": 4, "booked": 4 }
+        ],
+        "2025-12-21": [
+          { "time": "09:00", "capacity": 4, "booked": 2 },
+          { "time": "13:30", "capacity": 4, "booked": 1 }
+        ],
+        "2025-12-28": [
+          { "time": "11:00", "capacity": 4, "booked": 0 },
+          { "time": "16:00", "capacity": 4, "booked": 3 }
+        ],
+        "2025-12-30": [
+          { "time": "10:00", "capacity": 4, "booked": 1 },
+          { "time": "18:00", "capacity": 4, "booked": 0 }
+        ],
+        "2026-01-02": [
+          { "time": "10:00", "capacity": 4, "booked": 0 },
+          { "time": "14:00", "capacity": 4, "booked": 2 },
+          { "time": "18:00", "capacity": 4, "booked": 0 }
+        ],
+        "2026-01-04": [
+          { "time": "11:00", "capacity": 4, "booked": 0 },
+          { "time": "15:00", "capacity": 4, "booked": 0 }
+        ],
+        "2026-01-07": [
+          { "time": "10:00", "capacity": 4, "booked": 3 },
+          { "time": "14:00", "capacity": 4, "booked": 1 }
+        ],
+        "2026-01-09": [
+          { "time": "10:00", "capacity": 4, "booked": 0 },
+          { "time": "18:00", "capacity": 4, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "2",
-      "slug": "maleri",
+      "slug": "banka-med-benckert",
       "owner": "kristoffer",
-      "title": "Måleri",
-      "description": "Kreativt måleri",
-      "duration": "2h",
+      "title": "Bänka med Benckert",
+      "description": "Styrketräning och teknik med Benckert.",
+      "about": "Här är fokus på styrka, teknik och ett lugnt tempo som bygger självförtroende. Benckert guidar dig genom bänkpress och grundläggande styrketräning med tydliga tips och en trygg närvaro. Det är en session som passar dig som vill bli starkare utan stress, med en coach som hellre ser framsteg än maxvikter.",
+      "duration": "1.5h",
       "price": 300,
-      "image": "/images/experience-test02.webp",
-      "addons": []
+      "categoryPrices": {
+        "children": 260,
+        "adults": 300,
+        "seniors": 270
+      },
+      "image": "/images/benckert2.png",
+      "addons": [],
+      "minGuests": 1,
+      "maxGuests": 3,
+      "allowedCategories": {
+        "children": false,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": [
+        "2025-12-11",
+        "2025-12-13",
+        "2025-12-16",
+        "2025-12-19",
+        "2025-12-21",
+        "2025-12-27",
+        "2025-12-29",
+        "2026-01-02",
+        "2026-01-03",
+        "2026-01-05",
+        "2026-01-08",
+        "2026-01-10"
+      ],
+      "schedule": {
+        "2025-12-11": [
+          { "time": "08:00", "capacity": 3, "booked": 0 },
+          { "time": "10:30", "capacity": 3, "booked": 0 }
+        ],
+        "2025-12-13": [
+          { "time": "09:00", "capacity": 3, "booked": 2 },
+          { "time": "11:30", "capacity": 3, "booked": 1 }
+        ],
+        "2025-12-16": [
+          { "time": "07:30", "capacity": 3, "booked": 1 },
+          { "time": "10:00", "capacity": 3, "booked": 0 }
+        ],
+        "2025-12-19": [
+          { "time": "08:00", "capacity": 3, "booked": 3 },
+          { "time": "10:30", "capacity": 3, "booked": 1 }
+        ],
+        "2025-12-21": [
+          { "time": "12:00", "capacity": 3, "booked": 0 },
+          { "time": "15:00", "capacity": 3, "booked": 2 }
+        ],
+        "2025-12-27": [
+          { "time": "09:30", "capacity": 3, "booked": 3 },
+          { "time": "14:30", "capacity": 3, "booked": 1 }
+        ],
+        "2025-12-29": [
+          { "time": "08:00", "capacity": 3, "booked": 0 },
+          { "time": "10:30", "capacity": 3, "booked": 0 }
+        ],
+        "2026-01-02": [
+          { "time": "08:00", "capacity": 3, "booked": 2 },
+          { "time": "10:30", "capacity": 3, "booked": 0 }
+        ],
+        "2026-01-03": [
+          { "time": "09:00", "capacity": 3, "booked": 0 },
+          { "time": "11:30", "capacity": 3, "booked": 0 }
+        ],
+        "2026-01-05": [
+          { "time": "07:30", "capacity": 3, "booked": 1 },
+          { "time": "10:00", "capacity": 3, "booked": 1 }
+        ],
+        "2026-01-08": [
+          { "time": "08:00", "capacity": 3, "booked": 0 },
+          { "time": "10:30", "capacity": 3, "booked": 0 }
+        ],
+        "2026-01-10": [
+          { "time": "09:00", "capacity": 3, "booked": 0 },
+          { "time": "11:30", "capacity": 3, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "3",
-      "slug": "kajak",
+      "slug": "konspirationer-med-kristoffer",
       "owner": "kristoffer",
-      "title": "Kajak",
-      "description": "Paddla i solnedgången",
-      "duration": "3h",
-      "price": 400,
-      "image": "/images/experience-test03.webp",
-      "addons": ["livsstilscoach"]
+      "title": "Konspirationer med Kristoffer",
+      "description": "En underhållande genomgång av vilda teorier.",
+      "about": "En kväll där teorierna är vildare än fakta och samtalet är viktigare än svaren. Kristoffer leder dig genom klassiska och helt nya konspirationer med humor, nyfikenhet och ett öppet sinne. Du behöver inte tro på allt, det räcker att du gillar att ifrågasätta och ha kul på vägen.",
+      "duration": "2h",
+      "price": 200,
+      "categoryPrices": {
+        "children": 150,
+        "adults": 200,
+        "seniors": 180
+      },
+      "image": "/images/benckert1.png",
+      "addons": [],
+      "minGuests": 1,
+      "maxGuests": 10,
+      "allowedCategories": {
+        "children": false,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": [
+        "2025-12-10",
+        "2025-12-12",
+        "2025-12-13",
+        "2025-12-18",
+        "2025-12-19",
+        "2025-12-20",
+        "2025-12-22",
+        "2025-12-27",
+        "2025-12-28",
+        "2025-12-30",
+        "2026-01-02",
+        "2026-01-04",
+        "2026-01-06",
+        "2026-01-09"
+      ],
+      "schedule": {
+        "2025-12-10": [
+          { "time": "18:00", "capacity": 10, "booked": 0 },
+          { "time": "20:30", "capacity": 10, "booked": 0 }
+        ],
+        "2025-12-12": [
+          { "time": "18:00", "capacity": 10, "booked": 3 },
+          { "time": "20:30", "capacity": 10, "booked": 1 }
+        ],
+        "2025-12-13": [
+          { "time": "18:00", "capacity": 10, "booked": 5 },
+          { "time": "20:30", "capacity": 10, "booked": 0 }
+        ],
+        "2025-12-18": [
+          { "time": "18:00", "capacity": 10, "booked": 8 },
+          { "time": "20:30", "capacity": 10, "booked": 10 }
+        ],
+        "2025-12-19": [
+          { "time": "18:00", "capacity": 10, "booked": 0 },
+          { "time": "20:30", "capacity": 10, "booked": 4 }
+        ],
+        "2025-12-20": [
+          { "time": "17:00", "capacity": 8, "booked": 4 },
+          { "time": "21:00", "capacity": 8, "booked": 8 }
+        ],
+        "2025-12-22": [{ "time": "19:00", "capacity": 10, "booked": 2 }],
+        "2025-12-27": [
+          { "time": "18:00", "capacity": 10, "booked": 0 },
+          { "time": "20:30", "capacity": 10, "booked": 0 }
+        ],
+        "2025-12-28": [
+          { "time": "18:00", "capacity": 10, "booked": 6 },
+          { "time": "20:30", "capacity": 10, "booked": 0 }
+        ],
+        "2025-12-30": [
+          { "time": "18:00", "capacity": 10, "booked": 1 },
+          { "time": "20:30", "capacity": 10, "booked": 0 }
+        ],
+        "2026-01-02": [
+          { "time": "18:00", "capacity": 10, "booked": 0 },
+          { "time": "20:30", "capacity": 10, "booked": 0 }
+        ],
+        "2026-01-04": [
+          { "time": "18:00", "capacity": 10, "booked": 3 },
+          { "time": "20:30", "capacity": 10, "booked": 1 }
+        ],
+        "2026-01-06": [
+          { "time": "18:00", "capacity": 10, "booked": 0 },
+          { "time": "20:30", "capacity": 10, "booked": 0 }
+        ],
+        "2026-01-09": [
+          { "time": "18:00", "capacity": 10, "booked": 0 },
+          { "time": "20:30", "capacity": 10, "booked": 0 }
+        ]
+      }
     },
-
     {
       "id": "4",
-      "slug": "matlagning",
+      "slug": "pasta-med-pencheff",
       "owner": "pencheff",
-      "title": "Matlagning",
-      "description": "Italiensk middag",
+      "title": "Pasta med Pencheff",
+      "description": "Koka, knåda och njut av pasta från grunden.",
+      "about": "Att laga pasta med Pencheff är lika delar matlagning och magi. Du får lära dig grunderna från deg till färdig rätt, samtidigt som stämningen är avslappnad och full av personlighet. Det här är en upplevelse för dig som vill äta gott, skratta mycket och gå hem med både ny kunskap och mätt mage.",
       "duration": "2h",
       "price": 350,
-      "image": "/images/experience-test01.webp",
-      "addons": []
+      "categoryPrices": {
+        "children": 280,
+        "adults": 350,
+        "seniors": 320
+      },
+      "image": "/images/pencheff1.png",
+      "addons": [{ "title": "ingrediensbox", "price": 80 }],
+      "minGuests": 2,
+      "maxGuests": 6,
+      "allowedCategories": {
+        "children": true,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": [
+        "2025-12-11",
+        "2025-12-13",
+        "2025-12-17",
+        "2025-12-19",
+        "2025-12-20",
+        "2025-12-23",
+        "2025-12-27",
+        "2025-12-29",
+        "2026-01-02",
+        "2026-01-03",
+        "2026-01-05",
+        "2026-01-08",
+        "2026-01-10"
+      ],
+      "schedule": {
+        "2025-12-11": [
+          { "time": "17:00", "capacity": 6, "booked": 0 },
+          { "time": "20:00", "capacity": 6, "booked": 0 }
+        ],
+        "2025-12-13": [
+          { "time": "17:00", "capacity": 6, "booked": 2 },
+          { "time": "20:00", "capacity": 6, "booked": 0 }
+        ],
+        "2025-12-17": [
+          { "time": "17:00", "capacity": 6, "booked": 0 },
+          { "time": "20:00", "capacity": 6, "booked": 3 }
+        ],
+        "2025-12-19": [
+          { "time": "17:00", "capacity": 6, "booked": 6 },
+          { "time": "20:00", "capacity": 6, "booked": 3 }
+        ],
+        "2025-12-20": [
+          { "time": "17:00", "capacity": 6, "booked": 0 },
+          { "time": "20:00", "capacity": 6, "booked": 4 }
+        ],
+        "2025-12-23": [
+          { "time": "16:00", "capacity": 6, "booked": 2 },
+          { "time": "19:30", "capacity": 6, "booked": 6 }
+        ],
+        "2025-12-27": [
+          { "time": "11:00", "capacity": 6, "booked": 0 },
+          { "time": "18:00", "capacity": 6, "booked": 5 }
+        ],
+        "2025-12-29": [
+          { "time": "17:00", "capacity": 6, "booked": 0 },
+          { "time": "20:00", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-02": [
+          { "time": "17:00", "capacity": 6, "booked": 1 },
+          { "time": "20:00", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-03": [
+          { "time": "17:00", "capacity": 6, "booked": 0 },
+          { "time": "20:00", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-05": [
+          { "time": "17:00", "capacity": 6, "booked": 3 },
+          { "time": "20:00", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-08": [
+          { "time": "17:00", "capacity": 6, "booked": 0 },
+          { "time": "20:00", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-10": [
+          { "time": "17:00", "capacity": 6, "booked": 0 },
+          { "time": "20:00", "capacity": 6, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "5",
-      "slug": "fotografi",
+      "slug": "poetry-slam-med-pencheff",
       "owner": "pencheff",
-      "title": "Fotografi",
-      "description": "Lär dig ta fantastiska bilder",
-      "duration": "2h",
-      "price": 300,
-      "image": "/images/experience-test02.webp",
-      "addons": []
+      "title": "Poetry slam med Pencheff",
+      "about": "En kreativ upplevelse där ord, känslor och uttryck står i centrum. Pencheff skapar en trygg och inspirerande miljö där du får testa poetry slam oavsett tidigare erfarenhet. Fokus ligger på att våga ta plats, leka med språket och hitta sitt eget sätt att uttrycka sig.",
+      "description": "Kreativt uttryck och spoken word.",
+      "duration": "1.5h",
+      "price": 280,
+      "categoryPrices": {
+        "children": 230,
+        "adults": 280,
+        "seniors": 250
+      },
+      "image": "/images/pencheff3.png",
+      "addons": [],
+      "minGuests": 1,
+      "maxGuests": 15,
+      "allowedCategories": {
+        "children": false,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": [
+        "2025-12-11",
+        "2025-12-13",
+        "2025-12-18",
+        "2025-12-20",
+        "2025-12-22",
+        "2025-12-23",
+        "2025-12-28",
+        "2025-12-30",
+        "2026-01-02",
+        "2026-01-04",
+        "2026-01-07",
+        "2026-01-10"
+      ],
+      "schedule": {
+        "2025-12-11": [
+          { "time": "18:00", "capacity": 15, "booked": 0 },
+          { "time": "20:00", "capacity": 15, "booked": 2 }
+        ],
+        "2025-12-13": [
+          { "time": "18:00", "capacity": 15, "booked": 5 },
+          { "time": "20:00", "capacity": 15, "booked": 0 }
+        ],
+        "2025-12-18": [
+          { "time": "18:00", "capacity": 15, "booked": 10 },
+          { "time": "20:00", "capacity": 15, "booked": 15 }
+        ],
+        "2025-12-20": [
+          { "time": "17:30", "capacity": 12, "booked": 12 },
+          { "time": "21:00", "capacity": 12, "booked": 4 }
+        ],
+        "2025-12-22": [
+          { "time": "18:00", "capacity": 15, "booked": 0 },
+          { "time": "20:00", "capacity": 15, "booked": 3 }
+        ],
+        "2025-12-23": [
+          { "time": "18:00", "capacity": 15, "booked": 4 },
+          { "time": "20:00", "capacity": 15, "booked": 0 }
+        ],
+        "2025-12-28": [{ "time": "19:00", "capacity": 15, "booked": 7 }],
+        "2025-12-30": [
+          { "time": "18:00", "capacity": 15, "booked": 0 },
+          { "time": "20:00", "capacity": 15, "booked": 0 }
+        ],
+        "2026-01-02": [
+          { "time": "18:00", "capacity": 15, "booked": 2 },
+          { "time": "20:00", "capacity": 15, "booked": 0 }
+        ],
+        "2026-01-04": [
+          { "time": "18:00", "capacity": 15, "booked": 0 },
+          { "time": "20:00", "capacity": 15, "booked": 5 }
+        ],
+        "2026-01-07": [
+          { "time": "18:00", "capacity": 15, "booked": 0 },
+          { "time": "20:00", "capacity": 15, "booked": 0 }
+        ],
+        "2026-01-10": [
+          { "time": "18:00", "capacity": 15, "booked": 3 },
+          { "time": "20:00", "capacity": 15, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "6",
-      "slug": "lopning",
+      "slug": "pilates-med-pencheff",
       "owner": "pencheff",
-      "title": "Löpning",
-      "description": "Intervallträning utomhus",
+      "title": "Pilates med Pencheff",
+      "description": "Smidig, lugn och effektiv träning.",
+      "about": "Ett lugnt och fokuserat pass där kroppskontroll och närvaro står i centrum. Pencheff guidar dig genom pilates på ett avslappnat och personligt sätt, där rörelserna får ta tid och varje deltagare möts på sin nivå. Perfekt för dig som vill träna smidighet och styrka utan prestation.",
       "duration": "1h",
-      "price": 200,
-      "image": "/images/experience-test03.webp",
-      "addons": []
+      "price": 250,
+      "categoryPrices": {
+        "children": 210,
+        "adults": 250,
+        "seniors": 230
+      },
+      "image": "/images/pencheff2.png",
+      "addons": [],
+      "minGuests": 1,
+      "maxGuests": 8,
+      "allowedCategories": {
+        "children": false,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": [
+        "2025-12-10",
+        "2025-12-12",
+        "2025-12-14",
+        "2025-12-19",
+        "2025-12-21",
+        "2025-12-23",
+        "2025-12-27",
+        "2025-12-29",
+        "2025-12-31",
+        "2026-01-02",
+        "2026-01-05",
+        "2026-01-08",
+        "2026-01-10"
+      ],
+      "schedule": {
+        "2025-12-10": [
+          { "time": "08:30", "capacity": 8, "booked": 0 },
+          { "time": "10:00", "capacity": 8, "booked": 1 }
+        ],
+        "2025-12-12": [
+          { "time": "08:30", "capacity": 8, "booked": 2 },
+          { "time": "10:00", "capacity": 8, "booked": 0 }
+        ],
+        "2025-12-14": [
+          { "time": "08:30", "capacity": 8, "booked": 0 },
+          { "time": "10:00", "capacity": 8, "booked": 0 }
+        ],
+        "2025-12-19": [
+          { "time": "08:30", "capacity": 8, "booked": 5 },
+          { "time": "10:00", "capacity": 8, "booked": 8 }
+        ],
+        "2025-12-21": [
+          { "time": "09:00", "capacity": 8, "booked": 2 },
+          { "time": "18:00", "capacity": 8, "booked": 8 }
+        ],
+        "2025-12-23": [
+          { "time": "08:30", "capacity": 8, "booked": 0 },
+          { "time": "10:00", "capacity": 8, "booked": 3 }
+        ],
+        "2025-12-27": [
+          { "time": "08:30", "capacity": 8, "booked": 0 },
+          { "time": "10:00", "capacity": 8, "booked": 0 }
+        ],
+        "2025-12-29": [
+          { "time": "07:30", "capacity": 8, "booked": 0 },
+          { "time": "19:30", "capacity": 8, "booked": 3 }
+        ],
+        "2025-12-31": [
+          { "time": "08:30", "capacity": 8, "booked": 1 },
+          { "time": "10:00", "capacity": 8, "booked": 0 }
+        ],
+        "2026-01-02": [
+          { "time": "08:30", "capacity": 8, "booked": 0 },
+          { "time": "10:00", "capacity": 8, "booked": 2 }
+        ],
+        "2026-01-05": [
+          { "time": "08:30", "capacity": 8, "booked": 0 },
+          { "time": "10:00", "capacity": 8, "booked": 0 }
+        ],
+        "2026-01-08": [
+          { "time": "08:30", "capacity": 8, "booked": 4 },
+          { "time": "10:00", "capacity": 8, "booked": 0 }
+        ],
+        "2026-01-10": [
+          { "time": "08:30", "capacity": 8, "booked": 0 },
+          { "time": "10:00", "capacity": 8, "booked": 0 }
+        ]
+      }
     },
-
     {
       "id": "7",
-      "slug": "kalligrafi",
+      "slug": "sportbil-med-simon",
       "owner": "simon",
-      "title": "Kalligrafi",
-      "description": "Skriv vackra bokstäver",
-      "duration": "2h",
-      "price": 220,
-      "image": "/images/experience-test01.webp",
-      "addons": []
+      "title": "Sportbil med Simon",
+      "description": "Följ med Simon ut med sportbilen.",
+      "about": "En exklusiv upplevelse där tempo, stil och självklarhet möts. Simon tar dig med på en tur där sportbilen får glänsa, men där tryggheten alltid finns i förarsätet. Det är en upplevelse för dig som vill känna fartens lugn och njuta av ögonblicket.",
+      "duration": "1h",
+      "price": 500,
+      "categoryPrices": {
+        "children": 450,
+        "adults": 500,
+        "seniors": 480
+      },
+      "image": "/images/simon1.png",
+      "addons": [
+        { "title": "Säkerhetsbälte", "price": 200 },
+        { "title": "livsförsäkring", "price": 3000 }
+      ],
+      "minGuests": 1,
+      "maxGuests": 2,
+      "allowedCategories": {
+        "children": false,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": [
+        "2025-12-12",
+        "2025-12-14",
+        "2025-12-18",
+        "2025-12-20",
+        "2025-12-22",
+        "2025-12-27",
+        "2025-12-29",
+        "2025-12-30",
+        "2026-01-02",
+        "2026-01-04",
+        "2026-01-06",
+        "2026-01-09"
+      ],
+      "schedule": {
+        "2025-12-12": [
+          { "time": "10:00", "capacity": 2, "booked": 0 },
+          { "time": "14:00", "capacity": 2, "booked": 1 }
+        ],
+        "2025-12-14": [
+          { "time": "10:00", "capacity": 2, "booked": 0 },
+          { "time": "14:00", "capacity": 2, "booked": 0 }
+        ],
+        "2025-12-18": [
+          { "time": "10:00", "capacity": 2, "booked": 0 },
+          { "time": "14:00", "capacity": 2, "booked": 2 }
+        ],
+        "2025-12-20": [
+          { "time": "10:00", "capacity": 2, "booked": 2 },
+          { "time": "14:00", "capacity": 2, "booked": 1 }
+        ],
+        "2025-12-22": [
+          { "time": "09:30", "capacity": 2, "booked": 0 },
+          { "time": "16:00", "capacity": 2, "booked": 2 }
+        ],
+        "2025-12-27": [
+          { "time": "10:00", "capacity": 2, "booked": 0 },
+          { "time": "14:00", "capacity": 2, "booked": 0 }
+        ],
+        "2025-12-29": [
+          { "time": "10:00", "capacity": 2, "booked": 1 },
+          { "time": "14:00", "capacity": 2, "booked": 0 }
+        ],
+        "2025-12-30": [
+          { "time": "11:00", "capacity": 2, "booked": 1 },
+          { "time": "15:30", "capacity": 2, "booked": 2 }
+        ],
+        "2026-01-02": [
+          { "time": "10:00", "capacity": 2, "booked": 0 },
+          { "time": "14:00", "capacity": 2, "booked": 0 }
+        ],
+        "2026-01-04": [
+          { "time": "10:00", "capacity": 2, "booked": 2 },
+          { "time": "14:00", "capacity": 2, "booked": 0 }
+        ],
+        "2026-01-06": [
+          { "time": "10:00", "capacity": 2, "booked": 0 },
+          { "time": "14:00", "capacity": 2, "booked": 1 }
+        ],
+        "2026-01-09": [
+          { "time": "10:00", "capacity": 2, "booked": 0 },
+          { "time": "14:00", "capacity": 2, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "8",
-      "slug": "tradgardsmagi",
+      "slug": "sitt-med-simon",
       "owner": "simon",
-      "title": "Trädgårdsmagi",
-      "description": "Lär dig odla blommor",
-      "duration": "3h",
-      "price": 330,
-      "image": "/images/experience-test02.webp",
-      "addons": []
+      "title": "Sitt med Simon",
+      "description": "En meditativ sittning med ro och fokus.",
+      "about": "En oväntat kraftfull upplevelse i sin enkelhet. Att sitta med Simon handlar om stillhet, fokus och närvaro. Med sin lugna aura skapar han en meditativ stund där du får landa i nuet, utan krav och utan mål. Bara du, stolen och total världsklass i sittande.",
+      "duration": "45min",
+      "price": 150,
+      "categoryPrices": {
+        "children": 120,
+        "adults": 150,
+        "seniors": 130
+      },
+      "image": "/images/simon2.png",
+      "addons": [],
+      "minGuests": 1,
+      "maxGuests": 12,
+      "allowedCategories": {
+        "children": false,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": [
+        "2025-12-10",
+        "2025-12-12",
+        "2025-12-14",
+        "2025-12-18",
+        "2025-12-19",
+        "2025-12-21",
+        "2025-12-23",
+        "2025-12-27",
+        "2025-12-29",
+        "2025-12-31",
+        "2026-01-03",
+        "2026-01-06",
+        "2026-01-09"
+      ],
+      "schedule": {
+        "2025-12-10": [
+          { "time": "08:00", "capacity": 12, "booked": 3 },
+          { "time": "18:00", "capacity": 12, "booked": 0 }
+        ],
+        "2025-12-12": [
+          { "time": "08:00", "capacity": 12, "booked": 0 },
+          { "time": "18:00", "capacity": 12, "booked": 4 }
+        ],
+        "2025-12-14": [
+          { "time": "09:00", "capacity": 12, "booked": 0 },
+          { "time": "19:00", "capacity": 12, "booked": 0 }
+        ],
+        "2025-12-18": [
+          { "time": "08:00", "capacity": 12, "booked": 6 },
+          { "time": "18:00", "capacity": 12, "booked": 12 }
+        ],
+        "2025-12-19": [
+          { "time": "07:30", "capacity": 10, "booked": 10 },
+          { "time": "20:00", "capacity": 10, "booked": 3 }
+        ],
+        "2025-12-21": [
+          { "time": "09:00", "capacity": 12, "booked": 0 },
+          { "time": "19:00", "capacity": 12, "booked": 9 }
+        ],
+        "2025-12-23": [
+          { "time": "08:00", "capacity": 12, "booked": 1 },
+          { "time": "18:00", "capacity": 12, "booked": 0 }
+        ],
+        "2025-12-27": [
+          { "time": "08:00", "capacity": 12, "booked": 0 },
+          { "time": "18:00", "capacity": 12, "booked": 2 }
+        ],
+        "2025-12-29": [
+          { "time": "08:00", "capacity": 12, "booked": 0 },
+          { "time": "18:00", "capacity": 12, "booked": 0 }
+        ],
+        "2025-12-31": [
+          { "time": "08:00", "capacity": 12, "booked": 4 },
+          { "time": "18:00", "capacity": 12, "booked": 0 }
+        ],
+        "2026-01-03": [
+          { "time": "08:00", "capacity": 12, "booked": 0 },
+          { "time": "18:00", "capacity": 12, "booked": 5 }
+        ],
+        "2026-01-06": [
+          { "time": "08:00", "capacity": 12, "booked": 0 },
+          { "time": "18:00", "capacity": 12, "booked": 0 }
+        ],
+        "2026-01-09": [
+          { "time": "08:00", "capacity": 12, "booked": 2 },
+          { "time": "18:00", "capacity": 12, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "9",
-      "slug": "dans",
+      "slug": "smink-med-simon",
       "owner": "simon",
-      "title": "Dans",
-      "description": "Rytm och rörelse",
-      "duration": "1.5h",
-      "price": 270,
-      "image": "/images/experience-test03.webp",
-      "addons": ["te-fika"]
+      "title": "Smink med Simon",
+      "description": "Lär dig sminktekniker och kreativa looks.",
+      "about": "En kreativ och inspirerande session där teknik möter känsla. Simon guidar dig genom sminkning med ett öga för detaljer och ett sinne för helhet. Oavsett om du vill lära dig grunderna eller testa något nytt blir det en upplevelse där uttryck och självsäkerhet står i fokus.",
+      "duration": "2h",
+      "price": 300,
+      "categoryPrices": {
+        "children": 240,
+        "adults": 300,
+        "seniors": 270
+      },
+      "image": "/images/simon3.png",
+      "addons": [{ "title": "sminkmaterial", "price": 60 }],
+      "minGuests": 1,
+      "maxGuests": 6,
+      "allowedCategories": {
+        "children": true,
+        "adults": true,
+        "seniors": false
+      },
+      "availableDates": [
+        "2025-12-11",
+        "2025-12-13",
+        "2025-12-19",
+        "2025-12-20",
+        "2025-12-22",
+        "2025-12-24",
+        "2025-12-28",
+        "2025-12-29",
+        "2025-12-31",
+        "2026-01-02",
+        "2026-01-04",
+        "2026-01-06",
+        "2026-01-08",
+        "2026-01-10"
+      ],
+      "schedule": {
+        "2025-12-11": [
+          { "time": "16:00", "capacity": 6, "booked": 0 },
+          { "time": "19:30", "capacity": 6, "booked": 1 }
+        ],
+        "2025-12-13": [
+          { "time": "16:00", "capacity": 6, "booked": 2 },
+          { "time": "19:30", "capacity": 6, "booked": 0 }
+        ],
+        "2025-12-19": [
+          { "time": "16:00", "capacity": 6, "booked": 4 },
+          { "time": "19:30", "capacity": 6, "booked": 6 }
+        ],
+        "2025-12-20": [
+          { "time": "16:00", "capacity": 6, "booked": 0 },
+          { "time": "19:30", "capacity": 6, "booked": 0 }
+        ],
+        "2025-12-22": [
+          { "time": "15:00", "capacity": 6, "booked": 0 },
+          { "time": "18:30", "capacity": 6, "booked": 5 }
+        ],
+        "2025-12-24": [
+          { "time": "16:00", "capacity": 6, "booked": 0 },
+          { "time": "19:30", "capacity": 6, "booked": 0 }
+        ],
+        "2025-12-28": [
+          { "time": "13:00", "capacity": 6, "booked": 6 },
+          { "time": "17:30", "capacity": 6, "booked": 2 }
+        ],
+        "2025-12-29": [
+          { "time": "16:00", "capacity": 6, "booked": 0 },
+          { "time": "19:30", "capacity": 6, "booked": 0 }
+        ],
+        "2025-12-31": [
+          { "time": "16:00", "capacity": 6, "booked": 0 },
+          { "time": "19:30", "capacity": 6, "booked": 3 }
+        ],
+        "2026-01-02": [
+          { "time": "16:00", "capacity": 6, "booked": 0 },
+          { "time": "19:30", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-04": [
+          { "time": "16:00", "capacity": 6, "booked": 1 },
+          { "time": "19:30", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-06": [
+          { "time": "16:00", "capacity": 6, "booked": 0 },
+          { "time": "19:30", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-08": [
+          { "time": "16:00", "capacity": 6, "booked": 0 },
+          { "time": "19:30", "capacity": 6, "booked": 2 }
+        ],
+        "2026-01-10": [
+          { "time": "16:00", "capacity": 6, "booked": 0 },
+          { "time": "19:30", "capacity": 6, "booked": 0 }
+        ]
+      }
     },
-
     {
       "id": "10",
-      "slug": "surfing",
+      "slug": "workout-med-antonio",
       "owner": "antonio",
-      "title": "Surfing",
-      "description": "Lär dig surfa på vågorna",
-      "duration": "2h",
-      "price": 400,
-      "image": "/images/experience-test01.webp",
-      "addons": ["meditationsguide", "livsstilscoach"]
+      "title": "Workout med Antonio",
+      "description": "Svettig men rolig träningssession med fokus på styrka, rörlighet och pepp.",
+      "about": "Ett energifyllt träningspass där svett och skratt går hand i hand. Antonio bjuder på pepp, tydliga övningar och en stämning som gör att du orkar lite till. Fokus ligger på att känna sig stark, rörlig och motiverad, snarare än perfekt.",
+      "duration": "1.5h",
+      "price": 350,
+      "categoryPrices": {
+        "adults": 350,
+        "children": 200,
+        "seniors": 250
+      },
+      "image": "/images/antonio_horizontal/antonio_workout_squat.webp",
+      "addons": [{ "title": "handduk", "price": 30 }],
+      "minGuests": 1,
+      "maxGuests": 6,
+      "allowedCategories": {
+        "children": false,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": [
+        "2025-12-10",
+        "2025-12-12",
+        "2025-12-16",
+        "2025-12-20",
+        "2025-12-23",
+        "2025-12-27",
+        "2025-12-29",
+        "2025-12-30",
+        "2026-01-02",
+        "2026-01-04",
+        "2026-01-06",
+        "2026-01-08",
+        "2026-01-10"
+      ],
+      "schedule": {
+        "2025-12-10": [
+          { "time": "09:00", "capacity": 6, "booked": 1 },
+          { "time": "13:00", "capacity": 6, "booked": 0 },
+          { "time": "18:00", "capacity": 6, "booked": 0 }
+        ],
+        "2025-12-12": [
+          { "time": "09:00", "capacity": 6, "booked": 0 },
+          { "time": "13:00", "capacity": 6, "booked": 2 },
+          { "time": "18:00", "capacity": 6, "booked": 0 }
+        ],
+        "2025-12-16": [
+          { "time": "09:00", "capacity": 6, "booked": 0 },
+          { "time": "13:00", "capacity": 6, "booked": 0 },
+          { "time": "18:00", "capacity": 6, "booked": 3 }
+        ],
+        "2025-12-20": [
+          { "time": "09:00", "capacity": 6, "booked": 2 },
+          { "time": "13:00", "capacity": 6, "booked": 6 },
+          { "time": "18:00", "capacity": 6, "booked": 1 }
+        ],
+        "2025-12-23": [
+          { "time": "10:00", "capacity": 4, "booked": 4 },
+          { "time": "17:00", "capacity": 4, "booked": 2 }
+        ],
+        "2025-12-27": [
+          { "time": "08:30", "capacity": 5, "booked": 0 },
+          { "time": "12:00", "capacity": 5, "booked": 3 },
+          { "time": "19:00", "capacity": 5, "booked": 5 }
+        ],
+        "2025-12-29": [
+          { "time": "09:00", "capacity": 6, "booked": 0 },
+          { "time": "13:00", "capacity": 6, "booked": 1 },
+          { "time": "18:00", "capacity": 6, "booked": 0 }
+        ],
+        "2025-12-30": [
+          { "time": "09:00", "capacity": 6, "booked": 0 },
+          { "time": "13:00", "capacity": 6, "booked": 0 },
+          { "time": "18:00", "capacity": 6, "booked": 2 }
+        ],
+        "2026-01-02": [
+          { "time": "09:00", "capacity": 6, "booked": 0 },
+          { "time": "13:00", "capacity": 6, "booked": 0 },
+          { "time": "18:00", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-04": [
+          { "time": "09:00", "capacity": 6, "booked": 3 },
+          { "time": "13:00", "capacity": 6, "booked": 0 },
+          { "time": "18:00", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-06": [
+          { "time": "09:00", "capacity": 6, "booked": 0 },
+          { "time": "13:00", "capacity": 6, "booked": 2 },
+          { "time": "18:00", "capacity": 6, "booked": 0 }
+        ],
+        "2026-01-08": [
+          { "time": "09:00", "capacity": 6, "booked": 0 },
+          { "time": "13:00", "capacity": 6, "booked": 0 },
+          { "time": "18:00", "capacity": 6, "booked": 4 }
+        ],
+        "2026-01-10": [
+          { "time": "09:00", "capacity": 6, "booked": 0 },
+          { "time": "13:00", "capacity": 6, "booked": 0 },
+          { "time": "18:00", "capacity": 6, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "11",
-      "slug": "matfotografi",
+      "slug": "dansa-med-antonio",
       "owner": "antonio",
-      "title": "Matfotografi",
-      "description": "Ta läckra bilder på mat",
+      "title": "Dansa med Antonio",
+      "description": "Lär dig enkla men snygga dansmoves – fokus på glädje, rytm och självkänsla.",
+      "about": "En glädjefylld dansupplevelse där rytm och självkänsla får ta plats. Antonio lär ut enkla men snygga moves och ser till att alla känner sig bekväma på golvet. Det handlar inte om att kunna, utan om att våga och ha kul tillsammans.",
       "duration": "1.5h",
-      "price": 280,
-      "image": "/images/experience-test02.webp",
-      "addons": []
+      "price": 320,
+      "categoryPrices": {
+        "children": 240,
+        "adults": 320,
+        "seniors": 280
+      },
+      "image": "/images/antonio_horizontal/antonio_dancing_salsa.webp",
+      "addons": [{ "title": "danssko", "price": 50 }],
+      "minGuests": 1,
+      "maxGuests": 10,
+      "allowedCategories": {
+        "children": true,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": [
+        "2025-12-10",
+        "2025-12-11",
+        "2025-12-13",
+        "2025-12-15",
+        "2025-12-18",
+        "2025-12-19",
+        "2025-12-21",
+        "2025-12-23",
+        "2025-12-26",
+        "2025-12-29",
+        "2025-12-30",
+        "2026-01-02",
+        "2026-01-04",
+        "2026-01-08",
+        "2026-01-10"
+      ],
+      "schedule": {
+        "2025-12-10": [{ "time": "18:00", "capacity": 8, "booked": 0 }],
+        "2025-12-11": [
+          { "time": "17:30", "capacity": 10, "booked": 0 },
+          { "time": "19:30", "capacity": 10, "booked": 0 }
+        ],
+        "2025-12-13": [
+          { "time": "14:00", "capacity": 8, "booked": 0 },
+          { "time": "18:30", "capacity": 8, "booked": 0 }
+        ],
+        "2025-12-15": [{ "time": "17:00", "capacity": 6, "booked": 0 }],
+
+        "2025-12-18": [
+          { "time": "17:00", "capacity": 10, "booked": 10 },
+          { "time": "19:30", "capacity": 10, "booked": 4 }
+        ],
+
+        "2025-12-19": [
+          { "time": "16:00", "capacity": 10, "booked": 0 },
+          { "time": "19:00", "capacity": 10, "booked": 0 }
+        ],
+
+        "2025-12-21": [
+          { "time": "15:00", "capacity": 8, "booked": 2 },
+          { "time": "20:00", "capacity": 8, "booked": 8 }
+        ],
+
+        "2025-12-23": [{ "time": "18:00", "capacity": 8, "booked": 0 }],
+        "2025-12-26": [
+          { "time": "15:00", "capacity": 10, "booked": 0 },
+          { "time": "20:00", "capacity": 10, "booked": 0 }
+        ],
+
+        "2025-12-29": [{ "time": "18:00", "capacity": 10, "booked": 0 }],
+
+        "2025-12-30": [{ "time": "17:30", "capacity": 8, "booked": 0 }],
+
+        "2026-01-02": [{ "time": "18:00", "capacity": 10, "booked": 0 }],
+        "2026-01-04": [
+          { "time": "16:00", "capacity": 8, "booked": 0 },
+          { "time": "19:00", "capacity": 8, "booked": 0 }
+        ],
+        "2026-01-08": [{ "time": "18:30", "capacity": 10, "booked": 0 }],
+        "2026-01-10": [
+          { "time": "17:00", "capacity": 10, "booked": 0 },
+          { "time": "19:30", "capacity": 10, "booked": 0 }
+        ]
+      }
     },
     {
       "id": "12",
-      "slug": "street-art",
+      "slug": "cocktails-med-antonio",
       "owner": "antonio",
-      "title": "Street Art",
-      "description": "Skapa konst på gatan",
+      "title": "Cocktails med Antonio",
+      "description": "Mixa färgglada mocktails eller cocktails och lär dig bartricks på vägen.",
+      "about": "En social och färgstark upplevelse där smak, teknik och show möts. Antonio lär dig blanda cocktails eller mocktails med både stil och lekfullhet. Perfekt för dig som vill lära dig något nytt, umgås och känna dig lite mer som hemma bakom baren.",
       "duration": "2h",
-      "price": 320,
-      "image": "/images/experience-test03.webp",
-      "addons": []
+      "price": 380,
+      "categoryPrices": {
+        "children": 0,
+        "adults": 380,
+        "seniors": 340
+      },
+      "image": "/images/antonio_horizontal/antonio_mixing_coctail.webp",
+      "addons": [],
+      "minGuests": 2,
+      "maxGuests": 8,
+      "allowedCategories": {
+        "children": false,
+        "adults": true,
+        "seniors": true
+      },
+      "availableDates": [
+        "2025-12-11",
+        "2025-12-13",
+        "2025-12-16",
+        "2025-12-19",
+        "2025-12-20",
+        "2025-12-22",
+        "2025-12-24",
+        "2025-12-27",
+        "2025-12-28",
+        "2025-12-30",
+        "2026-01-01",
+        "2026-01-03",
+        "2026-01-05",
+        "2026-01-07",
+        "2026-01-10"
+      ],
+      "schedule": {
+        "2025-12-11": [{ "time": "19:00", "capacity": 6, "booked": 0 }],
+        "2025-12-13": [
+          { "time": "17:30", "capacity": 8, "booked": 0 },
+          { "time": "20:30", "capacity": 8, "booked": 0 }
+        ],
+        "2025-12-16": [{ "time": "18:00", "capacity": 8, "booked": 0 }],
+
+        "2025-12-19": [
+          { "time": "18:00", "capacity": 8, "booked": 5 },
+          { "time": "21:00", "capacity": 8, "booked": 8 }
+        ],
+
+        "2025-12-20": [
+          { "time": "17:00", "capacity": 8, "booked": 2 },
+          { "time": "20:30", "capacity": 8, "booked": 8 }
+        ],
+
+        "2025-12-22": [
+          { "time": "18:30", "capacity": 8, "booked": 0 },
+          { "time": "21:30", "capacity": 8, "booked": 0 }
+        ],
+        "2025-12-24": [{ "time": "16:00", "capacity": 6, "booked": 0 }],
+
+        "2025-12-27": [{ "time": "19:00", "capacity": 8, "booked": 0 }],
+
+        "2025-12-28": [
+          { "time": "19:00", "capacity": 8, "booked": 0 },
+          { "time": "22:00", "capacity": 8, "booked": 0 }
+        ],
+
+        "2025-12-30": [{ "time": "20:00", "capacity": 8, "booked": 0 }],
+
+        "2026-01-01": [{ "time": "18:00", "capacity": 8, "booked": 0 }],
+        "2026-01-03": [
+          { "time": "17:00", "capacity": 8, "booked": 0 },
+          { "time": "20:00", "capacity": 8, "booked": 0 }
+        ],
+        "2026-01-05": [{ "time": "18:30", "capacity": 8, "booked": 0 }],
+        "2026-01-07": [{ "time": "19:00", "capacity": 8, "booked": 0 }],
+        "2026-01-10": [
+          { "time": "19:30", "capacity": 8, "booked": 0 },
+          { "time": "22:00", "capacity": 8, "booked": 0 }
+        ]
+      }
     }
   ],
-  "addons": [
-    { "slug": "te-fika", "title": "Te och fika", "price": 50 },
-    { "slug": "meditationsguide", "title": "Meditationsguide", "price": 75 },
-    { "slug": "livsstilscoach", "title": "Livsstilscoach", "price": 100 }
-  ],
-  "articles": [
-    {
-      "slug": "yoga-tips",
-      "title": "Så maxar du din yoga-upplevelse",
-      "content": "Tips och tricks för att få ut det mesta av din yoga-session."
-    },
-    {
-      "slug": "maleri-nyborjare",
-      "title": "Måleri för nybörjare",
-      "content": "Inspirerande idéer och steg-för-steg-guide för kreativa måleri-upplevelser."
-    },
-    {
-      "slug": "kajak-solnedgang",
-      "title": "Kajakäventyr i solnedgången",
-      "content": "Planera din tur och få bästa tips för paddling vid solnedgång."
-    }
-  ]
+  "articles": []
 }

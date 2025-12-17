@@ -95,7 +95,7 @@
                 :selectedTime="selectedTime"
                 :guestCount="totalGuests"
                 :editMode="editMode"
-                :currentBookingGuests="editMode ? (adults + children + seniors) : 0"
+                :cartItemIndex="cartItemIndex"
                 @select="onTimeSelect"
               />
               <p v-else class="no-date-message">
@@ -345,7 +345,6 @@ const emit = defineEmits<{
       children: number;
       seniors: number;
       addons: Array<{
-        slug: string;
         title: string;
         price: number;
         quantity: number;
@@ -962,11 +961,10 @@ const handleConfirm = () => {
         (a) => a.title === title || a.slug === title
       );
       return addon
-        ? { slug: addon.slug, title: addon.title, price: addon.price, quantity }
+        ? { title: addon.title, price: addon.price, quantity }
         : null;
     })
     .filter(Boolean) as Array<{
-    slug: string;
     title: string;
     price: number;
     quantity: number;

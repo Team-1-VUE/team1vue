@@ -9,7 +9,8 @@
         <button class="modal-close" @click="$emit('close')">×</button>
 
         <div class="modal-header">
-          <h2>Boka upplevelse</h2>
+          <h2 v-if="editMode">Redigera bokning</h2>
+          <h2 v-else>Boka upplevelse</h2>
           <p class="modal-subtitle">{{ experience?.title }}</p>
         </div>
 

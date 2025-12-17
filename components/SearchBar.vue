@@ -97,22 +97,17 @@ const onSubmit = (event: Event) => {
             v-model="selectedDateObj"
             :min-date="minDateObj"
             :popover="{ visibility: 'click' }"
-            is-required="false">
+            >
             <template #default="{ inputValue, inputEvents }">
               <input
                 class="date-input"
                 :value="inputValue"
                 v-on="inputEvents"
-                placeholder="Välj datum (valfritt)"
+                placeholder="Välj datum"
                 readonly />
             </template>
           </VDatePicker>
         </ClientOnly>
-
-        <!-- fallback (optional) if you want something during SSR) -->
-        <noscript>
-          <input class="date-input" type="date" :min="minDate" />
-        </noscript>
       </div>
 
       <div class="field">

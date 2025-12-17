@@ -2,8 +2,13 @@
   <nav class="navbar">
     <div class="navbar-container">
       <!-- Logo -->
-      <NuxtLink to="/" class="navbar-logo" @click="closeMenu">
-        Team uno
+      <NuxtLink to="/" @click="closeMenu">
+        <img
+          src="/public/images/team1.png"
+          alt="logo"
+          width="160"
+          height="50"
+        />
       </NuxtLink>
 
       <!-- ================= DESKTOP NAV ================= -->
@@ -157,18 +162,6 @@ onMounted(async () => {
   gap: var(--spacing-md);
 }
 
-/* Logo */
-.navbar-logo {
-  flex: 0 0 auto;
-  font-size: 1.4rem;
-  font-weight: 800;
-  text-decoration: none;
-  background: var(--gradient-text);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
 /* =========================
    RESPONSIVE SWITCH
 ========================= */
@@ -225,10 +218,9 @@ onMounted(async () => {
 }
 .navbar-menu li a:hover,
 .navbar-menu li a.active {
-  background-color: var(--hover-color);
   cursor: pointer;
   color: white;
-  background-color: var(--secondary-color);
+  background-color: var(--primary-color);
   scale: 1.05;
 }
 .navbar-menu li a[href="/kundkorg"]:hover,
@@ -241,7 +233,7 @@ onMounted(async () => {
   top: -5px;
   right: -10px;
   display: inline-block;
-  background: #ef4444;
+  background: var(--gradient-bg);
   color: white;
   border-radius: 50%;
   width: 20px;
@@ -415,6 +407,7 @@ onMounted(async () => {
 }
 
 .drawer-list a {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -432,10 +425,13 @@ onMounted(async () => {
 
 .drawer-list a:hover,
 .drawer-list a.active {
-  background: var(--secondary-color);
+  background: var(--primary-color);
   color: #fff;
 }
-
+.drawer-list .cart-badge {
+  position: static;
+  margin-left: auto;
+}
 .drawer-list a:active {
   transform: scale(0.99);
 }

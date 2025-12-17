@@ -59,7 +59,7 @@ export function useExperiences() {
 
   onMounted(async () => {
     try {
-      const res = await fetch("/data2.json");
+      const res = await fetch("/data.json");
       data.value = await res.json();
     } catch (err) {
       console.error(err);

@@ -703,14 +703,83 @@ const availableDateObjects = computed(() =>
   availableDates.value.map((d) => new Date(`${d}T12:00:00`))
 );
 
-// Highlight available dates
-const calendarAttrs = computed(() => [
-  {
-    key: "available",
-    dates: availableDateObjects.value,
-    highlight: true,
-  },
-]);
+// Get today's date object for comparison
+const todayDate = computed(() => {
+  const today = new Date();
+  today.setHours(12, 0, 0, 0);
+  return today;
+});
+
+// Split available dates into past and future
+const pastAvailableDates = computed(() => 
+  availableDateObjects.value.filter(d => d < todayDate.value)
+);
+
+const futureAvailableDates = computed(() => 
+  availableDateObjects.value.filter(d => d >= todayDate.value)
+);
+
+// Check if today is an available date
+const isTodayAvailable = computed(() => 
+  availableDateObjects.value.some(d => 
+    d.getFullYear() === todayDate.value.getFullYear() &&
+    d.getMonth() === todayDate.value.getMonth() &&
+    d.getDate() === todayDate.value.getDate()
+  )
+);
+
+// Highlight available dates with different styling
+const calendarAttrs = computed(() => {
+  const attrs = [];
+  
+  // Past available dates - grayed out
+  if (pastAvailableDates.value.length > 0) {
+    attrs.push({
+      key: "past-available",
+      dates: pastAvailableDates.value,
+      highlight: {
+        class: "past-available-date",
+        contentClass: "past-available-content",
+      },
+    });
+  }
+  
+  // Future available dates - blue filled background
+  if (futureAvailableDates.value.length > 0) {
+    attrs.push({
+      key: "future-available",
+      dates: futureAvailableDates.value,
+      highlight: {
+        class: "available-date",
+        contentClass: "available-content",
+      },
+    });
+  }
+  
+  // Current date - circular border (applies on top of available styling if applicable)
+  attrs.push({
+    key: "today",
+    dates: todayDate.value,
+    highlight: {
+      class: "today-date",
+      contentClass: "today-content",
+    },
+  });
+  
+  // Selected date - darker blue with glow
+  if (selectedDateObj.value) {
+    attrs.push({
+      key: "selected",
+      dates: selectedDateObj.value,
+      highlight: {
+        class: "selected-date",
+        contentClass: "selected-content",
+      },
+    });
+  }
+  
+  return attrs;
+});
 
 // Modal open watcher
 watch(
@@ -1342,6 +1411,45 @@ const handleConfirm = () => {
 .btn--primary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Calendar Date Styling */
+:deep(.past-available-date) {
+  background-color: #e5e7eb !important;
+}
+
+:deep(.past-available-content) {
+  color: #9ca3af !important;
+  font-weight: 500;
+}
+
+:deep(.available-date) {
+  background-color: #dbeafe !important;
+}
+
+:deep(.available-content) {
+  color: #1e40af !important;
+  font-weight: 600;
+}
+
+:deep(.today-date) {
+  background-color: #dbeafe !important;
+  border: 2px solid #2563eb !important;
+}
+
+:deep(.today-content) {
+  color: #1e40af !important;
+  font-weight: 700 !important;
+}
+
+:deep(.selected-date) {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  transform: scale(1.15);
+}
+
+:deep(.selected-content) {
+  color: #ffffff !important;
+  font-weight: 700 !important;
 }
 
 /* Mobile Responsiveness */

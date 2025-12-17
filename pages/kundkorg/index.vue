@@ -21,14 +21,16 @@
         <div
           v-for="(item, index) in cartStore.items"
           :key="`${item.id}-${index}`"
-          class="cart-item">
+          class="cart-item"
+        >
           <div class="cart-item__container" @click="handleEditItem(index)">
             <!-- Image -->
             <div class="cart-item__image-container">
               <img
                 :src="item.image"
                 :alt="item.title"
-                class="cart-item__image" />
+                class="cart-item__image"
+              />
             </div>
 
             <!-- Details -->
@@ -36,7 +38,9 @@
               <!-- Title & Owner -->
               <div class="details-header">
                 <h3 class="item-title">{{ item.title }}</h3>
-                <span class="badge-owner">med {{ capitalize(item.owner) }}</span>
+                <span class="badge-owner"
+                  >med {{ capitalize(item.owner) }}</span
+                >
               </div>
 
               <!-- Date & Time -->
@@ -53,28 +57,42 @@
 
               <!-- Guest Badges -->
               <div v-if="item.guestCounts" class="guest-badges">
-                <span v-if="item.guestCounts.adults > 0" class="badge badge-guest">
+                <span
+                  v-if="item.guestCounts.adults > 0"
+                  class="badge badge-guest"
+                >
                   {{ item.guestCounts.adults }} × Vuxna
                 </span>
-                <span v-if="item.guestCounts.children > 0" class="badge badge-guest">
+                <span
+                  v-if="item.guestCounts.children > 0"
+                  class="badge badge-guest"
+                >
                   {{ item.guestCounts.children }} × Barn
                 </span>
-                <span v-if="item.guestCounts.seniors > 0" class="badge badge-guest">
+                <span
+                  v-if="item.guestCounts.seniors > 0"
+                  class="badge badge-guest"
+                >
                   {{ item.guestCounts.seniors }} × Senior
                 </span>
               </div>
 
               <!-- Addon Badges (always rendered for consistent spacing) -->
               <div class="addon-badges">
-                <template v-if="item.selectedAddons && item.selectedAddons.length > 0">
+                <template
+                  v-if="item.selectedAddons && item.selectedAddons.length > 0"
+                >
                   <span
                     v-for="(addon, addonIndex) in item.selectedAddons"
                     :key="`addon-${addonIndex}-${addon.title}`"
-                    class="badge badge-addon">
+                    class="badge badge-addon"
+                  >
                     {{ addon.quantity }} x {{ capitalize(addon.title) }}
                   </span>
                 </template>
-                <span v-else class="badge badge-addon badge-placeholder">&nbsp;</span>
+                <span v-else class="badge badge-addon badge-placeholder"
+                  >&nbsp;</span
+                >
               </div>
             </div>
 
@@ -85,19 +103,48 @@
                 <div v-if="item.guestCounts" class="price-details">
                   <div v-if="item.guestCounts.adults > 0" class="price-line">
                     <span>{{ item.guestCounts.adults }} vuxna</span>
-                    <span>{{ (item.categoryPrices?.adults ?? item.price) * item.guestCounts.adults }} kr</span>
+                    <span
+                      >{{
+                        (item.categoryPrices?.adults ?? item.price) *
+                        item.guestCounts.adults
+                      }}
+                      kr</span
+                    >
                   </div>
                   <div v-if="item.guestCounts.children > 0" class="price-line">
                     <span>{{ item.guestCounts.children }} barn</span>
-                    <span>{{ (item.categoryPrices?.children ?? item.price) * item.guestCounts.children }} kr</span>
+                    <span
+                      >{{
+                        (item.categoryPrices?.children ?? item.price) *
+                        item.guestCounts.children
+                      }}
+                      kr</span
+                    >
                   </div>
                   <div v-if="item.guestCounts.seniors > 0" class="price-line">
                     <span>{{ item.guestCounts.seniors }} senior</span>
-                    <span>{{ (item.categoryPrices?.seniors ?? item.price) * item.guestCounts.seniors }} kr</span>
+                    <span
+                      >{{
+                        (item.categoryPrices?.seniors ?? item.price) *
+                        item.guestCounts.seniors
+                      }}
+                      kr</span
+                    >
                   </div>
-                  <div v-if="item.selectedAddons && item.selectedAddons.length > 0" class="price-line">
+                  <div
+                    v-if="item.selectedAddons && item.selectedAddons.length > 0"
+                    class="price-line"
+                  >
                     <span>Tillval</span>
-                    <span>{{ item.selectedAddons.reduce((sum, a) => sum + a.price * (a.quantity || 1), 0) }} kr</span>
+                    <span
+                      >{{
+                        item.selectedAddons.reduce(
+                          (sum, a) => sum + a.price * (a.quantity || 1),
+                          0
+                        )
+                      }}
+                      kr</span
+                    >
                   </div>
                 </div>
                 <div class="price-total">
@@ -111,13 +158,15 @@
                 <button
                   @click.stop="handleEditItem(index)"
                   class="btn-edit"
-                  title="Redigera">
+                  title="Redigera"
+                >
                   <Edit :size="20" />
                 </button>
                 <button
                   @click.stop="cartStore.removeFromCart(index)"
                   class="btn-remove"
-                  title="Ta bort">
+                  title="Ta bort"
+                >
                   <Trash2 :size="20" />
                 </button>
               </div>
@@ -149,13 +198,21 @@
         :initialDate="cartStore.items[editingItemIndex]?.bookingDate || ''"
         :initialTime="cartStore.items[editingItemIndex]?.bookingTime || ''"
         :adults="cartStore.items[editingItemIndex]?.guestCounts?.adults || 1"
-        :children="cartStore.items[editingItemIndex]?.guestCounts?.children || 0"
+        :children="
+          cartStore.items[editingItemIndex]?.guestCounts?.children || 0
+        "
         :seniors="cartStore.items[editingItemIndex]?.guestCounts?.seniors || 0"
-        :initialAddons="cartStore.items[editingItemIndex]?.selectedAddons?.map(a => ({ title: a.title, quantity: a.quantity })) || []"
+        :initialAddons="
+          cartStore.items[editingItemIndex]?.selectedAddons?.map((a) => ({
+            title: a.title,
+            quantity: a.quantity,
+          })) || []
+        "
         :editMode="true"
         :cartItemIndex="editingItemIndex"
         @update="handleUpdateBooking"
-        @close="handleCloseEditModal" />
+        @close="handleCloseEditModal"
+      />
     </div>
   </div>
 </template>
@@ -163,7 +220,14 @@
 <script setup lang="ts">
 import { toRaw } from "vue";
 
-import { Calendar, ShoppingCart, Compass, Trash2, Edit, Clock } from "lucide-vue-next";
+import {
+  Calendar,
+  ShoppingCart,
+  Compass,
+  Trash2,
+  Edit,
+  Clock,
+} from "lucide-vue-next";
 import { useCartStore } from "~/stores/useCartStore";
 import { useExperiences } from "~/composables/useExperiences";
 import BookingModal from "~/components/BookingModal.vue";
@@ -206,7 +270,7 @@ const handleUpdateBooking = (payload: {
 
   // Find the experience by ID
   const experience = getExperienceById(item.id);
-  
+
   if (!experience) {
     // Experience not found - remove invalid cart item
     console.warn(`Experience with id ${item.id} not found, removing from cart`);
@@ -315,19 +379,19 @@ const handleCheckout = () => {
   min-height: 400px;
   background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
   border-radius: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow);
 }
 
 .empty-cart__icon {
   width: 120px;
   height: 120px;
-  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  background: var(--background-color);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 2rem;
-  color: #9ca3af;
+  color: var(--primary-color);
   animation: floatIcon 3s ease-in-out infinite;
 }
 
@@ -344,14 +408,14 @@ const handleCheckout = () => {
 .empty-cart__title {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--text-color);
   margin: 0 0 0.75rem 0;
   letter-spacing: -0.02em;
 }
 
 .empty-cart__text {
   font-size: 1rem;
-  color: #6b7280;
+  color: var(--text-color);
   margin: 0 0 2rem 0;
   max-width: 400px;
   line-height: 1.6;
@@ -366,6 +430,7 @@ const handleCheckout = () => {
   font-size: 1rem;
   width: 100%;
   max-width: 400px;
+  background: var(--gradient-bg);
 }
 
 .cart-items {
@@ -430,17 +495,17 @@ const handleCheckout = () => {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--text-color);
 }
 
 .badge-owner {
   display: inline-block;
   padding: 0.25rem 0.75rem;
   background: transparent;
-  border: 1px solid #9ca3af;
+  border: 1px solid var(--text-color2);
   border-radius: 6px;
   font-size: 0.813rem;
-  color: #6b7280;
+  color: var(--text-color2);
   width: fit-content;
 }
 
@@ -457,7 +522,7 @@ const handleCheckout = () => {
   gap: 0.375rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #1a1a1a;
+  color: var(--text-color2);
 }
 
 .booking-info__item :deep(svg) {
@@ -524,7 +589,7 @@ const handleCheckout = () => {
   display: flex;
   justify-content: space-between;
   font-size: 0.813rem;
-  color: #6b7280;
+  color: var(--text-color2);
 }
 
 .price-total {
@@ -534,13 +599,13 @@ const handleCheckout = () => {
   margin-top: 0.5rem;
   border-top: 1px solid #e5e7eb;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--text-color);
 }
 
 .total-amount {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--text-color);
 }
 
 .action-buttons {
@@ -617,7 +682,7 @@ const handleCheckout = () => {
 
 .total-price {
   font-size: 1.5rem;
-  color: #1a1a1a;
+  color: var(--text-color);
 }
 
 .btn {
@@ -635,12 +700,11 @@ const handleCheckout = () => {
 }
 
 .btn--primary {
-  background: #1a1a1a;
+  background: var(--gradient-bg);
   color: white;
 }
 
 .btn--primary:hover {
-  background: #000;
   transform: translateY(-2px);
 }
 

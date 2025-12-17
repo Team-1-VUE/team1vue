@@ -610,7 +610,10 @@
         "seniors": 480
       },
       "image": "/images/simon1.png",
-      "addons": [],
+      "addons": [
+        { "title": "Säkerhetsbälte", "price": 200 },
+        { "title": "livsförsäkring", "price": 3000 }
+      ],
       "minGuests": 1,
       "maxGuests": 2,
       "allowedCategories": {

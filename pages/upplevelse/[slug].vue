@@ -23,32 +23,51 @@
             <img
               class="experience-image"
               :src="experience.image"
-              :alt="experience.title" />
+              :alt="experience.title"
+            />
 
             <!-- Capacity and category badges || Max and Min guests are required hence no conditional -->
             <div class="capacity-section">
-
-              <Tooltip :content="`För grupper mellan ${experience.minGuests} och ${experience.maxGuests} personer`">
+              <Tooltip
+                :content="`För grupper mellan ${experience.minGuests} och ${experience.maxGuests} personer`"
+              >
                 <div class="capacity-badge">
                   <Users :size="20" class="badge-icon" />
                   <span class="capacity-text">
-                    {{ experience.minGuests }}{{ experience.maxGuests !== experience.minGuests ? `-${experience.maxGuests}` : '' }} pers
+                    {{ experience.minGuests
+                    }}{{
+                      experience.maxGuests !== experience.minGuests
+                        ? `-${experience.maxGuests}`
+                        : ""
+                    }}
+                    pers
                   </span>
                 </div>
               </Tooltip>
 
-              <Tooltip v-if="experience.allowedCategories?.children" content="Prisvärt för de små">
-                <div v-if="experience.allowedCategories?.children" class="category-badge category-badge--children">
+              <Tooltip
+                v-if="experience.allowedCategories?.children"
+                content="Prisvärt för de små"
+              >
+                <div
+                  v-if="experience.allowedCategories?.children"
+                  class="category-badge category-badge--children"
+                >
                   <Baby :size="20" class="badge-icon" />
                 </div>
               </Tooltip>
 
-              <Tooltip v-if="experience.allowedCategories?.seniors" content="Prisvärt för seniorer">
-                <div v-if="experience.allowedCategories?.seniors" class="category-badge category-badge--seniors">
+              <Tooltip
+                v-if="experience.allowedCategories?.seniors"
+                content="Prisvärt för seniorer"
+              >
+                <div
+                  v-if="experience.allowedCategories?.seniors"
+                  class="category-badge category-badge--seniors"
+                >
                   <HatGlasses :size="20" class="badge-icon" />
                 </div>
               </Tooltip>
-
             </div>
           </div>
 
@@ -85,24 +104,26 @@
 
           <!-- Price section -->
           <div class="price-section">
-            <p class="price-label">{{ experience.addons?.length ? "Från" : "Pris" }}</p>
+            <p class="price-label">
+              {{ experience.addons?.length ? "Från" : "Pris" }}
+            </p>
             <div class="price-display">
               <span class="price-current">{{ experience.price }} kr</span>
             </div>
-            <div
-              v-if="experience.categoryPrices"
-              class="price-per-category">
+            <div v-if="experience.categoryPrices" class="price-per-category">
               <span class="price-pill price-pill--adult">
                 Vuxen: {{ experience.categoryPrices.adults }} kr
               </span>
               <span
                 v-if="experience.allowedCategories.children"
-                class="price-pill price-pill--children">
+                class="price-pill price-pill--children"
+              >
                 Barn: {{ experience.categoryPrices.children }} kr
               </span>
               <span
                 v-if="experience.allowedCategories.seniors"
-                class="price-pill price-pill--seniors">
+                class="price-pill price-pill--seniors"
+              >
                 Senior: {{ experience.categoryPrices.seniors }} kr
               </span>
             </div>
@@ -118,7 +139,11 @@
           <div v-if="experience.addons?.length" class="addons-section">
             <h3 class="addons-title">Tillval</h3>
             <ul class="addons-list">
-              <li v-for="(addon, index) in experience.addons" :key="index" class="addon-item">
+              <li
+                v-for="(addon, index) in experience.addons"
+                :key="index"
+                class="addon-item"
+              >
                 <span class="addon-title">{{ capitalize(addon.title) }}</span>
                 <span class="addon-price">+{{ addon.price }} kr/gäst</span>
               </li>
@@ -131,9 +156,7 @@
             <ShoppingBag :size="20" class="button-icon" />
           </button>
 
-          <p class="booking-note">
-            Du slutför bokningen i nästa steg.
-          </p>
+          <p class="booking-note">Du slutför bokningen i nästa steg.</p>
         </section>
       </main>
 
@@ -145,7 +168,8 @@
         :adults="Number(route.query.adults ?? 1)"
         :children="Number(route.query.children ?? 0)"
         :seniors="Number(route.query.seniors ?? 0)"
-        @close="showModal = false" />
+        @close="showModal = false"
+      />
     </template>
 
     <!-- Not found -->
@@ -161,7 +185,14 @@ import { useRoute } from "vue-router";
 import { useExperiences } from "~/composables/useExperiences";
 import { capitalize } from "~/utils/string";
 import BookingModal from "~/components/BookingModal.vue";
-import { ArrowLeft, Users, MapPin, ShoppingBag, Baby, HatGlasses } from "lucide-vue-next";
+import {
+  ArrowLeft,
+  Users,
+  MapPin,
+  ShoppingBag,
+  Baby,
+  HatGlasses,
+} from "lucide-vue-next";
 
 const route = useRoute();
 const slug = route.params.slug as string;
@@ -335,7 +366,7 @@ const showModal = ref(false);
   font-size: 2rem;
   font-weight: 800;
   line-height: 1.2;
-  color: #111827;
+  color: var(--text-color);
 }
 
 /* Features list */
@@ -517,7 +548,7 @@ const showModal = ref(false);
   justify-content: center;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  background-color: #000000;
+  background: var(--gradient-bg);
   color: #ffffff;
   border: none;
   border-radius: 12px;
@@ -529,7 +560,6 @@ const showModal = ref(false);
 }
 
 .booking-button:hover {
-  background-color: #1a1a1a;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }

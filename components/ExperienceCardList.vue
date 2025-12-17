@@ -15,28 +15,46 @@
       <template #badges>
         <!-- Capacity and category badges || Max and Min guests are required hence no conditional -->
         <div class="capacity-section">
-
-          <Tooltip :content="`För grupper mellan ${experience.minGuests} och ${experience.maxGuests} personer`">
+          <Tooltip
+            :content="`För grupper mellan ${experience.minGuests} och ${experience.maxGuests} personer`"
+          >
             <div class="capacity-badge">
               <Users :size="20" class="badge-icon" />
               <span class="capacity-text">
-                {{ experience.minGuests }}{{ experience.maxGuests !== experience.minGuests ? `-${experience.maxGuests}` : '' }} pers
+                {{ experience.minGuests
+                }}{{
+                  experience.maxGuests !== experience.minGuests
+                    ? `-${experience.maxGuests}`
+                    : ""
+                }}
+                pers
               </span>
             </div>
           </Tooltip>
 
-          <Tooltip v-if="experience.allowedCategories?.children" content="Prisvärt för de små">
-            <div v-if="experience.allowedCategories?.children" class="category-badge category-badge--children">
+          <Tooltip
+            v-if="experience.allowedCategories?.children"
+            content="Prisvärt för de små"
+          >
+            <div
+              v-if="experience.allowedCategories?.children"
+              class="category-badge category-badge--children"
+            >
               <Baby :size="20" class="badge-icon" />
             </div>
           </Tooltip>
 
-          <Tooltip v-if="experience.allowedCategories?.seniors" content="Prisvärt för seniorer">
-            <div v-if="experience.allowedCategories?.seniors" class="category-badge category-badge--seniors">
+          <Tooltip
+            v-if="experience.allowedCategories?.seniors"
+            content="Prisvärt för seniorer"
+          >
+            <div
+              v-if="experience.allowedCategories?.seniors"
+              class="category-badge category-badge--seniors"
+            >
               <HatGlasses :size="20" class="badge-icon" />
             </div>
           </Tooltip>
-
         </div>
       </template>
 
@@ -47,18 +65,21 @@
           <p class="addons-label">Tillval inkluderar:</p>
           <div class="addon-tags">
             <span
-            v-for="(addon, index) in experience.addons"
-            :key="index"
-            class="addon-tag">
-            {{ capitalize(addon.title) }}
-          </span>
+              v-for="(addon, index) in experience.addons"
+              :key="index"
+              class="addon-tag"
+            >
+              {{ capitalize(addon.title) }}
+            </span>
           </div>
         </div>
       </template>
 
       <template #footer>
         <div class="price-section">
-          <span class="price-label">{{ experience.addons?.length ? 'PRIS FRÅN' : 'PRIS' }}</span>
+          <span class="price-label">{{
+            experience.addons?.length ? "PRIS FRÅN" : "PRIS"
+          }}</span>
           <span class="price-value">{{ experience.price }} kr</span>
         </div>
 
@@ -66,7 +87,7 @@
           <NuxtLink
             :to="{
               path: `/upplevelse/${experience.slug}`,
-              query: route.query
+              query: route.query,
             }"
             class="btn btn--secondary"
           >
@@ -97,26 +118,28 @@
 </template>
 
 <script setup lang="ts">
-import { type LocationQueryRaw, useRoute } from 'vue-router'
-import { useExperiences, type Experience } from '~/composables/useExperiences'
-import Card from '~/components/Card.vue'
-import BookingModal from '~/components/BookingModal.vue'
-import { Baby, HatGlasses, Users } from 'lucide-vue-next';
+import { type LocationQueryRaw, useRoute } from "vue-router";
+import { useExperiences, type Experience } from "~/composables/useExperiences";
+import Card from "~/components/Card.vue";
+import BookingModal from "~/components/BookingModal.vue";
+import { Baby, HatGlasses, Users } from "lucide-vue-next";
 
 const props = defineProps<{
-  experiences?: Experience[]
-  query?: LocationQueryRaw
-}>()
+  experiences?: Experience[];
+  query?: LocationQueryRaw;
+}>();
 
-const route = useRoute()
-const name = route.params.name as string
+const route = useRoute();
+const name = route.params.name as string;
 
-const { getProfileExperiences } = useExperiences()
+const { getProfileExperiences } = useExperiences();
 
-const experiencesFromProfile = computed(() => getProfileExperiences(name))
-const list = computed(() => props.experiences ?? experiencesFromProfile.value ?? [])
+const experiencesFromProfile = computed(() => getProfileExperiences(name));
+const list = computed(
+  () => props.experiences ?? experiencesFromProfile.value ?? []
+);
 
-const showModal = ref<null | typeof list.value[0]>(null)
+const showModal = ref<null | (typeof list.value)[0]>(null);
 </script>
 
 <style scoped>
@@ -135,7 +158,7 @@ const showModal = ref<null | typeof list.value[0]>(null)
 .addons-label {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--text-color2);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin: 0 0 0.5rem 0;
@@ -153,7 +176,7 @@ const showModal = ref<null | typeof list.value[0]>(null)
   padding: 0.375rem 0.75rem;
   border-radius: 8px;
   font-size: 0.8125rem;
-  color: #374151;
+  color: var(--text-color);
   font-weight: 500;
 }
 
@@ -167,14 +190,14 @@ const showModal = ref<null | typeof list.value[0]>(null)
 .price-label {
   font-size: 0.75rem;
   font-weight: 700;
-  color: #9ca3af;
+  color: var(--text-color2);
   letter-spacing: 0.1em;
 }
 
 .price-value {
   font-size: 1.75rem;
   font-weight: 800;
-  color: #1a1a1a;
+  color: var(--text-color);
   letter-spacing: -0.02em;
 }
 
@@ -198,24 +221,24 @@ const showModal = ref<null | typeof list.value[0]>(null)
 }
 
 .btn--secondary {
-  background: #f9fafb;
-  color: #374151;
-  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  color: var(--text-color);
+  box-shadow: inset 0 0 0 2px var(--primary-color);
 }
 
 .btn--secondary:hover {
   background: #f3f4f6;
   border-color: #d1d5db;
+  transform: translateY(-2px);
 }
 
 .btn--primary {
-  background: #1a1a1a;
+  background: var(--gradient-bg);
   color: #fff;
   box-shadow: 0 4px 12px rgba(26, 26, 26, 0.15);
 }
 
 .btn--primary:hover:not(:disabled) {
-  background: #000;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(26, 26, 26, 0.25);
 }

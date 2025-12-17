@@ -45,10 +45,13 @@ const today = getTodayString();
 
 // Initiera filters från query params
 const filters = ref<SearchFilters>({
-  date: (route.query.date as string) ?? today,
-  adults: Number(route.query.adults ?? 1),
-  children: Number(route.query.children ?? 0),
-  seniors: Number(route.query.seniors ?? 0),
+  date: typeof route.query.date === "string" ? route.query.date : "",
+  adults:
+    typeof route.query.adults === "string" ? Number(route.query.adults) : 0,
+  children:
+    typeof route.query.children === "string" ? Number(route.query.children) : 0,
+  seniors:
+    typeof route.query.seniors === "string" ? Number(route.query.seniors) : 0,
 });
 
 // Watch, om valt datum saknar experiences, hoppa till nästa lediga
@@ -59,14 +62,15 @@ watch(
   ([exps, currentDate]) => {
     if (!exps || !exps.length) return;
 
+    if (!currentDate) return;
+
     // Om det fanns resultat för detta datum → ändra inget
     if (filteredExperiences.value.length > 0) {
       autoAdjustedDate.value = null;
       return;
     }
 
-    // Om detta datum redan autojusterats → gör inget
-    // (annars risk för loop)
+    // Om detta datum redan autojusterats → gör inget (annars risk för loop)
     const next = findNextAvailableDate(exps as Experience[]);
     if (!next) return;
 
@@ -78,19 +82,18 @@ watch(
   { immediate: true }
 );
 
-// Watch filters and update URL automatically
 watch(
   filters,
   (value) => {
-    router.push({
-      path: "/upplevelse",
-      query: {
-        date: value.date,
-        adults: String(value.adults),
-        children: String(value.children),
-        seniors: String(value.seniors),
-      },
-    });
+    const query: Record<string, string> = {
+      adults: String(value.adults),
+      children: String(value.children),
+      seniors: String(value.seniors),
+    };
+
+    if (value.date) query.date = value.date; // endast om vald
+
+    router.push({ path: "/upplevelse", query });
   },
   { deep: true }
 );

@@ -15,262 +15,302 @@
         </div>
 
         <div class="modal-body">
-        <!-- SECTION 1: Calendar (Date Picker) -->
-        <div class="collapsible-section" :class="{ 'section-expanded': calendarExpanded }">
-          <div 
-            class="section-header"
-            @click="toggleCalendar"
-            @keydown.enter="toggleCalendar"
-            @keydown.space.prevent="toggleCalendar"
-            role="button"
-            tabindex="0"
-            :aria-expanded="calendarExpanded"
-            aria-controls="calendar-content"
+          <!-- SECTION 1: Calendar (Date Picker) -->
+          <div
+            class="collapsible-section"
+            :class="{ 'section-expanded': calendarExpanded }"
           >
-            <div class="section-header-left">
-              <Calendar :size="20" />
-              <span class="section-title">Datum</span>
-            </div>
-            <div class="section-header-right">
-              <span class="section-preview">{{ calendarPreview }}</span>
-              <ChevronDown v-if="!calendarExpanded" :size="20" />
-              <ChevronUp v-else :size="20" />
-            </div>
-          </div>
-
-          <Transition name="collapse">
-            <div v-show="calendarExpanded" id="calendar-content" class="section-content">
-              <VDatePicker
-                v-model="selectedDateObj"
-                :min-date="minDateObj"
-                :available-dates="availableDateObjects"
-                :attributes="calendarAttrs"
-                is-required
-                expanded
-              />
-
-              <p
-                v-if="!availableDates.length"
-                class="validation-error"
-                style="margin-top: 0.75rem"
-              >
-                Inga tillgängliga datum för denna upplevelse.
-              </p>
-            </div>
-          </Transition>
-        </div>
-
-        <!-- SECTION 2: Time Slots - Always shown but disabled if no date -->
-        <div class="collapsible-section" :class="{ 'section-disabled': !selectedDate, 'section-expanded': timeSlotsExpanded }">
-          <div 
-            class="section-header"
-            @click="toggleTimeSlots"
-            @keydown.enter="toggleTimeSlots"
-            @keydown.space.prevent="toggleTimeSlots"
-            role="button"
-            tabindex="0"
-            :aria-expanded="timeSlotsExpanded"
-            aria-controls="timeslots-content"
-          >
-            <div class="section-header-left">
-              <Clock :size="20" />
-              <span class="section-title">Tid</span>
-            </div>
-            <div class="section-header-right">
-              <span class="section-preview">{{ timeSlotsPreview }}</span>
-              <ChevronDown v-if="!timeSlotsExpanded" :size="20" />
-              <ChevronUp v-else :size="20" />
-            </div>
-          </div>
-
-          <Transition name="collapse">
-            <div v-show="timeSlotsExpanded" id="timeslots-content" class="section-content">
-              <p v-if="timeSlotWarning" class="validation-error" style="margin-bottom: 1rem;">
-                {{ timeSlotWarning }}
-              </p>
-              <TimeSlotList
-                v-if="selectedDate"
-                :experience="experience"
-                :selectedDate="selectedDate"
-                :selectedTime="selectedTime"
-                :guestCount="totalGuests"
-                :editMode="editMode"
-                :cartItemIndex="cartItemIndex"
-                @select="onTimeSelect"
-              />
-              <p v-else class="no-date-message">
-                Välj ett datum först för att se tillgängliga tider
-              </p>
-            </div>
-          </Transition>
-        </div>
-
-        <!-- SECTION 3: Guests & Addons (Combined) -->
-        <div class="collapsible-section" :class="{ 'section-expanded': guestAndAddonsExpanded }">
-          <div 
-            class="section-header"
-            @click="toggleGuestAndAddons"
-            @keydown.enter="toggleGuestAndAddons"
-            @keydown.space.prevent="toggleGuestAndAddons"
-            role="button"
-            tabindex="0"
-            :aria-expanded="guestAndAddonsExpanded"
-            aria-controls="guests-addons-content"
-          >
-            <div class="section-header-left">
-              <Users :size="20" />
-              <span class="section-title">Gäster & Tillval</span>
-            </div>
-            <div class="section-header-right">
-              <span class="section-preview">{{ guestAndAddonsPreview }}</span>
-              <ChevronDown v-if="!guestAndAddonsExpanded" :size="20" />
-              <ChevronUp v-else :size="20" />
-            </div>
-          </div>
-
-          <Transition name="collapse">
-            <div v-show="guestAndAddonsExpanded" id="guests-addons-content" class="section-content">
-              <!-- Guest Editor -->
-              <div class="guest-editor">
-                <h4 class="subsection-title">Antal gäster</h4>
-
-                <div class="guest-row" v-if="allowsAdults">
-                  <div class="guest-row__info">
-                    <span class="guest-row__label">Vuxna ({{ unitPrices.adults }} kr/person)</span>
-                    <span class="guest-row__desc">13+ år</span>
-                  </div>
-                  <div class="guest-row__controls">
-                    <button
-                      @click="updateGuests('adults', -1)"
-                      :disabled="localAdults <= 0"
-                      type="button"
-                      class="guest-btn"
-                    >
-                      −
-                    </button>
-                    <span class="guest-count">{{ localAdults }}</span>
-                    <button
-                      @click="updateGuests('adults', 1)"
-                      type="button"
-                      class="guest-btn"
-                      :disabled="totalGuests >= maxGuestsForSelection"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                <div class="guest-row" v-if="allowsChildren">
-                  <div class="guest-row__info">
-                    <span class="guest-row__label">Barn ({{ unitPrices.children }} kr/person)</span>
-                    <span class="guest-row__desc">0-12 år</span>
-                  </div>
-                  <div class="guest-row__controls">
-                    <button
-                      @click="updateGuests('children', -1)"
-                      :disabled="localChildren <= 0"
-                      type="button"
-                      class="guest-btn"
-                    >
-                      −
-                    </button>
-                    <span class="guest-count">{{ localChildren }}</span>
-                    <button
-                      @click="updateGuests('children', 1)"
-                      type="button"
-                      class="guest-btn"
-                      :disabled="totalGuests >= maxGuestsForSelection"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                <div class="guest-row" v-if="allowsSeniors">
-                  <div class="guest-row__info">
-                    <span class="guest-row__label">Seniorer ({{ unitPrices.seniors }} kr/person)</span>
-                    <span class="guest-row__desc">65+ år</span>
-                  </div>
-                  <div class="guest-row__controls">
-                    <button
-                      @click="updateGuests('seniors', -1)"
-                      :disabled="localSeniors <= 0"
-                      type="button"
-                      class="guest-btn"
-                    >
-                      −
-                    </button>
-                    <span class="guest-count">{{ localSeniors }}</span>
-                    <button
-                      @click="updateGuests('seniors', 1)"
-                      type="button"
-                      class="guest-btn"
-                      :disabled="totalGuests >= maxGuestsForSelection"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                <div class="guest-total-row">
-                  <span class="guest-total-label">Totalt antal gäster:</span>
-                  <span class="guest-total-value">{{ totalGuests }}</span>
-                </div>
-
-                <!-- Capacity indicator -->
-                <div v-if="selectedSlot" class="slot-capacity-hint-inline">
-                  Platser kvar: {{ Math.max(maxGuestsForSelection - totalGuests, 0) }}
-                </div>
+            <div
+              class="section-header"
+              @click="toggleCalendar"
+              @keydown.enter="toggleCalendar"
+              @keydown.space.prevent="toggleCalendar"
+              role="button"
+              tabindex="0"
+              :aria-expanded="calendarExpanded"
+              aria-controls="calendar-content"
+            >
+              <div class="section-header-left">
+                <Calendar :size="20" />
+                <span class="section-title">Datum</span>
               </div>
+              <div class="section-header-right">
+                <span class="section-preview">{{ calendarPreview }}</span>
+                <ChevronDown v-if="!calendarExpanded" :size="20" />
+                <ChevronUp v-else :size="20" />
+              </div>
+            </div>
 
-              <!-- Addon Editor -->
+            <Transition name="collapse">
               <div
-                v-if="experience?.addons?.length"
-                class="addon-editor"
+                v-show="calendarExpanded"
+                id="calendar-content"
+                class="section-content"
               >
-                <h4 class="subsection-title">Tillval (valfritt)</h4>
-                <p class="addon-hint">Du kan välja upp till {{ totalGuests }} av varje tillval</p>
+                <VDatePicker
+                  v-model="selectedDateObj"
+                  :min-date="minDateObj"
+                  :available-dates="availableDateObjects"
+                  :attributes="calendarAttrs"
+                  is-required
+                  expanded
+                />
 
-                <div
-                  v-for="(addon, index) in experience.addons"
-                  :key="index"
-                  class="guest-row"
+                <p
+                  v-if="!availableDates.length"
+                  class="validation-error"
+                  style="margin-top: 0.75rem"
                 >
-                  <div class="guest-row__info">
-                    <span class="guest-row__label">{{ capitalize(addon.title) }} (+{{ addon.price }} kr/st)</span>
+                  Inga tillgängliga datum för denna upplevelse.
+                </p>
+              </div>
+            </Transition>
+          </div>
+
+          <!-- SECTION 2: Time Slots - Always shown but disabled if no date -->
+          <div
+            class="collapsible-section"
+            :class="{
+              'section-disabled': !selectedDate,
+              'section-expanded': timeSlotsExpanded,
+            }"
+          >
+            <div
+              class="section-header"
+              @click="toggleTimeSlots"
+              @keydown.enter="toggleTimeSlots"
+              @keydown.space.prevent="toggleTimeSlots"
+              role="button"
+              tabindex="0"
+              :aria-expanded="timeSlotsExpanded"
+              aria-controls="timeslots-content"
+            >
+              <div class="section-header-left">
+                <Clock :size="20" />
+                <span class="section-title">Tid</span>
+              </div>
+              <div class="section-header-right">
+                <span class="section-preview">{{ timeSlotsPreview }}</span>
+                <ChevronDown v-if="!timeSlotsExpanded" :size="20" />
+                <ChevronUp v-else :size="20" />
+              </div>
+            </div>
+
+            <Transition name="collapse">
+              <div
+                v-show="timeSlotsExpanded"
+                id="timeslots-content"
+                class="section-content"
+              >
+                <p
+                  v-if="timeSlotWarning"
+                  class="validation-error"
+                  style="margin-bottom: 1rem"
+                >
+                  {{ timeSlotWarning }}
+                </p>
+                <TimeSlotList
+                  v-if="selectedDate"
+                  :experience="experience"
+                  :selectedDate="selectedDate"
+                  :selectedTime="selectedTime"
+                  :guestCount="totalGuests"
+                  :editMode="editMode"
+                  :cartItemIndex="cartItemIndex"
+                  @select="onTimeSelect"
+                />
+                <p v-else class="no-date-message">
+                  Välj ett datum först för att se tillgängliga tider
+                </p>
+              </div>
+            </Transition>
+          </div>
+
+          <!-- SECTION 3: Guests & Addons (Combined) -->
+          <div
+            class="collapsible-section"
+            :class="{ 'section-expanded': guestAndAddonsExpanded }"
+          >
+            <div
+              class="section-header"
+              @click="toggleGuestAndAddons"
+              @keydown.enter="toggleGuestAndAddons"
+              @keydown.space.prevent="toggleGuestAndAddons"
+              role="button"
+              tabindex="0"
+              :aria-expanded="guestAndAddonsExpanded"
+              aria-controls="guests-addons-content"
+            >
+              <div class="section-header-left">
+                <Users :size="20" />
+                <span class="section-title">Gäster & Tillval</span>
+              </div>
+              <div class="section-header-right">
+                <span class="section-preview">{{ guestAndAddonsPreview }}</span>
+                <ChevronDown v-if="!guestAndAddonsExpanded" :size="20" />
+                <ChevronUp v-else :size="20" />
+              </div>
+            </div>
+
+            <Transition name="collapse">
+              <div
+                v-show="guestAndAddonsExpanded"
+                id="guests-addons-content"
+                class="section-content"
+              >
+                <!-- Guest Editor -->
+                <div class="guest-editor">
+                  <h4 class="subsection-title">Antal gäster</h4>
+
+                  <div class="guest-row" v-if="allowsAdults">
+                    <div class="guest-row__info">
+                      <span class="guest-row__label"
+                        >Vuxna ({{ unitPrices.adults }} kr/person)</span
+                      >
+                      <span class="guest-row__desc">13+ år</span>
+                    </div>
+                    <div class="guest-row__controls">
+                      <button
+                        @click="updateGuests('adults', -1)"
+                        :disabled="localAdults <= 0"
+                        type="button"
+                        class="guest-btn"
+                      >
+                        −
+                      </button>
+                      <span class="guest-count">{{ localAdults }}</span>
+                      <button
+                        @click="updateGuests('adults', 1)"
+                        type="button"
+                        class="guest-btn"
+                        :disabled="totalGuests >= maxGuestsForSelection"
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
-                  <div class="guest-row__controls">
-                    <button
-                      @click="updateAddonQuantity(addon.title, -1)"
-                      :disabled="
-                        !selectedAddonQuantities[addon.title] ||
-                        selectedAddonQuantities[addon.title] === 0
-                      "
-                      type="button"
-                      class="guest-btn"
-                    >
-                      −
-                    </button>
-                    <span class="guest-count">{{
-                      selectedAddonQuantities[addon.title] || 0
-                    }}</span>
-                    <button
-                      @click="updateAddonQuantity(addon.title, 1)"
-                      :disabled="
-                        totalGuests === 0 ||
-                        (selectedAddonQuantities[addon.title] || 0) >= totalGuests
-                      "
-                      type="button"
-                      class="guest-btn"
-                    >
-                      +
-                    </button>
+
+                  <div class="guest-row" v-if="allowsChildren">
+                    <div class="guest-row__info">
+                      <span class="guest-row__label"
+                        >Barn ({{ unitPrices.children }} kr/person)</span
+                      >
+                      <span class="guest-row__desc">0-12 år</span>
+                    </div>
+                    <div class="guest-row__controls">
+                      <button
+                        @click="updateGuests('children', -1)"
+                        :disabled="localChildren <= 0"
+                        type="button"
+                        class="guest-btn"
+                      >
+                        −
+                      </button>
+                      <span class="guest-count">{{ localChildren }}</span>
+                      <button
+                        @click="updateGuests('children', 1)"
+                        type="button"
+                        class="guest-btn"
+                        :disabled="totalGuests >= maxGuestsForSelection"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="guest-row" v-if="allowsSeniors">
+                    <div class="guest-row__info">
+                      <span class="guest-row__label"
+                        >Seniorer ({{ unitPrices.seniors }} kr/person)</span
+                      >
+                      <span class="guest-row__desc">65+ år</span>
+                    </div>
+                    <div class="guest-row__controls">
+                      <button
+                        @click="updateGuests('seniors', -1)"
+                        :disabled="localSeniors <= 0"
+                        type="button"
+                        class="guest-btn"
+                      >
+                        −
+                      </button>
+                      <span class="guest-count">{{ localSeniors }}</span>
+                      <button
+                        @click="updateGuests('seniors', 1)"
+                        type="button"
+                        class="guest-btn"
+                        :disabled="totalGuests >= maxGuestsForSelection"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="guest-total-row">
+                    <span class="guest-total-label">Totalt antal gäster:</span>
+                    <span class="guest-total-value">{{ totalGuests }}</span>
+                  </div>
+
+                  <!-- Capacity indicator -->
+                  <div v-if="selectedSlot" class="slot-capacity-hint-inline">
+                    Platser kvar:
+                    {{ Math.max(maxGuestsForSelection - totalGuests, 0) }}
+                  </div>
+                </div>
+
+                <!-- Addon Editor -->
+                <div v-if="experience?.addons?.length" class="addon-editor">
+                  <h4 class="subsection-title">Tillval (valfritt)</h4>
+                  <p class="addon-hint">
+                    Du kan välja upp till {{ totalGuests }} av varje tillval
+                  </p>
+
+                  <div
+                    v-for="(addon, index) in experience.addons"
+                    :key="index"
+                    class="guest-row"
+                  >
+                    <div class="guest-row__info">
+                      <span class="guest-row__label"
+                        >{{ capitalize(addon.title) }} (+{{
+                          addon.price
+                        }}
+                        kr/st)</span
+                      >
+                    </div>
+                    <div class="guest-row__controls">
+                      <button
+                        @click="updateAddonQuantity(addon.title, -1)"
+                        :disabled="
+                          !selectedAddonQuantities[addon.title] ||
+                          selectedAddonQuantities[addon.title] === 0
+                        "
+                        type="button"
+                        class="guest-btn"
+                      >
+                        −
+                      </button>
+                      <span class="guest-count">{{
+                        selectedAddonQuantities[addon.title] || 0
+                      }}</span>
+                      <button
+                        @click="updateAddonQuantity(addon.title, 1)"
+                        :disabled="
+                          totalGuests === 0 ||
+                          (selectedAddonQuantities[addon.title] || 0) >=
+                            totalGuests
+                        "
+                        type="button"
+                        class="guest-btn"
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </Transition>
-        </div>
+            </Transition>
+          </div>
         </div>
 
         <!-- Footer with validation, price, and actions -->
@@ -291,7 +331,12 @@
 
             <button
               @click="handleConfirm"
-              :disabled="!selectedDate || totalGuests === 0 || !selectedTime || !!validationError"
+              :disabled="
+                !selectedDate ||
+                totalGuests === 0 ||
+                !selectedTime ||
+                !!validationError
+              "
               class="btn btn--primary"
             >
               {{ editMode ? "Uppdatera bokning" : "Bekräfta bokning" }}
@@ -309,7 +354,13 @@ import { useCartStore } from "~/stores/useCartStore";
 import { useExperiences } from "~/composables/useExperiences";
 import TimeSlotList from "~/components/TimeSlotList.vue";
 import { type DecoratedTimeSlot } from "~/utils/scheduleHelpers";
-import { Calendar, Clock, Users, ChevronDown, ChevronUp } from "lucide-vue-next";
+import {
+  Calendar,
+  Clock,
+  Users,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-vue-next";
 
 interface Props {
   show: boolean;
@@ -403,7 +454,7 @@ const toggleCalendar = () => {
 
 const toggleTimeSlots = () => {
   if (!selectedDate.value) return; // Prevent opening if no date selected
-  
+
   if (timeSlotsExpanded.value) {
     // Just close
     timeSlotsExpanded.value = false;
@@ -422,7 +473,7 @@ const toggleGuestAndAddons = () => {
   if (guestAndAddonsExpanded.value && validationError.value) {
     return; // Don't allow collapse when there's an error
   }
-  
+
   if (guestAndAddonsExpanded.value) {
     // Just close
     guestAndAddonsExpanded.value = false;
@@ -571,10 +622,13 @@ const guestAndAddonsPreview = computed(() => {
   if (localAdults.value) parts.push(`${localAdults.value} vuxna`);
   if (localChildren.value) parts.push(`${localChildren.value} barn`);
   if (localSeniors.value) parts.push(`${localSeniors.value} seniorer`);
-  
-  const addonCount = Object.values(selectedAddonQuantities.value).reduce((sum, qty) => sum + qty, 0);
+
+  const addonCount = Object.values(selectedAddonQuantities.value).reduce(
+    (sum, qty) => sum + qty,
+    0
+  );
   if (addonCount > 0) parts.push(`${addonCount} tillval`);
-  
+
   return parts.length ? parts.join(", ") : "Ange antal gäster";
 });
 
@@ -658,7 +712,7 @@ const updateAddonQuantity = (title: string, delta: number) => {
   if (totalGuests.value === 0) return; // No guests, no addons
 
   const currentQuantity = selectedAddonQuantities.value[title] || 0;
-  
+
   // Each addon can have up to totalGuests quantity independently
   const newQuantity = Math.max(
     0,
@@ -694,8 +748,8 @@ const availableDateObjects = computed(() =>
 const todayString = computed(() => {
   const today = new Date();
   const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 });
 
@@ -703,20 +757,20 @@ const todayString = computed(() => {
 const todayDateObj = computed(() => new Date(`${todayString.value}T12:00:00`));
 
 // Check if today is in the available dates array
-const isTodayAvailable = computed(() => 
+const isTodayAvailable = computed(() =>
   availableDates.value.includes(todayString.value)
 );
 
 // Split available dates into past (before today) and future (after today, excluding today)
-const pastAvailableDates = computed(() => 
-  availableDateObjects.value.filter(d => {
+const pastAvailableDates = computed(() =>
+  availableDateObjects.value.filter((d) => {
     const dateStr = toYMDLocal(d);
     return dateStr < todayString.value;
   })
 );
 
-const futureAvailableDates = computed(() => 
-  availableDateObjects.value.filter(d => {
+const futureAvailableDates = computed(() =>
+  availableDateObjects.value.filter((d) => {
     const dateStr = toYMDLocal(d);
     return dateStr > todayString.value;
   })
@@ -725,7 +779,7 @@ const futureAvailableDates = computed(() =>
 // Highlight available dates with different styling
 const calendarAttrs = computed(() => {
   const attrs = [];
-  
+
   // Past available dates - grayed out
   if (pastAvailableDates.value.length > 0) {
     attrs.push({
@@ -737,7 +791,7 @@ const calendarAttrs = computed(() => {
       },
     });
   }
-  
+
   // Future available dates - blue filled background
   if (futureAvailableDates.value.length > 0) {
     attrs.push({
@@ -749,7 +803,7 @@ const calendarAttrs = computed(() => {
       },
     });
   }
-  
+
   // Today's date - always show border, fill only if available
   if (isTodayAvailable.value) {
     // Today is available - show border + fill
@@ -772,7 +826,7 @@ const calendarAttrs = computed(() => {
       },
     });
   }
-  
+
   // Selected date - darker blue with glow
   if (selectedDateObj.value) {
     attrs.push({
@@ -784,7 +838,7 @@ const calendarAttrs = computed(() => {
       },
     });
   }
-  
+
   return attrs;
 });
 
@@ -799,7 +853,7 @@ watch(
 // Handle modal opening logic (called from watch and onMounted)
 const handleModalOpen = () => {
   const hasDateParam = !!props.initialDate;
-  
+
   if (props.editMode) {
     // Edit mode: start with all sections collapsed
     calendarExpanded.value = false;
@@ -837,7 +891,7 @@ onMounted(() => {
 const initializeModalState = () => {
   // Clear warning
   timeSlotWarning.value = "";
-  
+
   // Always set date from props.initialDate if provided
   if (props.initialDate) {
     selectedDateObj.value = new Date(`${props.initialDate}T12:00:00`);
@@ -874,24 +928,27 @@ const initializeModalState = () => {
     } else {
       selectedAddonQuantities.value = {};
     }
-    
+
     // Set initialTime if provided (for edit mode)
     if (props.initialTime && props.initialDate) {
       selectedTime.value = props.initialTime;
-      
+
       // Find matching slot from experience schedule
       const schedule = props.experience?.schedule?.[props.initialDate];
       if (schedule && Array.isArray(schedule)) {
-        const matchingSlot = schedule.find((s: any) => s.time === props.initialTime);
+        const matchingSlot = schedule.find(
+          (s: any) => s.time === props.initialTime
+        );
         if (matchingSlot) {
           selectedSlot.value = {
             time: matchingSlot.time,
             capacity: matchingSlot.capacity ?? 0,
             booked: matchingSlot.booked ?? 0,
-            remaining: (matchingSlot.capacity ?? 0) - (matchingSlot.booked ?? 0),
-            status: 'available',
+            remaining:
+              (matchingSlot.capacity ?? 0) - (matchingSlot.booked ?? 0),
+            status: "available",
             isFull: false,
-            cannotFitGroup: false
+            cannotFitGroup: false,
           };
         } else {
           // Time slot no longer exists in schedule
@@ -912,10 +969,10 @@ watch(selectedDate, (newDate, oldDate) => {
     selectedSlot.value = null;
     timeSlotWarning.value = "";
   }
-  
+
   // Don't auto-expand if we're setting from query params
   if (isSettingFromQueryParams.value) return;
-  
+
   if (newDate && calendarExpanded.value) {
     // Date was just selected, auto-progress to time slots
     calendarExpanded.value = false;
@@ -1080,7 +1137,7 @@ const handleConfirm = () => {
   margin: 0 0 0.5rem 0;
   font-size: 1.75rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--color-primary);
 }
 
 .modal-subtitle {
@@ -1100,7 +1157,6 @@ const handleConfirm = () => {
 }
 
 .collapsible-section.section-expanded {
-  border: 2px solid #3b82f6;
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
 }
 
@@ -1359,13 +1415,13 @@ const handleConfirm = () => {
 .price-label {
   font-size: 1rem;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-color2);
 }
 
 .price-value {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--color-primary);
 }
 
 .modal-actions {
@@ -1393,23 +1449,23 @@ const handleConfirm = () => {
 
 .btn--secondary {
   background: #f9fafb;
-  color: #374151;
+  color: #41516b;
   border: 1px solid #e5e7eb;
 }
 
 .btn--secondary:hover {
   background: #f3f4f6;
   border-color: #d1d5db;
+  transform: translateY(-2px);
 }
 
 .btn--primary {
-  background: #1a1a1a;
+  background: var(--gradient-bg);
   color: #fff;
   box-shadow: 0 4px 12px rgba(26, 26, 26, 0.15);
 }
 
 .btn--primary:hover:not(:disabled) {
-  background: #000;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(26, 26, 26, 0.25);
 }

@@ -149,7 +149,8 @@ const filteredExperiences = computed(() => {
     <SearchBar
       v-model="filters"
       :show-search-button="false"
-      class="page-search" />
+      class="page-search"
+    />
 
     <section v-if="loading">
       <p>Laddar upplevelser...</p>
@@ -165,7 +166,8 @@ const filteredExperiences = computed(() => {
       <ExperienceCardList
         :experiences="filteredExperiences"
         :query="route.query"
-        class="experience-grid" />
+        class="experience-grid"
+      />
 
       <p v-if="!filteredExperiences.length">
         Inga upplevelser matchar din sökning. Testa att ändra datum eller antal

@@ -38,7 +38,10 @@ const handleSearch = (filters: SearchFilters) => {
       </div>
 
       <div class="hero-content">
-        <h1 class="hero-title">Unika upplevelser <br /> med vårt team</h1>
+        <h1 class="hero-title">
+          Unika upplevelser <br />
+          med vårt team
+        </h1>
 
         <p class="hero-subtitle">
           Skippa det vanliga. Välj din upplevelse och spendera kvalitetstid med
@@ -144,7 +147,7 @@ const handleSearch = (filters: SearchFilters) => {
 .hero-bg {
   position: absolute;
   inset: 0;
-  background-image: url('/images/hero-bg.webp');
+  background-image: url("/images/hero-bg.webp");
   opacity: 0.2;
   background-size: cover;
   background-position: center;
